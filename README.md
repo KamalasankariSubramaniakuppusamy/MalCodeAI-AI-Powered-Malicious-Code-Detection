@@ -67,7 +67,7 @@ print(result)
 
 ## 🧠 Technologies Used
 
-- **[CodeT5+](https://arxiv.org/abs/2305.07922)** – Code understanding and description generation.
+- **[DeepSeek Coder](https://arxiv.org/abs/2401.14196)** – Code understanding and description generation.
 - **[GTR-T5-Large](https://arxiv.org/abs/2112.07899)** – Advanced similarity model for description comparison.
 - **AST Parsing & Graph Analysis** – Extracts independent code components.
 - **Static & AI Security Analysis** – Detects vulnerabilities and malicious behavior.
