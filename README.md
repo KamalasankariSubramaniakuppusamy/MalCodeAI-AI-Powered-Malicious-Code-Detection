@@ -6,7 +6,7 @@ MalCodeAI is an AI-powered system that analyzes code files by breaking them into
 
 ## 🛠 Features
 
-- **Code Intent Verification** – Uses CodeT5+ to generate a description of the code and compare it with the user-provided description.  
+- **Code Intent Verification** – Uses DeepSeek Coder V2 to generate a description of the code and compare it with the user-provided description.  
 - **Program Decomposition** – Splits the program into independent code components for analysis.  
 - **Security Scoring** – Assigns a robustness score (1-10) to each component based on its security and fail-safety.  
 - **Deep Security Inspection** – Analyzes vulnerable components (score < 5) for threats, backdoors, and exploits.  
@@ -17,7 +17,7 @@ MalCodeAI is an AI-powered system that analyzes code files by breaking them into
 ## 📌 How It Works
 
 1. **User Input:** Provide a code file and a short description of its intended functionality.  
-2. **Code Understanding:** CodeT5+ generates a description of the code, which is then compared with the user’s description using `gtr-t5-large` for semantic similarity.  
+2. **Code Understanding:** `deepseek-coder-1.3b-instruct` generates a description of the code, which is then compared with the user’s description using `gtr-t5-large` for semantic similarity.  
 3. **Code Splitting:** The system extracts independent code components using program slicing and AST-based analysis.  
 4. **Security Analysis:** Each component is assigned a robustness score based on static and AI-powered security analysis.  
 5. **Detailed Security Report:** Components scoring below 5 undergo further checks to detect potential malicious behavior and recommend fixes.  
@@ -67,7 +67,7 @@ print(result)
 
 ## 🧠 Technologies Used
 
-- **[CodeT5+](https://arxiv.org/abs/2305.07922)** – Code understanding and description generation.
+- **[DeepSeek Coder](https://arxiv.org/abs/2401.14196)** – Code understanding and description generation.
 - **[GTR-T5-Large](https://arxiv.org/abs/2112.07899)** – Advanced similarity model for description comparison.
 - **AST Parsing & Graph Analysis** – Extracts independent code components.
 - **Static & AI Security Analysis** – Detects vulnerabilities and malicious behavior.
