@@ -1,0 +1,34 @@
+[
+    {
+        "input": "public class FactorialRecursive {\n\n    public static int factorial(int n) {\n        // Base case: factorial of 0 is 1\n        if (n == 0) {\n            return 1;\n        } else {\n            // Recursive step: n! = n * (n-1)!\n            return n * factorial(n - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        int num = 5;  // Example: Calculate factorial of 5\n        int result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n\n        //Demonstrating potential issues with large numbers\n        num = 20;\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n        num = 25; //Factorial of 25 is a very large number that will exceed int's maximum.\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result); //Observe the negative result.  This is overflow.\n\n\n        //Handling potential overflow with BigInteger (for very large numbers)\n        java.math.BigInteger bigNum = java.math.BigInteger.valueOf(25);\n        java.math.BigInteger bigResult = factorialBig(bigNum);\n        System.out.println(\"Factorial of \" + bigNum + \" is: \" + bigResult);\n\n    }\n\n    //Factorial using BigInteger to handle larger numbers and avoid overflow.\n    public static java.math.BigInteger factorialBig(java.math.BigInteger n) {\n        java.math.BigInteger one = java.math.BigInteger.ONE;\n        if (n.equals(java.math.BigInteger.ZERO)) {\n            return one;\n        } else {\n            return n.multiply(factorialBig(n.subtract(one)));\n        }\n    }\n}",
+        "output": {
+            "components": [
+                {
+                    "component_type": "CLASS",
+                    "component_name": "FactorialRecursive",
+                    "component_code": "public class FactorialRecursive {\n\n    public static int factorial(int n) {\n        // Base case: factorial of 0 is 1\n        if (n == 0) {\n            return 1;\n        } else {\n            // Recursive step: n! = n * (n-1)!\n            return n * factorial(n - 1);\n        }\n    }\n\n    public static void main(String[] args) {\n        int num = 5;  // Example: Calculate factorial of 5\n        int result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n        //Demonstrating potential issues with large numbers\n        num = 20;\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n        num = 25; //Factorial of 25 is a very large number that will exceed int's maximum.\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result); //Observe the negative result.  This is overflow.\n\n        //Handling potential overflow with BigInteger (for very large numbers) \n        java.math.BigInteger bigNum = java.math.BigInteger.valueOf(25);\n        java.math.BigInteger bigResult = factorialBig(bigNum);\n        System.out.println(\"Factorial of \" + bigNum + \" is: \" + bigResult);\n    }\n\n    //Factorial using BigInteger to handle larger numbers and avoid overflow.\n    public static java.math.BigInteger factorialBig(java.math.BigInteger n) {\n        java.math.BigInteger one = java.math.BigInteger.ONE;\n        if (n.equals(java.math.BigInteger.ZERO)) {\n            return one;\n        } else {\n            return n.multiply(factorialBig(n.subtract(one)));\n        }\n    }\n}",
+                    "component_description": "Defines the FactorialRecursive class with a recursive method for calculating factorials."
+                },
+                {
+                    "component_type": "FUNCTION",
+                    "component_name": "factorial",
+                    "component_code": "public static int factorial(int n) {\n        // Base case: factorial of 0 is 1\n        if (n == 0) {\n            return 1;\n        } else {\n            // Recursive step: n! = n * (n-1)!\n            return n * factorial(n - 1);\n        }\n    }",
+                    "component_description": "Recursively calculates the factorial of a number."
+                },
+                {
+                    "component_type": "FUNCTION",
+                    "component_name": "main",
+                    "component_code": "public static void main(String[] args) {\n        int num = 5;  // Example: Calculate factorial of 5\n        int result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n        //Demonstrating potential issues with large numbers\n        num = 20;\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result);\n\n        num = 25; //Factorial of 25 is a very large number that will exceed int's maximum.\n        result = factorial(num);\n        System.out.println(\"Factorial of \" + num + \" is: \" + result); //Observe the negative result.  This is overflow.\n\n        //Handling potential overflow with BigInteger (for very large numbers) \n        java.math.BigInteger bigNum = java.math.BigInteger.valueOf(25);\n        java.math.BigInteger bigResult = factorialBig(bigNum);\n        System.out.println(\"Factorial of \" + bigNum + \" is: \" + bigResult);\n    }\n",
+                    "component_description": "The main function of the program. It demonstrates the use of the factorial function and handles potential issues with large numbers."
+                },
+                {
+                    "component_type": "FUNCTION",
+                    "component_name": "factorialBig",
+                    "component_code": "public static java.math.BigInteger factorialBig(java.math.BigInteger n) {\n        java.math.BigInteger one = java.math.BigInteger.ONE;\n        if (n.equals(java.math.BigInteger.ZERO)) {\n            return one;\n        } else {\n            return n.multiply(factorialBig(n.subtract(one)));\n        }\n    }",
+                    "component_description": "Calculates the factorial of a BigInteger without overflowing."
+                }
+            ],
+            "overall_description": "This Java code defines a class called FactorialRecursive with a recursive method for calculating factorials. It also demonstrates the use of BigInteger to handle very large numbers and avoid overflow. The main function demonstrates the use of the factorial function and handles potential issues with large numbers."
+        }
+    }
+]

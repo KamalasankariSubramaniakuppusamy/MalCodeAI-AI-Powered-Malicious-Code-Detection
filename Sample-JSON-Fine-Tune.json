@@ -1,0 +1,88 @@
+[
+    {
+        "input": "import random\n\nclass QuickSort:\n    def quick_sort(self, arr, low, high):\n        if low < high:\n            partition_index = self.partition(arr, low, high)\n            self.quick_sort(arr, low, partition_index - 1)\n            self.quick_sort(arr, partition_index + 1, high)\n\n    def partition(self, arr, low, high):\n        pivot = arr[high]\n        i = low - 1\n        for j in range(low, high):\n            if arr[j] < pivot:\n                i += 1\n                arr[i], arr[j] = arr[j], arr[i]\n        arr[i + 1], arr[high] = arr[high], arr[i + 1]\n        return i + 1\n\nif __name__ == '__main__':\n    arr = [10, 7, 8, 9, 1, 5]\n    qsort = QuickSort()\n    qsort.quick_sort(arr, 0, len(arr) - 1)\n    print(f'Sorted array: {arr}')",
+        "output": {
+            "components": [
+                {"type": "IMPORT", "name": "random", "code": "import random", "description": "Imports the random module, but it isn't used in the code."},
+                {"type": "CLASS", "name": "QuickSort", "code": "class QuickSort: ...", "description": "Defines the QuickSort class that contains the quick_sort and partition methods."},
+                {"type": "FUNCTION", "name": "quick_sort", "code": "def quick_sort(self, arr, low, high): ...", "description": "Recursively sorts an array using the QuickSort algorithm by partitioning it into smaller subarrays."},
+                {"type": "FUNCTION", "name": "partition", "code": "def partition(self, arr, low, high): ...", "description": "Partitions the array into two subarrays based on a pivot, such that elements smaller than the pivot are on the left, and larger elements are on the right."},
+                {"type": "GLOBAL_CODE", "name": "__main__ block", "code": "if __name__ == '__main__': ...", "description": "Executes the QuickSort algorithm on a sample array when the script is run directly."}
+            ],
+            "overall_description": "This code implements the QuickSort algorithm to sort an array. It defines a class 'QuickSort' with methods for sorting the array and partitioning it. The code executes the sorting process on an example array when run directly."
+        }
+    },
+    {
+        "input": "def factorial(n):\n    if n == 0:\n        return 1\n    else:\n        return n * factorial(n-1)\n\nif __name__ == '__main__':\n    num = 5\n    print(f'Factorial of {num}: {factorial(num)}')",
+        "output": {
+            "components": [
+                {"type": "FUNCTION", "name": "factorial", "code": "def factorial(n): ...", "description": "A recursive function that calculates the factorial of a given number."},
+                {"type": "GLOBAL_CODE", "name": "__main__ block", "code": "if __name__ == '__main__': ...", "description": "Executes the factorial function with an example input when the script is run directly."}
+            ],
+            "overall_description": "This code calculates the factorial of a number using recursion. The factorial function is defined recursively, and the program calculates the factorial of 5 when executed."
+        }
+    },
+    {
+        "input": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println('Hello, World!');\n    }\n}",
+        "output": {
+            "components": [
+                {"type": "CLASS", "name": "HelloWorld", "code": "public class HelloWorld { ... }", "description": "Defines the HelloWorld class that contains the main method."},
+                {"type": "FUNCTION", "name": "main", "code": "public static void main(String[] args) { ... }", "description": "The main method that prints 'Hello, World!' to the console when executed."}
+            ],
+            "overall_description": "This is a simple Java program that prints 'Hello, World!' to the console. The main method within the HelloWorld class is responsible for this output."
+        }
+    },
+    {
+        "input": "def add_numbers(a, b):\n    return a + b\n\nif __name__ == '__main__':\n    print(add_numbers(5, 3))",
+        "output": {
+            "components": [
+                {"type": "FUNCTION", "name": "add_numbers", "code": "def add_numbers(a, b): ...", "description": "Adds two numbers and returns the result."},
+                {"type": "GLOBAL_CODE", "name": "__main__ block", "code": "if __name__ == '__main__': ...", "description": "Executes the add_numbers function with example values when the script is run directly."}
+            ],
+            "overall_description": "This simple Python program defines a function that adds two numbers and prints the result of adding 5 and 3."
+        }
+    },
+    {
+        "input": "int factorial(int n) {\n    if (n == 0)\n        return 1;\n    else\n        return n * factorial(n - 1);\n}\n\nint main() {\n    int num = 5;\n    printf('Factorial of %d: %d', num, factorial(num));\n    return 0;\n}",
+        "output": {
+            "components": [
+                {"type": "FUNCTION", "name": "factorial", "code": "int factorial(int n) { ... }", "description": "A recursive function that calculates the factorial of a given number."},
+                {"type": "FUNCTION", "name": "main", "code": "int main() { ... }", "description": "The main function that calls the factorial function and prints the result."}
+            ],
+            "overall_description": "This C program calculates the factorial of a number using recursion and prints the result of factorial(5)."
+        }
+    },
+    {
+        "input": "class Person:\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n\n    def greet(self):\n        print(f'Hello, my name is {self.name} and I am {self.age} years old.')\n\nif __name__ == '__main__':\n    p = Person('John', 30)\n    p.greet()",
+        "output": {
+            "components": [
+                {"type": "CLASS", "name": "Person", "code": "class Person: ...", "description": "Defines the Person class with attributes for name and age and a method for greeting."},
+                {"type": "FUNCTION", "name": "__init__", "code": "def __init__(self, name, age): ...", "description": "Constructor to initialize a Person object with name and age."},
+                {"type": "FUNCTION", "name": "greet", "code": "def greet(self): ...", "description": "Greets the user with the name and age stored in the Person object."},
+                {"type": "GLOBAL_CODE", "name": "__main__ block", "code": "if __name__ == '__main__': ...", "description": "Creates a Person object and calls the greet method to display the greeting."}
+            ],
+            "overall_description": "This Python code defines a class called Person with methods for initializing the object and greeting the user. It demonstrates object-oriented programming by creating a Person object and calling its methods."
+        }
+    },
+    {
+        "input": "function fibonacci(n) {\n    if (n <= 1) return n;\n    return fibonacci(n - 1) + fibonacci(n - 2);\n}\n\nlet result = fibonacci(6);\nconsole.log(result);",
+        "output": {
+            "components": [
+                {"type": "FUNCTION", "name": "fibonacci", "code": "function fibonacci(n) { ... }", "description": "Calculates the nth Fibonacci number using recursion."},
+                {"type": "GLOBAL_CODE", "name": "Execution block", "code": "let result = fibonacci(6); ...", "description": "Calls the fibonacci function with an input of 6 and prints the result."}
+            ],
+            "overall_description": "This JavaScript code calculates the 6th Fibonacci number using recursion and prints the result."
+        }
+    },
+    {
+        "input": "public class Palindrome {\n    public static void main(String[] args) {\n        String str = 'madam';\n        if (isPalindrome(str)) {\n            System.out.println('Palindrome');\n        } else {\n            System.out.println('Not Palindrome');\n        }\n    }\n\n    public static boolean isPalindrome(String str) {\n        int len = str.length();\n        for (int i = 0; i < len / 2; i++) {\n            if (str.charAt(i) != str.charAt(len - i - 1)) {\n                return false;\n            }\n        }\n        return true;\n    }\n}",
+        "output": {
+            "components": [
+                {"type": "CLASS", "name": "Palindrome", "code": "public class Palindrome { ... }", "description": "Defines the Palindrome class that contains the main method and isPalindrome function."},
+                {"type": "FUNCTION", "name": "main", "code": "public static void main(String[] args) { ... }", "description": "Main method that checks if a string is a palindrome."},
+                {"type": "FUNCTION", "name": "isPalindrome", "code": "public static boolean isPalindrome(String str) { ... }", "description": "Checks if a given string is a palindrome by comparing characters from both ends."}
+            ],
+            "overall_description": "This Java program checks if a string is a palindrome. It defines a function 'isPalindrome' that returns true if the string is the same forwards and backwards."
+        }
+    }
+]

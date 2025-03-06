@@ -3,3 +3,7 @@ def factorial(n):
         return 1
     else:
         return n * factorial(n-1)
+    
+if __name__ == "__main__":
+    n = int(input("Enter a number: "))
+    print(f"Factorial of {n} is {factorial(n)}")
