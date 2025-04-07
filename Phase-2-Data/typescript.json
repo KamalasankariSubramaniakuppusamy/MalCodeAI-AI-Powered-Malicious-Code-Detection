@@ -1,0 +1,632 @@
+{
+    "typescript_0": {
+        "input": "const { exec } = require('child_process');\n\nfunction escalatePrivileges(command) {\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            console.error(`Error executing command: ${error.message}`);\n            return;\n        }\n        console.log(`Command output:\\n${stdout}`);\n    });\n}\n\n// Example usage:\nescalatePrivileges(process.argv[2]);",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "typescript_1": {
+        "input": "const { exec } = require('child_process');\\n\\nfunction runCommand(command) {\\n    exec(command, (error, stdout, stderr) => {\\n        if (error) {\\n            console.error(`Error: ${error.message}`);\\n            return;\\n        }\\n        if (stderr) {\\n            console.error(`Stderr: ${stderr}`);\\n            return;\\n        }\\n        console.log(`Stdout: ${stdout}`);\\n    });\\n}\\n\\nconst userInput = process.argv[2];\\nrunCommand(userInput);",
+        "output": {
+            "score": 8.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "typescript_2": {
+        "input": "class User {\n    constructor(data) {\n        Object.assign(this, data);\n    }\n}\n\nfunction deserializeUser(serializedData) {\n    return new User(JSON.parse(serializedData));\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "typescript_3": {
+        "input": "class AuthService {\n    private static readonly SECRET_KEY = \"supersecretkey\";\n    private token: string | null = null;\n\n    authenticate(password: string): boolean {\n        const hash = this.hashPassword(password);\n        if (hash === AuthService.SECRET_KEY) {\n            this.token = this.generateToken();\n            return true;\n        }\n        return false;\n    }\n\n    private hashPassword(password: string): string {\n        // Simple hashing logic for demonstration purposes\n        let hash = 0;\n        if (password.length === 0) return String(hash);\n        for (let i = 0; i < password.length; i++) {\n            const char = password.charCodeAt(i);\n            hash = ((hash << 5) - hash) + char;\n            hash |= 0; // Convert to 32bit integer\n        }\n        return String(hash);\n    }\n\n    private generateToken(): string {\n        return \"token_\" + Math.random().toString(36).substr(2, 9);\n    }\n\n    getToken(): string | null {\n        return this.token;\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "typescript_4": {
+        "input": "const express = require('express');\nconst { exec } = require('child_process');\n\nconst app = express();\napp.use(express.urlencoded({ extended: true }));\n\napp.post('/run', (req, res) => {\n    const command = req.body.cmd;\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            res.send(`Error: ${stderr}`);\n            return;\n        }\n        res.send(stdout);\n    });\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "typescript_5": {
+        "input": "class FileReader {\n    private filePath: string;\n\n    constructor(path: string) {\n        this.filePath = path;\n    }\n\n    public readFile(): string {\n        const fs = require('fs');\n        return fs.readFileSync(this.filePath, 'utf8');\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "typescript_6": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/transfer', (req, res) => {\n    const { toAccount, amount } = req.body;\n    // Simulate transferring funds without CSRF protection\n    console.log(`Transferring ${amount} to account ${toAccount}`);\n    res.send('Transfer successful');\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "typescript_7": {
+        "input": "class FileReader {\n    private filePath: string;\n\n    constructor(path: string) {\n        this.filePath = path;\n    }\n\n    public readFile(): string {\n        const fs = require('fs');\n        return fs.readFileSync(this.filePath, 'utf8');\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "typescript_8": {
+        "input": "function transferFunds(recipientId: string, amount: number) {\n    const url = `https://api.example.com/transfer?recipient=${encodeURIComponent(recipientId)}&amount=${encodeURIComponent(amount.toString())}`;\n    fetch(url, { method: 'POST' });\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "typescript_9": {
+        "input": "function processData(data: string): void {\n    const buffer = new ArrayBuffer(10);\n    const view = new DataView(buffer);\n    for (let i = 0; i < data.length; i++) {\n        view.setUint8(i, data.charCodeAt(i));\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "typescript_10": {
+        "input": "class BufferHandler {\n    private buffer: Uint8Array;\n\n    constructor(size: number) {\n        this.buffer = new Uint8Array(size);\n    }\n\n    write(data: Uint8Array, offset: number): void {\n        for (let i = 0; i < data.length; i++) {\n            this.buffer[offset + i] = data[i];\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "typescript_11": {
+        "input": "import * as exec from 'child_process';\n\nconst express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/execute', (req, res) => {\n    const command = req.body.command;\n    if (command) {\n        exec.exec(command, (error, stdout, stderr) => {\n            if (error) {\n                res.status(500).send(`Error executing command: ${stderr}`);\n                return;\n            }\n            res.send(stdout);\n        });\n    } else {\n        res.status(400).send('No command provided');\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "typescript_12": {
+        "input": "import * as fs from 'fs';\n\nfunction readFile(filePath: string): void {\n    const sanitizedPath = filePath.replace(/^\\.\\//, '');\n    fs.readFile(sanitizedPath, (err, data) => {\n        if (err) throw err;\n        console.log(data.toString());\n    });\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "typescript_13": {
+        "input": "class CommandExecutor {\n    execute(command: string): void {\n        require('child_process').exec(command, (error, stdout, stderr) => {\n            if (error) {\n                console.error(`Error executing command: ${error.message}`);\n                return;\n            }\n            console.log(stdout);\n        });\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "typescript_14": {
+        "input": "function unsafeDeserialize(inputString) {\n    const payload = JSON.parse(inputString);\n    return payload;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "typescript_15": {
+        "input": "class UserInterface {\n    renderUserInput(input: string): void {\n        const element = document.getElementById(\"userContent\");\n        if (element) {\n            element.innerHTML = input;\n        }\n    }\n}",
+        "output": {
+            "score": 8.6,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "typescript_16": {
+        "input": "import { exec } from 'child_process';\\nfunction runCommand(cmd: string) {\\n    exec(cmd, (error, stdout, stderr) => {\\n        if (error) {\\n            console.error(`Error executing command: ${error.message}`);\\n            return;\\n        }\\n        if (stderr) {\\n            console.error(`Command error output: ${stderr}`);\\n            return;\\n        }\\n        console.log(stdout);\\n    });\\n}\\nconst userInput = process.argv[2];\\nrunCommand(userInput);",
+        "output": {
+            "score": 7.8,
+            "type": "Privilege Escalation"
+        }
+    },
+    "typescript_17": {
+        "input": "import * as express from 'express';\nconst app = express();\napp.use(express.json());\n\napp.post('/data', (req, res) => {\n    const data = JSON.parse(req.body.data);\n    res.send(data);\n});",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "typescript_18": {
+        "input": "function executeCommand(command: string) {\n    const { exec } = require('child_process');\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            console.error(`Error executing command: ${error}`);\n            return;\n        }\n        console.log(stdout);\n    });\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "typescript_19": {
+        "input": "const { exec } = require('child_process');\n\nfunction runCommand(command) {\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            console.error(`Error executing command: ${error.message}`);\n            return;\n        }\n        console.log(stdout || stderr);\n    });\n}\n\nconst userInput = process.argv[2];\nrunCommand(userInput);",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "typescript_20": {
+        "input": "\"use strict\";\nimport * as express from 'express';\nconst app = express();\n\napp.use(express.json());\n\ninterface User {\n    username: string;\n    passwordHash: string;\n}\n\nconst users: User[] = [\n    { username: 'admin', passwordHash: '$2a$10$sYlNiC8b7jGwZV92FvHuoOQZJ6.5X1U3LzTcDkx7t3M1JmPZ3L4B.', }, // hashed 'password'\n];\n\napp.post('/login', (req, res) => {\n    const { username, password } = req.body;\n    const user = users.find(u => u.username === username);\n\n    if (!user) {\n        return res.status(401).send('Invalid credentials');\n    }\n\n    // Simulating a time-consuming hash comparison to avoid timing attacks\n    setTimeout(() => {\n        if (password === 'password') { // Insecure plain text password check\n            res.send('Login successful');\n        } else {\n            res.status(401).send('Invalid credentials');\n        }\n    }, 150);\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 7.2,
+            "type": "Broken Authentication"
+        }
+    },
+    "typescript_21": {
+        "input": "\"use strict\";\nimport * as fs from 'fs';\nimport * as path from 'path';\n\nconst express = require('express');\nconst app = express();\napp.use(express.urlencoded({ extended: true }));\n\napp.post('/file', (req, res) => {\n    const filePath = req.body.filePath;\n    const resolvedPath = path.resolve(filePath);\n    if (!resolvedPath.startsWith(process.cwd())) {\n        return res.status(403).send('Forbidden');\n    }\n    fs.readFile(resolvedPath, 'utf8', (err, data) => {\n        if (err) {\n            return res.status(500).send(err);\n        }\n        res.send(data);\n    });\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "typescript_22": {
+        "input": "import * as fs from 'fs';\n\nfunction readFile(filePath: string): void {\n    const data = fs.readFileSync(filePath, 'utf8');\n    console.log(data);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "typescript_23": {
+        "input": "function executeCommand(command: string): void {\n    const { exec } = require('child_process');\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            console.error(`Error executing command: ${error.message}`);\n            return;\n        }\n        if (stderr) {\n            console.error(`Command output error: ${stderr}`);\n            return;\n        }\n        console.log(`Command output: ${stdout}`);\n    });\n}",
+        "output": {
+            "score": 9.1,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "typescript_24": {
+        "input": "function unsafeDeserialize(data: string) {\n    const parsedData = JSON.parse(data);\n    if (parsedData.type === 'user') {\n        return new User(parsedData.name, parsedData.id);\n    }\n    throw new Error('Invalid type');\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "typescript_25": {
+        "input": "\"use strict\";\nclass UserInfo {\n    private username: string;\n    private password: string;\n\n    constructor(username: string, password: string) {\n        this.username = username;\n        this.password = password;\n    }\n\n    public displayInfo() {\n        console.log(`Username: ${this.username}, Password: ${this.password}`);\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "typescript_26": {
+        "input": "class HttpResponseHandler {\n    private headers: { [key: string]: string } = {};\n\n    addHeader(name: string, value: string): void {\n        this.headers[name] = value;\n    }\n\n    getResponse(): string {\n        let response = \"HTTP/1.1 200 OK\\r\\n\";\n        for (const header in this.headers) {\n            if (this.headers.hasOwnProperty(header)) {\n                response += `${header}: ${this.headers[header]}\\r\\n`;\n            }\n        }\n        response += \"\\r\\n\";\n        return response;\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "typescript_27": {
+        "input": "\"use strict\";\nclass ResourceHandler {\n    private resource: number = 0;\n\n    public increment(): void {\n        setTimeout(() => {\n            this.resource++;\n        }, Math.random() * 100);\n    }\n\n    public decrement(): void {\n        setTimeout(() => {\n            this.resource--;\n        }, Math.random() * 100);\n    }\n\n    public getResource(): number {\n        return this.resource;\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "typescript_28": {
+        "input": "function unsafeRaceCondition() {\n    let flag = false;\n    setTimeout(() => { flag = true; }, 100);\n    while (!flag) {}\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "typescript_29": {
+        "input": "function criticalOperation() {\n    let flag = false;\n    setTimeout(() => { flag = true; }, 100);\n    if (!flag) {\n        // Vulnerable code here\n        console.log(\"Operation completed\");\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "typescript_30": {
+        "input": "function setSessionId(req, res) {\n    const sessionId = req.query.sessionId;\n    res.cookie('sessionId', sessionId);\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "typescript_31": {
+        "input": "function redirectToUrl(url: string): void {\n    window.location.href = url;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "typescript_32": {
+        "input": "class WebServer {\n    private app;\n\n    constructor() {\n        this.app = require('express')();\n        this.setupRoutes();\n    }\n\n    private setupRoutes(): void {\n        this.app.get('/', (req, res) => {\n            res.send('Hello World!');\n        });\n    }\n\n    public start(port: number): void {\n        this.app.listen(port, () => {\n            console.log(`Server running on port ${port}`);\n        });\n    }\n}",
+        "output": {
+            "score": 5.4,
+            "type": "Missing Security Headers"
+        }
+    },
+    "typescript_33": {
+        "input": "function processRequests() {\n    while (true) {\n        let data = fetch('http://example.com/data').then(response => response.json());\n        console.log(data);\n    }\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "typescript_34": {
+        "input": "function logSensitiveData(data: any) {\n    if (process.env.DEBUG_MODE === 'true') {\n        console.log(JSON.stringify(data));\n    }\n}",
+        "output": {
+            "score": 2.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "typescript_35": {
+        "input": "<button id=\"hiddenButton\" style=\"opacity: 0; position: absolute;\"></button>\n<script lang=\"typescript\">\ndocument.getElementById(\"hiddenButton\").addEventListener(\"click\", () => {\n    alert('You were clickjacked!');\n});\n</script>",
+        "output": {
+            "score": 3.5,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "typescript_36": {
+        "input": "import * as express from 'express';\nconst app = express();\n\napp.use(express.urlencoded({ extended: true }));\n\napp.post('/set-cookie', (req, res) => {\n    const cookieValue = req.body.cookieValue;\n    res.setHeader('Set-Cookie', `user=${cookieValue}; Path=/; HttpOnly`);\n    res.send('Cookie set successfully!');\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on http://localhost:3000');\n});",
+        "output": {
+            "score": 6.1,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "typescript_37": {
+        "input": "import * as fs from 'fs';\nimport * as express from 'express';\n\nconst app = express();\napp.get('/file', (req, res) => {\n    const filePath = req.query.path;\n    fs.readFile(filePath, (err, data) => {\n        if (err) {\n            res.status(500).send('Error reading file');\n        } else {\n            res.send(data);\n        }\n    });\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on http://localhost:3000');\n});",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "typescript_38": {
+        "input": "function setSessionCookie(req, res) {\n    const sessionId = req.query.sessionId;\n    res.cookie('sessionId', sessionId, { httpOnly: true });\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "typescript_39": {
+        "input": "import { createServer } from 'http';\n\nconst server = createServer((req, res) => {\n    while (true) {}\n    res.end('This will never be reached');\n});\n\nserver.listen(3000, () => {\n    console.log('Server running on http://localhost:3000/');\n});",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "typescript_40": {
+        "input": "\"use strict\";\n\nfunction setHeaders(res) {\n    res.setHeader(\"Content-Type\", \"application/json\");\n    // Missing security headers like Content-Security-Policy, X-Frame-Options, etc.\n    return res;\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "typescript_41": {
+        "input": "import { Router } from 'express';\nconst router = Router();\n\nrouter.get('/redirect', (req, res) => {\n    const url = req.query.url as string;\n    if (!url) {\n        return res.status(400).send('URL is required');\n    }\n    if (!isAllowedDomain(url)) {\n        return res.status(403).send('Forbidden domain');\n    }\n    res.redirect(url);\n});\n\nfunction isAllowedDomain(url: string): boolean {\n    const allowedDomains = ['example.com', 'test.com'];\n    try {\n        const parsedUrl = new URL(url);\n        return allowedDomains.includes(parsedUrl.hostname);\n    } catch (error) {\n        return false;\n    }\n}\n\nexport default router;",
+        "output": {
+            "score": 6.8,
+            "type": "Open Redirect"
+        }
+    },
+    "typescript_42": {
+        "input": "import * as express from 'express';\n\nconst app = express();\napp.use(express.json());\n\nlet sessionStore = {};\n\napp.post('/login', (req, res) => {\n    const { username } = req.body;\n    if (!username) {\n        return res.status(400).send('Username is required');\n    }\n    let sessionId = req.cookies['session_id'] || Math.random().toString(36).substr(2, 9);\n    sessionStore[sessionId] = { username };\n    res.cookie('session_id', sessionId, { httpOnly: true });\n    res.send(`Logged in as ${username}`);\n});\n\napp.get('/profile', (req, res) => {\n    const sessionId = req.cookies['session_id'];\n    if (!sessionId || !sessionStore[sessionId]) {\n        return res.status(401).send('Unauthorized');\n    }\n    res.send(`Profile of ${sessionStore[sessionId].username}`);\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 2.1,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "typescript_43": {
+        "input": "import * as http from 'http';\n\nconst server = http.createServer((req, res) => {\n    const urlParam = req.url?.split('=')[1];\n    if (urlParam) {\n        http.get(urlParam, (response) => {\n            let data = '';\n            response.on('data', (chunk) => { data += chunk; });\n            response.on('end', () => { res.end(data); });\n        }).on('error', (err) => { res.statusCode = 500; res.end(`Error: ${err.message}`); });\n    } else {\n        res.statusCode = 400;\n        res.end('Bad Request');\n    }\n});\n\nserver.listen(3000, () => {\n    console.log('Server running at http://localhost:3000/');\n});",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "typescript_44": {
+        "input": "class HttpResponseHandler {\n    private response: string;\n\n    constructor(response: string) {\n        this.response = response;\n    }\n\n    public sendResponse(): void {\n        console.log(this.response);\n    }\n}",
+        "output": {
+            "score": 6.1,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "typescript_45": {
+        "input": "class FileReader {\n    constructor(private filePath: string) {}\n\n    read() {\n        const fs = require('fs');\n        return fs.readFileSync(this.filePath, 'utf8');\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "typescript_46": {
+        "input": "\"use strict\";\\nclass User {\\n    private _name: string;\\n    constructor(name: string) {\\n        this._name = name;\\n    }\\n    public getName(): string {\\n        return this._name;\\n    }\\n}\\nconst user = new User(\\\"Alice\\\");\\nconsole.log(user.getName());\\n// Vulnerability: The getName method exposes the private _name property, allowing information disclosure.\"",
+        "output": {
+            "score": 2.1,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "typescript_47": {
+        "input": "class FileReader {\n    filePath: string;\n\n    constructor(path: string) {\n        this.filePath = path;\n    }\n\n    readFile() {\n        const fs = require('fs');\n        return fs.readFileSync(this.filePath, 'utf8');\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "typescript_48": {
+        "input": "class AuthService {\n    setSessionId(userId: string) {\n        document.cookie = `sessionId=${userId}; path=/`;\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "typescript_49": {
+        "input": "\"use strict\";\nclass DataFetcher {\n    private baseUrl: string;\n\n    constructor(url: string) {\n        this.baseUrl = url;\n    }\n\n    public async fetchData(endpoint: string): Promise<any> {\n        const fullUrl = new URL(endpoint, this.baseUrl).href;\n        const response = await fetch(fullUrl);\n        return response.json();\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "typescript_50": {
+        "input": "function safeParseJSON(jsonString: string): object | null {\\n    try {\\n        const parsed = JSON.parse(jsonString);\\n        if (typeof parsed === 'object' && parsed !== null) {\\n            return parsed;\\n        } else {\\n            throw new Error('Parsed data is not a valid object');\\n        }\\n    } catch (error) {\\n        console.error('Failed to parse JSON:', error);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_51": {
+        "input": "class SecureUser {\\n    private username: string;\\n    private email: string;\\n\\n    constructor(username: string, email: string) {\\n        this.setUsername(username);\\n        this.setEmail(email);\\n    }\\n\\n    public getUsername(): string {\\n        return this.username;\\n    }\\n\\n    public setUsername(username: string): void {\\n        if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {\\n            throw new Error(\\\"Invalid username. It must be 3-20 characters long and contain only alphanumeric characters or underscores.\\\");\\n        }\\n        this.username = username;\\n    }\\n\\n    public getEmail(): string {\\n        return this.email;\\n    }\\n\\n    public setEmail(email: string): void {\\n        if (!/^\\S+@\\S+\\.\\S+$/.test(email)) {\\n            throw new Error(\\\"Invalid email format.\\\");\\n        }\\n        this.email = email;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_52": {
+        "input": "function safeParseJSON(jsonString: string): any {\n    try {\n        const parsedData = JSON.parse(jsonString);\n        if (typeof parsedData === 'object' && parsedData !== null) {\n            return parsedData;\n        }\n        throw new Error('Invalid JSON format');\n    } catch (error) {\n        console.error('Failed to parse JSON:', error);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_53": {
+        "input": "class SecureUserInputHandler {\\n    private userInput: string;\\n\\n    constructor(input: string) {\\n        this.userInput = input;\\n    }\\n\\n    public getSanitizedInput(): string {\\n        return this.sanitizeInput(this.userInput);\\n    }\\n\\n    private sanitizeInput(input: string): string {\\n        return input.replace(/[<>&\"'\\\\/]/g, (char) => {\\n            switch (char) {\\n                case '<':\\n                    return '&lt;';\\n                case '>':\\n                    return '&gt;';\\n                case '&':\\n                    return '&amp;';\\n                case '\\\"':\\n                    return '&quot;';\\n                case \"'\":\\n                    return '&#39;';\\n                case '\\\\':\\n                    return '&#x2F;';\\n                default:\\n                    return char;\\n            }\\n        });\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_54": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\nconst PORT = process.env.PORT || 3000;\n\n// Use helmet to secure headers\napp.use(helmet());\n\n// Rate limiting to prevent brute force attacks\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000, // 15 minutes\n    max: 100 // limit each IP to 100 requests per windowMs\n});\napp.use(limiter);\n\n// Use body-parser middleware to parse JSON bodies into JS objects\napp.use(bodyParser.json());\n\n// Example secure route with input validation\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input\n        res.status(200).send('Valid input received');\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\n// Error handling middleware\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\n// Start the server\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_55": {
+        "input": "{\"use strict\";\nclass SecureDataHandler {\n    private data: string[] = [];\n\n    constructor(initialData: string[]) {\n        this.data = initialData.map(item => item.trim());\n    }\n\n    public addData(input: string): void {\n        if (typeof input !== 'string' || !input.trim()) {\n            throw new Error('Invalid input');\n        }\n        this.data.push(input.trim());\n    }\n\n    public getData(index: number): string | undefined {\n        if (typeof index !== 'number' || index < 0 || index >= this.data.length) {\n            throw new Error('Index out of bounds');\n        }\n        return this.data[index];\n    }\n\n    public getAllData(): string[] {\n        return [...this.data];\n    }\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_56": {
+        "input": "class SecureDataHandler {\n    private dataStore: Map<string, string> = new Map();\n\n    public setData(key: string, value: string): void {\n        if (!this.isValidKey(key) || !this.isValidValue(value)) {\n            throw new Error(\"Invalid key or value\");\n        }\n        this.dataStore.set(key, value);\n    }\n\n    public getData(key: string): string | undefined {\n        if (!this.isValidKey(key)) {\n            throw new Error(\"Invalid key\");\n        }\n        return this.dataStore.get(key);\n    }\n\n    private isValidKey(key: string): boolean {\n        return typeof key === \"string\" && /^[a-zA-Z0-9_]+$/.test(key);\n    }\n\n    private isValidValue(value: string): boolean {\n        return typeof value === \"string\";\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_57": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '50mb' }));\napp.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput !== 'string' || !/^[a-zA-Z0-9]+$/.test(userInput)) {\n        return res.status(400).send('Invalid input');\n    }\n    // Process valid input securely\n    res.send('Success');\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_58": {
+        "input": "function safeParseJSON(jsonString: string): unknown {\n    try {\n        return JSON.parse(jsonString);\n    } catch (e) {\n        console.error(\"Invalid JSON provided\", e);\n        throw new Error(\"Failed to parse JSON\");\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_59": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as morgan from 'morgan';\n\nconst app = express();\nconst PORT = 3000;\n\napp.use(helmet());\napp.use(bodyParser.json({ limit: '10kb' }));\napp.use(morgan('combined'));\n\napp.post('/submit', (req, res) => {\n    const { email, message } = req.body;\n\n    if (!email || !message || typeof email !== 'string' || typeof message !== 'string') {\n        return res.status(400).json({ error: 'Invalid input' });\n    }\n\n    // Simulate a database operation\n    console.log(`Received message from ${email}: ${message}`);\n\n    res.status(200).json({ success: true, message: 'Message received successfully' });\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).json({ error: 'Internal Server Error' });\n});\n\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_60": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input securely\n        res.status(200).send('Valid input received');\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_61": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '50mb' }));\napp.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\n\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000,\n    max: 100\n});\n\napp.use(limiter);\n\napp.post('/submit', (req, res) => {\n    const { userInput } = req.body;\n    if (typeof userInput !== 'string' || !/^[a-zA-Z0-9]+$/.test(userInput)) {\n        return res.status(400).json({ error: 'Invalid input' });\n    }\n    try {\n        // Safe processing of userInput\n        res.json({ message: `Processed input: ${userInput}` });\n    } catch (error) {\n        console.error(error);\n        res.status(500).json({ error: 'Internal Server Error' });\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_62": {
+        "input": "import * as crypto from 'crypto';\n\nfunction secureHash(input: string): string {\n    const hash = crypto.createHmac('sha256', process.env.SECRET_KEY || 'default_secret');\n    hash.update(input);\n    return hash.digest('hex');\n}\n\nasync function validateUserInput(input: any): Promise<boolean> {\n    if (typeof input !== 'string' || !/^\\w+$/.test(input)) {\n        throw new Error('Invalid input');\n    }\n    return true;\n}\n\nexport async function processUserData(data: any) {\n    try {\n        await validateUserInput(data);\n        const hashedData = secureHash(data);\n        console.log('Processed data:', hashedData);\n    } catch (error) {\n        console.error('Error processing user data:', error.message);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_63": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json());\n\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000, // 15 minutes\n    max: 100 // limit each IP to 100 requests per windowMs\n});\napp.use(limiter);\n\napp.get('/', (req, res) => {\n    res.send('Hello World!');\n});\n\napp.post('/data', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        res.json({ message: `Processed: ${userInput}` });\n    } else {\n        res.status(400).json({ error: 'Invalid input' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_64": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\n\nconst limiter = rateLimit({\n  windowMs: 15 * 60 * 1000, // 15 minutes\n  max: 100 // limit each IP to 100 requests per windowMs\n});\napp.use(limiter);\n\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input\n        res.status(200).send(`Processed: ${userInput}`);\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_65": {
+        "input": "class SecureDataHandler {\n    private data: string[] = [];\n\n    public addData(input: string): void {\n        if (typeof input !== 'string' || !input.trim()) {\n            throw new Error('Invalid input');\n        }\n        this.data.push(input);\n    }\n\n    public getData(index: number): string | undefined {\n        if (typeof index !== 'number' || index < 0 || index >= this.data.length) {\n            throw new Error('Index out of bounds');\n        }\n        return this.data[index];\n    }\n\n    public getAllData(): string[] {\n        return [...this.data];\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_66": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json());\n\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000,\n    max: 100\n});\napp.use(limiter);\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        res.status(200).send(`Received: ${userInput}`);\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_67": {
+        "input": "class SecureDataHandler {\n    private data: string[] = [];\n\n    constructor(initialData?: string[]) {\n        if (initialData) {\n            this.data = initialData.map(item => this.sanitizeInput(item));\n        }\n    }\n\n    public addData(input: string): void {\n        const sanitizedInput = this.sanitizeInput(input);\n        this.data.push(sanitizedInput);\n    }\n\n    public getData(): string[] {\n        return [...this.data];\n    }\n\n    private sanitizeInput(input: string): string {\n        if (typeof input !== 'string') {\n            throw new Error('Invalid input type');\n        }\n        return input.replace(/</g, '&lt;').replace(/>/g, '&gt;');\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_68": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '10kb' }));\napp.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input securely\n        res.status(200).send(`Processed: ${userInput}`);\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_69": {
+        "input": "function safeParseJSON(jsonString: string): object | null {\n    try {\n        const parsed = JSON.parse(jsonString);\n        if (typeof parsed === 'object' && !Array.isArray(parsed) && parsed !== null) {\n            return parsed;\n        }\n        return null;\n    } catch (error) {\n        console.error(\"Invalid JSON string\", error);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_70": {
+        "input": "function safeParseInt(input: string): number | null {\n    const parsed = parseInt(input, 10);\n    if (isNaN(parsed)) {\n        return null;\n    }\n    return parsed;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_71": {
+        "input": "function safeParseJSON(jsonString: string): any {\n    try {\n        const parsed = JSON.parse(jsonString);\n        if (typeof parsed === 'object' && parsed !== null) {\n            return parsed;\n        }\n        throw new Error('Invalid JSON object');\n    } catch (error) {\n        console.error('Failed to parse JSON:', error);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_72": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input\n        res.status(200).send('Success');\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_73": {
+        "input": "class SecureDataHandler {\n    private data: string[] = [];\n\n    public addData(input: string): void {\n        if (typeof input !== 'string' || input.trim() === '') {\n            throw new Error('Invalid input');\n        }\n        this.data.push(input);\n    }\n\n    public getData(): string[] {\n        return [...this.data];\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_74": {
+        "input": "class SecureDataHandler {\n    private data: string[] = [];\n\n    public addData(input: string): void {\n        if (typeof input !== 'string' || !input.trim()) {\n            throw new Error('Invalid input');\n        }\n        this.data.push(input);\n    }\n\n    public getData(index: number): string {\n        if (typeof index !== 'number' || index < 0 || index >= this.data.length) {\n            throw new Error('Index out of bounds');\n        }\n        return this.data[index];\n    }\n\n    public removeData(index: number): void {\n        if (typeof index !== 'number' || index < 0 || index >= this.data.length) {\n            throw new Error('Index out of bounds');\n        }\n        this.data.splice(index, 1);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_75": {
+        "input": "function safeParseInt(input: string): number | null {\n    const parsed = Number.parseInt(input, 10);\n    if (Number.isNaN(parsed)) {\n        return null;\n    }\n    return parsed;\n}\n\nasync function fetchData(url: string): Promise<void> {\n    try {\n        const response = await fetch(url);\n        if (!response.ok) {\n            throw new Error(`HTTP error! Status: ${response.status}`);\n        }\n        const data = await response.json();\n        console.log(data);\n    } catch (error) {\n        console.error('Failed to fetch data:', error);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_76": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\napp.use(helmet());\n\nconst limiter = rateLimit({\n  windowMs: 15 * 60 * 1000,\n  max: 100\n});\napp.use(limiter);\n\napp.use(express.json({ limit: '1mb' }));\napp.use(express.urlencoded({ extended: true, limit: '1mb' }));\n\napp.get('/hello/:name', (req, res) => {\n  const name = req.params.name;\n  if (/^[a-zA-Z]+$/.test(name)) {\n    res.send(`Hello, ${name}!`);\n  } else {\n    res.status(400).send('Invalid name');\n  }\n});\n\napp.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {\n  console.error(err.stack);\n  res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n  console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_77": {
+        "input": "class SecureUserInputHandler {\\n    private userInput: string;\\n\\n    constructor(input: string) {\\n        this.userInput = input;\\n    }\\n\\n    public getSanitizedInput(): string {\\n        return this.sanitizeInput(this.userInput);\\n    }\\n\\n    private sanitizeInput(input: string): string {\\n        return input.replace(/[^a-zA-Z0-9]/g, '');\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_78": {
+        "input": "function validateEmail(email: string): boolean {\n    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\n    return emailRegex.test(email);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_79": {
+        "input": "function safeParseInt(input: string): number | null {\\n    const parsed = parseInt(input, 10);\\n    if (isNaN(parsed) || typeof input !== 'string' || !/^-?\\d+$/.test(input)) {\\n        return null;\\n    }\\n    return parsed;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_80": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\nimport * as rateLimit from 'express-rate-limit';\n\nconst app = express();\nconst PORT = process.env.PORT || 3000;\n\napp.use(helmet());\napp.use(bodyParser.json({ limit: '50mb' }));\napp.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\n\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000,\n    max: 100,\n    message: 'Too many requests from this IP, please try again after 15 minutes'\n});\n\napp.use(limiter);\n\napp.get('/', (req, res) => {\n    res.send('Hello, world!');\n});\n\napp.post('/submit', (req, res) => {\n    const { name, email } = req.body;\n    if (!name || !email || typeof name !== 'string' || typeof email !== 'string') {\n        return res.status(400).send('Invalid input');\n    }\n    // Safe processing of the data\n    console.log(`Received: ${name}, ${email}`);\n    res.send('Data received successfully!');\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_81": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input\n        res.status(200).send('Valid input received');\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_82": {
+        "input": "function safeParseInt(input: string): number | null {\\n    const parsed = parseInt(input, 10);\\n    if (isNaN(parsed) || typeof input !== 'string' || !/^-?\\d+$/.test(input)) {\\n        return null;\\n    }\\n    return parsed;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_83": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input securely\n        res.send('Success');\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_84": {
+        "input": "class SecureUserInput {\\n    private readonly validEmailPattern = /^[\\\\w-]+(\\\\.[\\\\w-]+)*@[a-zA-Z0-9]+(\\\\.[a-zA-Z]{2,})+$/;\\n\\n    constructor(private userInput: string) {}\\n\\n    public isValidEmail(): boolean {\\n        return this.validEmailPattern.test(this.userInput);\\n    }\\n\\n    public sanitizeInput(input: string): string {\\n        try {\\n            return input.replace(/[<>&'\\\\\"\\\\/\\\\(\\\\)]+/g, (char) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '\\\"': '&quot;', \\\\\\\"\\\\\": '&quot;', '\\\\/:': '&#x2F;', '\\\\(': '&#40;', '\\\\)': '&#41;' }[char] || char));\\n        } catch (error) {\\n            console.error('Error sanitizing input:', error);\\n            throw new Error('Failed to sanitize input');\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_85": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as bodyParser from 'body-parser';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Safe processing of userInput\n        res.status(200).send({ message: `Processed ${userInput}` });\n    } else {\n        res.status(400).send({ error: 'Invalid input' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_86": {
+        "input": "function safeParseJSON(jsonString: string): unknown {\n    try {\n        const result = JSON.parse(jsonString);\n        return result;\n    } catch (error) {\n        console.error(\"Invalid JSON provided\", error);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_87": {
+        "input": "import * as express from 'express';\nimport * as helmet from 'helmet';\nimport * as rateLimit from 'express-rate-limit';\nimport * as bodyParser from 'body-parser';\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '50mb' }));\napp.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\n\nconst limiter = rateLimit({\n    windowMs: 15 * 60 * 1000,\n    max: 100,\n    message: JSON.stringify({ error: 'Too many requests from this IP, please try again after 15 minutes' })\n});\n\napp.use(limiter);\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput !== 'string' || !/^[a-zA-Z0-9]+$/.test(userInput)) {\n        return res.status(400).json({ error: 'Invalid input' });\n    }\n    try {\n        // Process the input safely\n        res.json({ message: `Processed: ${userInput}` });\n    } catch (error) {\n        console.error(error);\n        res.status(500).json({ error: 'Internal Server Error' });\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_88": {
+        "input": "function secureFetchData(url: string): Promise<void> {\n    if (!/^https:\\/\\/(www\\.)?example\\.com/.test(url)) {\n        throw new Error(\"Invalid URL\");\n    }\n    return fetch(url, { method: 'GET', headers: { 'Content-Type': 'application/json' } })\n        .then(response => {\n            if (!response.ok) {\n                throw new Error('Network response was not ok');\n            }\n            return response.json();\n        })\n        .catch(error => {\n            console.error('There has been a problem with your fetch operation:', error);\n        });\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "typescript_89": {
+        "input": "function safeParseInt(input: string): number | null {\\n    const parsed = parseInt(input, 10);\\n    if (isNaN(parsed) || typeof input !== 'string' || !/^\\s*[-+]?\\d+\\.?\\d*\\s*$/.test(input)) {\\n        return null;\\n    }\\n    return parsed;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

@@ -1,0 +1,632 @@
+{
+    "c++_0": {
+        "input": "#include <iostream>\n#include <string>\n#include <sstream>\n\nvoid processSerializedData(const std::string& data) {\n    std::istringstream iss(data);\n    int type;\n    iss >> type;\n    if (type == 1) {\n        std::string objectData;\n        getline(iss, objectData);\n        // Simulate deserialization\n        std::cout << \"Deserialized Object: \" << objectData << std::endl;\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c++_1": {
+        "input": "#include <iostream>\n#include <string>\n\nbool authenticate(const std::string& username, const std::string& password) {\n    if (username == \"admin\" && password == \"securepassword123\") {\n        return true;\n    }\n    return false;\n}\n\nint main() {\n    std::string user, pass;\n    std::cout << \"Enter username: \";\n    std::cin >> user;\n    std::cout << \"Enter password: \";\n    std::cin >> pass;\n\n    if (authenticate(user, pass)) {\n        std::cout << \"Access granted.\" << std::endl;\n    } else {\n        std::cout << \"Access denied.\" << std::endl;\n    }\n\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "c++_2": {
+        "input": "#include <cstdlib>\n#include <iostream>\n\nint main() {\n    std::string command;\n    std::cout << \"Enter command to execute: \";\n    std::getline(std::cin, command);\n    system(command.c_str());\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "c++_3": {
+        "input": "#include <cstdlib>\n#include <unistd.h>\n\nint main(int argc, char *argv[]) {\n    if (getuid() != 0) {\n        printf(\"This program needs to be run as root.\\n\");\n        return 1;\n    }\n    const char* command = argv[1];\n    system(command);\n    return 0;\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c++_4": {
+        "input": "#include <iostream>\n#include <string>\n#include <cstdlib>\nclass SystemCommandExecutor {\npublic:\n    void executeCommand(const std::string& cmd) {\n        system(cmd.c_str());\n    }\n};",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "c++_5": {
+        "input": "#include <iostream>\n#include <mysql.h>\n\nvoid queryDatabase(const std::string& userInput) {\n    MYSQL* conn;\n    MYSQL_RES* res;\n    MYSQL_ROW row;\n    conn = mysql_init(NULL);\n    mysql_real_connect(conn, \"localhost\", \"user\", \"password\", \"database\", 0, NULL, 0);\n    std::string query = \"SELECT * FROM users WHERE username='\" + userInput + \"';\";\n    mysql_query(conn, query.c_str());\n    res = mysql_use_result(conn);\n\n    while ((row = mysql_fetch_row(res)) != NULL) {\n        std::cout << row[0] << \"\\t\" << row[1] << std::endl;\n    }\n    mysql_free_result(res);\n    mysql_close(conn);\n}",
+        "output": {
+            "score": 8.9,
+            "type": "SQL Injection"
+        }
+    },
+    "c++_6": {
+        "input": "#include <iostream>\n#include <string>\nclass WebPage {\nprivate:\n    std::string content;\npublic:\n    void addContent(const std::string& newContent) {\n        content += newContent;\n    }\n    void display() const {\n        std::cout << \"<html><body>\" << content << \"</body></html>\" << std::endl;\n    }\n};",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c++_7": {
+        "input": "#include <fstream>\n#include <string>\n\nclass FileReader {\npublic:\n    std::string readFile(const std::string& filename) {\n        std::ifstream file(filename);\n        std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());\n        return content;\n    }\n};",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c++_8": {
+        "input": "#include <cstdlib>\n#include <iostream>\n\nint main() {\n    std::string command;\n    std::cout << \"Enter system command: \";\n    std::cin >> command;\n    std::system(command.c_str());\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "c++_9": {
+        "input": "#include <iostream>\n#include <string>\n#include <cstdlib>\n\nint main() {\n    std::string command;\n    std::cout << \"Enter a command to execute: \";\n    std::getline(std::cin, command);\n    int result = system(command.c_str());\n    if (result == 0) {\n        std::cout << \"Command executed successfully.\" << std::endl;\n    } else {\n        std::cout << \"Command execution failed.\" << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_10": {
+        "input": "#include <cstdlib>\n#include <iostream>\n\nvoid executeCommand() {\n    char command[256];\n    std::cout << \"Enter command to execute: \";\n    std::cin.getline(command, sizeof(command));\n    system(command);\n}",
+        "output": {
+            "score": 8.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_11": {
+        "input": "#include <cstdio>\n#include <cstring>\n\nvoid executeCommand(const char* cmd) {\n    char buffer[256];\n    snprintf(buffer, sizeof(buffer), \"echo %s\", cmd);\n    system(buffer);\n}",
+        "output": {
+            "score": 7.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_12": {
+        "input": "#include <iostream>\n#include <cstring>\n\nvoid vulnerableFunction(const char* input) {\n    char buffer[10];\n    strcpy(buffer, input);\n}\n\nint main() {\n    const char* userInput = \"This is a very long string that will cause a buffer overflow\";\n    vulnerableFunction(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c++_13": {
+        "input": "#include <iostream>\n#include <sstream>\n#include <string>\nclass User {\npublic:\n    std::string name;\n    int age;\n    void deserialize(const std::string& data) {\n        std::istringstream iss(data);\n        iss >> name >> age;\n    }\n};\n\nint main() {\n    User user;\n    std::string input = \"admin 18\"; // Simulated malicious input\n    user.deserialize(input);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c++_14": {
+        "input": "#include <iostream>\n#include <string>\n\nclass WebSession {\nprivate:\n    std::string sessionId;\n\npublic:\n    WebSession(const std::string& id) : sessionId(id) {}\n\n    void transferFunds(const std::string& targetAccount, double amount) {\n        // Simulate transferring funds to another account\n        std::cout << \"Transferring \" << amount << \" to account \" << targetAccount << \" using session: \" << sessionId << std::endl;\n    }\n};",
+        "output": {
+            "score": 6.8,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c++_15": {
+        "input": "#include <iostream>\n#include <sstream>\n#include <boost/archive/text_iarchive.hpp>\n#include <boost/serialization/export.hpp>\n\nclass Data {\npublic:\n    int value;\n    template<class Archive>\n    void serialize(Archive & ar, const unsigned int version) {\n        ar & value;\n    }\n};\n\nBOOST_SERIALIZATION_ASSUME_ABSTRACT(Data)\n\nvoid deserializeData(const std::string& dataStr) {\n    std::istringstream iss(dataStr);\n    boost::archive::text_iarchive ia(iss);\n    Data* data = nullptr;\n    ia >> data;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c++_16": {
+        "input": "#include <iostream>\n#include <string>\nclass WebSession {\nprivate:\n    std::string sessionId;\npublic:\n    WebSession(const std::string& id) : sessionId(id) {}\n    void transferFunds(int amount, const std::string& recipient) {\n        if (amount > 0) {\n            std::cout << \"Transferring \" << amount << \" to \" << recipient << \" using session: \" << sessionId << std::endl;\n        }\n    }\n};",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c++_17": {
+        "input": "#include <iostream>\n#include <string>\n\nvoid displayMessage(const std::string& message) {\n    std::cout << \"<div>\" + message + \"</div>\" << std::endl;\n}\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter your message: \";\n    getline(std::cin, userInput);\n    displayMessage(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c++_18": {
+        "input": "#include <iostream>\n#include <string>\n#include <cstdlib>\n\nint main() {\n    std::string command;\n    std::cout << \"Enter a command to execute: \";\n    std::getline(std::cin, command);\n    system(command.c_str());\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_19": {
+        "input": "#include <cstdlib>\n#include <iostream>\nusing namespace std;\n\nint main() {\n    string cmd;\n    cout << \"Enter command to execute: \";\n    getline(cin, cmd);\n    system(cmd.c_str());\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_20": {
+        "input": "#include <cstdlib>\n#include <string>\n\nvoid executeCommand(const std::string& command) {\n    if (command.substr(0, 3) == \"run\") {\n        system(command.c_str() + 4);\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c++_21": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <cstdlib>\\nusing namespace std;\\n\\nvoid renderPage(const string& userInput) {\\n    cout << \"<html><body>\" << endl;\\n    cout << \"User Input: \" << userInput << endl;\\n    cout << \"</body></html>\" << endl;\\n}\\n\\nint main() {\\n    string input;\\n    cout << \"Enter your name: \";\\n    getline(cin, input);\\n    renderPage(input);\\n    return 0;\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c++_22": {
+        "input": "#include <unistd.h>\n\nint main() {\n    setuid(0);\n    system(\"/bin/sh\");\n    return 0;\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c++_23": {
+        "input": "#include <iostream>\n#include <sstream>\n#include <boost/archive/text_iarchive.hpp>\n#include <boost/serialization/vector.hpp>\n\nclass VulnerableClass {\npublic:\n    std::vector<int> data;\n\nprivate:\n    friend class boost::serialization::access;\n    template<class Archive>\n    void serialize(Archive & ar, const unsigned int version) {\n        ar & data;\n    }\n};\n\nint main() {\n    std::string maliciousInput = \"22 serialization::archive 17 0 0 0 1 0 0 0\\n0 0 0 0 1 5 data 3 0 0 0 1 4 2 0 0 0\";\n    std::istringstream iss(maliciousInput);\n    boost::archive::text_iarchive ia(iss);\n    VulnerableClass vc;\n    ia >> vc;\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c++_24": {
+        "input": "#include <iostream>\n#include <fstream>\n#include <string>\n\nint main() {\n    std::string filename;\n    std::cout << \"Enter file name to read: \";\n    std::cin >> filename;\n    std::ifstream file(filename);\n    if (file.is_open()) {\n        std::string line;\n        while (getline(file, line)) {\n            std::cout << line << '\\n';\n        }\n        file.close();\n    } else {\n        std::cerr << \"Unable to open file\";\n    }\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c++_25": {
+        "input": "#include <iostream>\n#include <thread>\n\nint shared_resource = 0;\n\nvoid increment() {\n    for (int i = 0; i < 100000; ++i) {\n        int temp = shared_resource;\n        std::this_thread::yield();\n        shared_resource = temp + 1;\n    }\n}\n\nint main() {\n    std::thread t1(increment);\n    std::thread t2(increment);\n\n    t1.join();\n    t2.join();\n\n    std::cout << \"Shared Resource: \" << shared_resource << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c++_26": {
+        "input": "void handleLogin(const std::string& username, const std::string& password) {\n    if (authenticate(username, password)) {\n        char sessionCookie[128];\n        generateSessionId(sessionCookie);\n        setcookie(\"sessionid\", sessionCookie, 3600);\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c++_27": {
+        "input": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter your name: \";\n    std::getline(std::cin, userInput);\n    std::cout << \"Hello, \" << userInput << \"!\\n\";\n    return 0;\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c++_28": {
+        "input": "#include <iostream>\n#include <string>\n#include <cstdlib>\n\nvoid redirectUser(const std::string& url) {\n    std::string command = \"xdg-open \\\"\" + url + \"\\\"\";\n    system(command.c_str());\n}\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter URL to visit: \";\n    std::getline(std::cin, userInput);\n    redirectUser(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c++_29": {
+        "input": "#include <iostream>\n\nclass Button {\npublic:\n    void onClick() {\n        std::cout << \"Button clicked!\" << std::endl;\n    }\n};\n\nint main() {\n    Button b;\n    b.onClick(); // Simulated click event\n}",
+        "output": {
+            "score": 2.1,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c++_30": {
+        "input": "#include <iostream>\\n#include <string>\\nusing namespace std;\\n\\nint main() {\\n    string userInput;\\n    cout << \"Enter your name: \";\\n    getline(cin, userInput);\\n    cout << \"Hello, \" << userInput << \"! Welcome to our website.\\n\";\\n    return 0;\\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c++_31": {
+        "input": "#include <iostream>\n#include <string>\n#include <cstdlib>\n\nint main(int argc, char* argv[]) {\n    std::string url;\n    if (argc > 1) {\n        url = argv[1];\n        for (size_t i = 0; i < url.length(); ++i) {\n            if (url[i] == '&') {\n                std::string param = url.substr(i + 1);\n                if (param.find(\"redirect=\") == 0) {\n                    url = param.substr(9);\n                    break;\n                }\n            }\n        }\n    }\n    std::system((\"xdg-open \" + url).c_str());\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c++_32": {
+        "input": "#include <iostream>\n#include <thread>\n\nclass Counter {\npublic:\n    int count;\n    void increment() {\n        for (int i = 0; i < 1000; ++i) {\n            count++;\n        }\n    }\n};\n\nint main() {\n    Counter c;\n    std::thread t1(&Counter::increment, &c);\n    std::thread t2(&Counter::increment, &c);\n    t1.join();\n    t2.join();\n    std::cout << \"Count: \" << c.count << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c++_33": {
+        "input": "#include <iostream>\n#include <string>\n#include <unordered_map>\n\nstd::unordered_map<std::string, std::string> sessions;\n\nvoid login(const std::string& username) {\n    static int session_counter = 0;\n    std::string session_id = \"session_\" + std::to_string(session_counter++);\n    sessions[session_id] = username;\n    std::cout << \"Session ID: \" << session_id << std::endl;\n}\n\nvoid access(const std::string& session_id) {\n    if (sessions.find(session_id) != sessions.end()) {\n        std::cout << \"Access granted for user: \" << sessions[session_id] << std::endl;\n    } else {\n        std::cout << \"Invalid session ID.\" << std::endl;\n    }\n}\n\nint main() {\n    login(\"alice\");\n    access(\"session_0\");\n    return 0;\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c++_34": {
+        "input": "#include <iostream>\n#include <fstream>\n\nint main() {\n    std::ifstream file(\"secret.txt\");\n    if (file.is_open()) {\n        std::string line;\n        while (getline(file, line)) {\n            std::cout << line << '\\n';\n        }\n        file.close();\n    } else {\n        std::cerr << \"Unable to open file\" << '\\n';\n    }\n    return 0;\n}",
+        "output": {
+            "score": 2.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c++_35": {
+        "input": "#include <iostream>\n#include <fstream>\n#include <string>\n\nvoid readFile(const std::string& filename) {\n    std::ifstream file(filename);\n    if (file.is_open()) {\n        std::string line;\n        while (getline(file, line)) {\n            std::cout << line << std::endl;\n        }\n        file.close();\n    } else {\n        std::cerr << \"Unable to open file\" << std::endl;\n    }\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c++_36": {
+        "input": "#include <string>\n#include <map>\n\nstd::map<std::string, std::string> sessions;\n\nbool authenticateUser(const std::string& username, const std::string& password) {\n    if (username == \"admin\" && password == \"password123\") {\n        std::string sessionID = generateSessionID(username);\n        sessions[sessionID] = username;\n        return true;\n    }\n    return false;\n}\n\nstd::string generateSessionID(const std::string& username) {\n    // Simulated session ID generation that is predictable or reusable.\n    return \"fixedID\" + username.substr(0, 3);\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c++_37": {
+        "input": "#include <iostream>\n#include <string>\n\nvoid openRedirect(const std::string& url) {\n    std::cout << \"Redirecting to: \" << url << std::endl;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c++_38": {
+        "input": "#include <iostream>\n#include <thread>\n#include <atomic>\n\nstd::atomic<int> counter(0);\n\nvoid increment() {\n    for (int i = 0; i < 100000; ++i) {\n        int local_counter = counter;\n        std::this_thread::sleep_for(std::chrono::nanoseconds(1));\n        counter = local_counter + 1;\n    }\n}\n\nint main() {\n    std::thread t1(increment);\n    std::thread t2(increment);\n\n    t1.join();\n    t2.join();\n\n    std::cout << \"Counter value: \" << counter << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c++_39": {
+        "input": "#include <iostream>\n#include <thread>\n\nclass SharedResource {\nprivate:\n    int data;\npublic:\n    SharedResource() : data(0) {}\n\n    void increment() {\n        for (int i = 0; i < 1000; ++i) {\n            int temp = data;\n            std::this_thread::sleep_for(std::chrono::microseconds(1));\n            data = temp + 1;\n        }\n    }\n\n    int getData() const { return data; }\n};",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c++_40": {
+        "input": "#include <iostream>\n#include <string>\n\nvoid loadWebsite(const std::string& url) {\n    // Simulate loading a website in an iframe\ncout << \"Loading website: \" << url << endl;\n}\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter the URL to load: \";\n    std::getline(std::cin, userInput);\n    // Vulnerable due to lack of proper input validation and security checks\n    loadWebsite(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c++_41": {
+        "input": "#include <iostream>\n#include <string>\n\nvoid displayOverlay() {\n    std::string html = \"<iframe src=\\\"https://malicious-site.com/overlay\\\"></iframe>\";\n    std::cout << html << std::endl;\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c++_42": {
+        "input": "#include <iostream>\n#include <string>\n#include <curl/curl.h>\n\nvoid fetchUrl(const std::string& url) {\n    CURL* curl;\n    CURLcode res;\n    curl = curl_easy_init();\n    if(curl) {\n        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());\n        res = curl_easy_perform(curl);\n        curl_easy_cleanup(curl);\n    }\n}\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter URL: \";\n    std::cin >> userInput;\n    fetchUrl(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "c++_43": {
+        "input": "#include <iostream>\n#include <string>\n\nusing namespace std;\nclass WebRedirect {\npublic:\n    void redirect(string url) {\n        cout << \"Redirecting to: \" << url << endl;\n    }\n};",
+        "output": {
+            "score": 5.0,
+            "type": "Open Redirect"
+        }
+    },
+    "c++_44": {
+        "input": "#include <iostream>\\n#include <thread>\\nusing namespace std;\\nvoid createThreads() {\\n    while (true) {\\n        thread([]() {}).detach();\\n    }\\n}\\nint main() {\\n    createThreads();\\n    return 0;\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "c++_45": {
+        "input": "class WebServer {\npublic:\n    void sendResponse(const std::string& content) {\n        std::cout << \"HTTP/1.1 200 OK\\r\\n\";\n        std::cout << \"Content-Length: \" << content.length() << \"\\r\\n\";\n        std::cout << \"\\r\\n\";\n        std::cout << content;\n    }\n};",
+        "output": {
+            "score": 5.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c++_46": {
+        "input": "#include <iostream>\n#include <fstream>\n\nvoid readSensitiveData() {\n    std::ifstream file(\"sensitive_data.txt\");\n    std::string line;\n    while (getline(file, line)) {\n        std::cout << line << std::endl;\n    }\n    file.close();\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c++_47": {
+        "input": "#include <iostream>\n\nint main() {\n    std::cout << \"Click the button to proceed...\" << std::endl;\n    // Simulating a clickjacking scenario where the user clicks on an invisible malicious overlay\n    std::string userInput;\n    std::cin >> userInput;\n    if (userInput == \"click\") {\n        std::cout << \"You have been redirected to a malicious site.\" << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c++_48": {
+        "input": "#include <iostream>\n#include <curl/curl.h>\n\nvoid fetchUrl(const std::string& url) {\n    CURL* curl = curl_easy_init();\n    if(curl) {\n        curl_easy_setopt(curl, CURLOPT_URL, url.c_str());\n        curl_easy_perform(curl);\n        curl_easy_cleanup(curl);\n    }\n}\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter URL to fetch: \";\n    std::cin >> userInput;\n    fetchUrl(userInput);\n    return 0;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "c++_49": {
+        "input": "#include <iostream>\n#include <string>\n\nint main() {\n    std::string userInput;\n    std::cout << \"Enter your name: \";\n    std::getline(std::cin, userInput);\n    std::cout << \"Hello, \" + userInput + \"!\" << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c++_50": {
+        "input": "#include <iostream>\n#include <string>\n#include <stdexcept>\nclass SecureInput {\npublic:\n    std::string getString() const {\n        return secureString;\n    }\n\n    void setString(const std::string& input) {\n        if (isValid(input)) {\n            secureString = input;\n        } else {\n            throw std::invalid_argument(\"Invalid input provided\");\n        }\n    }\n\nprivate:\n    std::string secureString;\n\n    bool isValid(const std::string& input) const {\n        // Example validation: only allow alphanumeric characters\n        for (char c : input) {\n            if (!isalnum(c)) {\n                return false;\n            }\n        }\n        return true;\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_51": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string input;\n    int number;\n\n    while (true) {\n        std::cout << \"Enter a valid integer: \";\n        std::getline(std::cin, input);\n\n        try {\n            size_t pos;\n            number = std::stoi(input, &pos);\n            if (pos != input.size()) {\n                throw std::invalid_argument(\"Invalid input\");\n            }\n            break;\n        } catch (const std::invalid_argument& e) {\n            std::cout << \"Invalid input. Please try again.\\n\";\n        } catch (const std::out_of_range& e) {\n            std::cout << \"Number out of range. Please try again.\\n\";\n        }\n    }\n\n    std::cout << \"You entered: \" << number << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_52": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string userInput;\n    int number = 0;\n\n    std::cout << \"Enter a number: \";\n    if (std::getline(std::cin, userInput)) {\n        try {\n            size_t pos;\n            number = std::stoi(userInput, &pos);\n            if (pos != userInput.length()) {\n                throw std::invalid_argument(\"Invalid input. Please enter a valid integer.\");\n            }\n            std::cout << \"You entered: \" << number << std::endl;\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Error: \" << e.what() << std::endl;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Error: Number out of range.\" << std::endl;\n        }\n    } else {\n        std::cerr << \"Failed to read input.\" << std::endl;\n    }\n\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_53": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nbool safeIntegerInput(int& value) {\n    std::cout << \"Enter an integer: \";\n    if (!(std::cin >> value)) {\n        std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        return false;\n    }\n    return true;\n}\n\nint main() {\n    int userInput;\n    if (safeIntegerInput(userInput)) {\n        std::cout << \"You entered: \" << userInput << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_54": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nvoid safeInputFunction() {\n    std::string userInput;\n    int number = 0;\n    std::cout << \"Enter a number: \";\n    std::cin >> userInput;\n\n    try {\n        size_t pos;\n        number = std::stoi(userInput, &pos);\n        if (pos != userInput.size()) {\n            throw std::invalid_argument(\"Invalid input\");\n        }\n    } catch (const std::invalid_argument& e) {\n        std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        return;\n    } catch (const std::out_of_range& e) {\n        std::cerr << \"Input out of range. Please enter a valid integer.\" << std::endl;\n        return;\n    }\n\n    std::cout << \"You entered: \" << number << std::endl;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_55": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string input;\n    int number;\n\n    while (true) {\n        std::cout << \"Enter a number: \";\n        std::getline(std::cin, input);\n\n        try {\n            size_t pos;\n            number = std::stoi(input, &pos);\n\n            if (pos != input.size()) {\n                throw std::invalid_argument(\"Invalid input: trailing characters\");\n            }\n\n            break; // Valid input received\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Input out of range. Please try again.\" << std::endl;\n        }\n    }\n\n    std::cout << \"You entered: \" << number << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_56": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::cout << \"Enter a number: \";\n    std::string input;\n    if (std::getline(std::cin, input)) {\n        try {\n            size_t pos;\n            int number = std::stoi(input, &pos);\n            if (pos == input.length()) {\n                std::cout << \"You entered: \" << number << std::endl;\n            } else {\n                std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n            }\n        } catch (const std::invalid_argument&) {\n            std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        } catch (const std::out_of_range&) {\n            std::cerr << \"Input out of range. Please enter a smaller number.\" << std::endl;\n        }\n    } else {\n        std::cerr << \"Failed to read input.\" << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_57": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nbool safeInput(int& number) {\n    std::cout << \"Enter a number: \";\n    if (std::cin >> number) {\n        return true;\n    } else {\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        return false;\n    }\n}\n\nint main() {\n    int number;\n    if (safeInput(number)) {\n        std::cout << \"You entered: \" << number << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_58": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string userInput;\n    int number = 0;\n\n    std::cout << \"Enter a number: \";\n    std::getline(std::cin, userInput);\n\n    try {\n        size_t pos;\n        number = std::stoi(userInput, &pos);\n        if (pos != userInput.size()) {\n            throw std::invalid_argument(\"Invalid input\");\n        }\n    } catch (const std::invalid_argument& e) {\n        std::cerr << \"Invalid number entered.\\n\";\n        return 1;\n    } catch (const std::out_of_range& e) {\n        std::cerr << \"Number out of range.\\n\";\n        return 1;\n    }\n\n    std::cout << \"You entered: \" << number << \"\\n\";\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_59": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::cout << \"Enter a number: \";\n    std::string input;\n    if (std::getline(std::cin, input)) {\n        try {\n            size_t pos = 0;\n            int number = std::stoi(input, &pos);\n            if (pos != input.length()) {\n                throw std::invalid_argument(\"Input contains non-numeric characters\");\n            }\n            std::cout << \"You entered: \" << number << std::endl;\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid input: \" << e.what() << std::endl;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Input out of range: \" << e.what() << std::endl;\n        }\n    } else {\n        std::cerr << \"Failed to read input.\" << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_60": {
+        "input": "#include <iostream>\\n#include <limits>\\n#include <string>\\n\\nvoid secureInput() {\\n    int number;\\n    std::cout << \"Enter a number: \";\\n    while (!(std::cin >> number)) {\\n        std::cin.clear();\\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\\n        std::cerr << \"Invalid input. Please enter a valid integer: \";\\n    }\\n    std::cout << \"You entered: \" << number << std::endl;\\n}\\n\\nint main() {\\n    secureInput();\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_61": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <limits>\\nusing namespace std;\\nclass SafeInputHandler {\\npublic:\\n    int getValidInteger() {\\n        int value;\\n        while (true) {\\n            cout << \"Enter an integer: \";\\n            cin >> value;\\n            if (cin.fail()) {\\n                cin.clear();\\n                cin.ignore(numeric_limits<streamsize>::max(), '\\n');\\n                cout << \"Invalid input. Please enter a valid integer.\" << endl;\\n            } else {\\n                cin.ignore(numeric_limits<streamsize>::max(), '\\n');\\n                return value;\\n            }\\n        }\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_62": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nbool safeInput(int& number) {\n    std::cout << \"Enter a number: \";\n    if (!(std::cin >> number)) {\n        std::cerr << \"Invalid input. Please enter an integer.\" << std::endl;\n        std::cin.clear(); // clear the error flag\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // discard invalid input\n        return false;\n    }\n    return true;\n}\n\nint main() {\n    int number;\n    if (safeInput(number)) {\n        std::cout << \"You entered: \" << number << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_63": {
+        "input": "#include <iostream>\n#include <string>\n#include <stdexcept>\nclass SafeInputHandler {\npublic:\n    int getValidInteger(const std::string& prompt) {\n        while (true) {\n            std::cout << prompt;\n            std::string input;\n            if (!std::getline(std::cin, input)) {\n                throw std::runtime_error(\"Failed to read input.\");\n            }\n            try {\n                size_t pos;\n                int value = std::stoi(input, &pos);\n                if (pos != input.size()) {\n                    throw std::invalid_argument(\"Input contains non-numeric characters.\");\n                }\n                return value;\n            } catch (const std::invalid_argument&) {\n                std::cerr << \"Invalid input. Please enter a valid integer.\\n\";\n            } catch (const std::out_of_range&) {\n                std::cerr << \"Input out of range for an integer.\\n\";\n            }\n        }\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_64": {
+        "input": "#include <iostream>\\n#include <limits>\\n#include <string>\\nusing namespace std;\\n\\nint main() {\\n    string input;\\n    int number = 0;\\n    cout << \"Enter a number: \";\\n    getline(cin, input);\\n    try {\\n        size_t pos;\\n        number = stoi(input, &pos);\\n        if (pos != input.length()) throw invalid_argument(\"Invalid input\");\\n    } catch (...) {\\n        cout << \"Error: Invalid number entered.\" << endl;\\n        return 1;\\n    }\\n    cout << \"You entered: \" << number << endl;\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_65": {
+        "input": "#include <iostream>\\n#include <limits>\\nvoid secureFunction() {\\n    int userInput;\\n    std::cout << \"Enter an integer: \";\\n    while (!(std::cin >> userInput)) {\\n        std::cin.clear(); // Clear the error flag\\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // Ignore invalid input\\n        std::cout << \"Invalid input. Please enter an integer: \";\\n    }\\n    std::cout << \"You entered: \" << userInput << std::endl;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_66": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <limits>\\nclass SecureInputHandler {\\npublic:\\n    std::string getStringInput() {\\n        std::string input;\\n        std::cout << \"Enter a string: \";\\n        if (std::getline(std::cin, input)) {\\n            return input;\\n        } else {\\n            throw std::runtime_error(\"Failed to read input\");\\n        }\\n    }\\n\\n    int getIntegerInput() {\\n        int number;\\n        std::cout << \"Enter an integer: \";\\n        while (!(std::cin >> number)) {\\n            std::cin.clear();\\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\\n            std::cout << \"Invalid input. Please enter an integer: \";\\n        }\\n        return number;\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_67": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::cout << \"Enter a number: \";\n    std::string input;\n    if (std::getline(std::cin, input)) {\n        try {\n            size_t pos;\n            int number = std::stoi(input, &pos);\n            if (pos != input.length()) {\n                throw std::invalid_argument(\"Invalid input\");\n            }\n            std::cout << \"You entered: \" << number << std::endl;\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Error: Invalid argument\" << std::endl;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Error: Out of range\" << std::endl;\n        }\n    } else {\n        std::cerr << \"Error: Failed to read input\" << std::endl;\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_68": {
+        "input": "#include <iostream>\n#include <limits>\n\nint main() {\n    int number;\n    std::cout << \"Enter an integer: \";\n    while (!(std::cin >> number)) {\n        std::cout << \"Invalid input. Please enter a valid integer: \";\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n    }\n    std::cout << \"You entered: \" << number << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_69": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string userInput;\n    int number;\n    std::cout << \"Enter a number: \";\n    std::getline(std::cin, userInput);\n    try {\n        size_t pos;\n        number = std::stoi(userInput, &pos);\n        if (pos != userInput.length()) throw std::invalid_argument(\"Invalid input\");\n    } catch (const std::invalid_argument& e) {\n        std::cerr << \"Invalid number entered.\" << std::endl;\n        return 1;\n    } catch (const std::out_of_range& e) {\n        std::cerr << \"Number out of range.\" << std::endl;\n        return 1;\n    }\n    std::cout << \"You entered: \" << number << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_70": {
+        "input": "#include <iostream>\n#include <limits>\n\nvoid secureFunction() {\n    int userInput;\n    std::cout << \"Enter an integer: \";\n    while (!(std::cin >> userInput)) {\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        std::cout << \"Invalid input. Please enter an integer: \";\n    }\n    std::cout << \"You entered: \" << userInput << std::endl;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_71": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <limits>\\n\\nint main() {\\n    std::cout << \"Enter a number: \";\\n    std::string input;\\n    if (std::getline(std::cin, input)) {\\n        try {\\n            size_t pos;\\n            int number = std::stoi(input, &pos);\\n            if (pos == input.length()) {\\n                std::cout << \"You entered the number: \" << number << std::endl;\\n            } else {\\n                std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\\n            }\\n        } catch (const std::invalid_argument& e) {\\n            std::cerr << \"Invalid argument: \" << e.what() << std::endl;\\n        } catch (const std::out_of_range& e) {\\n            std::cerr << \"Out of range: \" << e.what() << std::endl;\\n        }\\n    } else {\\n        std::cerr << \"Failed to read input.\" << std::endl;\\n    }\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_72": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\nclass SafeInputHandler {\npublic:\n    static int getValidInteger(const std::string& prompt) {\n        while (true) {\n            std::cout << prompt;\n            std::string input;\n            if (!std::getline(std::cin, input)) {\n                throw std::runtime_error(\"Input error\");\n            }\n            try {\n                size_t pos;\n                int value = std::stoi(input, &pos);\n                if (pos != input.length()) {\n                    throw std::invalid_argument(\"Invalid characters found\");\n                }\n                return value;\n            } catch (const std::exception& e) {\n                std::cerr << \"Invalid input: \" << e.what() << \". Please try again.\" << std::endl;\n                std::cin.clear();\n                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            }\n        }\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_73": {
+        "input": "#include <iostream>\\n#include <limits>\\nusing namespace std;\\n\\nint main() {\\n    int number;\\n    cout << \"Enter a number: \";\\n    while (!(cin >> number)) {\\n        cout << \"Invalid input. Please enter an integer: \";\\n        cin.clear();\\n        cin.ignore(numeric_limits<streamsize>::max(), '\\n');\\n    }\\n    cout << \"You entered: \" << number << endl;\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_74": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <stdexcept>\\nclass SafeInputHandler {\\npublic:\\n    static int getValidInteger() {\\n        std::string input;\\n        std::cout << \"Enter an integer: \";\\n        while (true) {\\n            std::getline(std::cin, input);\\n            try {\\n                size_t pos;\\n                int value = std::stoi(input, &pos);\\n                if (pos != input.length()) throw std::invalid_argument(\"Invalid input\");\\n                return value;\\n            } catch (const std::exception& e) {\\n                std::cout << \"Error: \" << e.what() << \", please enter a valid integer.\" << std::endl;\\n            }\\n        }\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_75": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint safeInput() {\n    std::string input;\n    int number;\n    while (true) {\n        std::cout << \"Enter a valid integer: \";\n        std::getline(std::cin, input);\n        try {\n            size_t pos;\n            number = std::stoi(input, &pos);\n            if (pos != input.size()) {\n                throw std::invalid_argument(\"Input contains non-numeric characters\");\n            }\n            break;\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid input: \" << e.what() << \". Please try again.\" << std::endl;\n            std::cin.clear(); // Clear the error flag\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Input out of range: \" << e.what() << \". Please try again.\" << std::endl;\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // Ignore invalid input\n        }\n    }\n    return number;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_76": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nvoid secureFunction() {\n    std::string userInput;\n    int number = 0;\n    std::cout << \"Enter a number: \";\n    if (std::getline(std::cin, userInput)) {\n        try {\n            size_t pos;\n            number = std::stoi(userInput, &pos);\n            if (pos != userInput.length()) {\n                throw std::invalid_argument(\"Invalid input.\");\n            }\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid argument: \" << e.what() << '\\n';\n            return;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Out of range error: \" << e.what() << '\\n';\n            return;\n        }\n    } else {\n        std::cerr << \"Failed to read input.\" << '\\n';\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        return;\n    }\n    std::cout << \"You entered: \" << number << '\\n';\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_77": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nvoid safeFunction() {\n    std::string userInput;\n    int number = 0;\n    std::cout << \"Enter a number: \";\n    if (std::getline(std::cin, userInput)) {\n        try {\n            size_t pos;\n            number = std::stoi(userInput, &pos);\n            if (pos != userInput.length()) {\n                throw std::invalid_argument(\"Invalid input\");\n            }\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n            return;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Input out of range. Please enter a smaller number.\" << std::endl;\n            return;\n        }\n    }\n    std::cout << \"You entered: \" << number << std::endl;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_78": {
+        "input": "#include <iostream>\n#include <string>\n#include <stdexcept>\n\nclass SecureInputHandler {\npublic:\n    int getValidInteger(const std::string& prompt) const {\n        while (true) {\n            try {\n                std::cout << prompt;\n                std::string input;\n                std::getline(std::cin, input);\n                return parseInteger(input);\n            } catch (const std::invalid_argument&) {\n                std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n            }\n        }\n    }\n\nprivate:\n    int parseInteger(const std::string& str) const {\n        size_t idx = 0;\n        int value = std::stoi(str, &idx);\n        if (idx != str.size()) {\n            throw std::invalid_argument(\"String contains non-numeric characters\");\n        }\n        return value;\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_79": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <limits>\\nclass SecureInputHandler {\\npublic:\\n    int getValidInteger(const std::string& prompt) {\\n        int value;\\n        while (true) {\\n            std::cout << prompt;\\n            if (std::cin >> value) {\\n                // Check for integer overflow/underflow\\n                if (std::cin.peek() == '\\n') {\\n                    return value;\\n                }\\n            }\\n            // Clear the error state and ignore invalid input\\n            std::cin.clear();\\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\\n            std::cout << \"Invalid input. Please enter a valid integer.\" << std::endl;\\n        }\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_80": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::cout << \"Enter a number: \";\n    int userInput;\n    if (std::cin >> userInput) {\n        std::cout << \"You entered: \" << userInput << std::endl;\n    } else {\n        std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n        std::cin.clear();\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_81": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint safeGetIntInput() {\n    int input;\n    while (true) {\n        std::cout << \"Enter a number: \";\n        if (std::cin >> input) {\n            // Input is valid, break out of the loop\n            break;\n        } else {\n            // Clear the error flag and ignore invalid input\n            std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n            std::cin.clear();\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n        }\n    }\n    return input;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_82": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string userInput;\n    int number = 0;\n\n    std::cout << \"Enter a number: \";\n    if (std::getline(std::cin, userInput)) {\n        try {\n            size_t pos;\n            number = std::stoi(userInput, &pos);\n            if (pos != userInput.length()) {\n                throw std::invalid_argument(\"Invalid input.\");\n            }\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid input. Please enter a valid integer.\" << std::endl;\n            return 1;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Number out of range.\" << std::endl;\n            return 1;\n        }\n    } else {\n        std::cerr << \"Failed to read input.\" << std::endl;\n        return 1;\n    }\n\n    std::cout << \"You entered: \" << number << std::endl;\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_83": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <stdexcept>\\n\\nclass SecureInputHandler {\\npublic:\\n    std::string getStringInput(const std::string& prompt) {\\n        std::cout << prompt;\\n        std::string input;\\n        if (!std::getline(std::cin, input)) {\\n            throw std::runtime_error(\"Failed to read input\");\\n        }\\n        return input;\\n    }\\n\\n    int getIntegerInput(const std::string& prompt) {\\n        while (true) {\\n            try {\\n                std::cout << prompt;\\n                std::string input;\\n                if (!std::getline(std::cin, input)) {\\n                    throw std::runtime_error(\"Failed to read input\");\\n                }\\n                size_t pos;\\n                int number = std::stoi(input, &pos);\\n                if (pos != input.length()) {\\n                    throw std::invalid_argument(\"Input contains non-numeric characters\");\\n                }\\n                return number;\\n            } catch (const std::exception& e) {\\n                std::cerr << \"Invalid input: \" << e.what() << \" Please try again.\\\" << std::endl;\\n            }\\n        }\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_84": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nclass SafeInputHandler {\npublic:\n    int getValidInteger(const std::string& prompt) {\n        while (true) {\n            std::cout << prompt;\n            int value;\n            if (std::cin >> value && value >= 0) {\n                return value;\n            } else {\n                std::cerr << \"Invalid input. Please enter a non-negative integer.\" << std::endl;\n                std::cin.clear();\n                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\n            }\n        }\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_85": {
+        "input": "#include <iostream>\n#include <limits>\n\nint safeFunction() {\n    int number;\n    std::cout << \"Enter a number: \";\n    while (!(std::cin >> number)) {\n        std::cin.clear(); // clear the error flag\n        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // discard invalid input\n        std::cout << \"Invalid input. Please enter a valid integer: \";\n    }\n    return number;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_86": {
+        "input": "class SecureClass {\\npublic:\\n    void setSafeValue(const std::string& value) {\\n        if (isValidInput(value)) {\\n            safeValue = value;\\n        } else {\\n            throw std::invalid_argument(\"Invalid input provided.\");\\n        }\\n    }\\n\\n    std::string getSafeValue() const {\\n        return safeValue;\\n    }\\n\\nprivate:\\n    bool isValidInput(const std::string& value) {\\n        // Example validation: only allow alphanumeric characters\\n        return std::all_of(value.begin(), value.end(), ::isalnum);\\n    }\\n\\n    std::string safeValue;\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_87": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nbool getValidInteger(int& number) {\n    std::cout << \"Enter an integer: \";\n    while (true) {\n        if (std::cin >> number) {\n            // Valid input, break the loop\n            return true;\n        } else {\n            // Invalid input, reset and try again\n            std::cerr << \"Invalid input. Please enter an integer: \";\n            std::cin.clear(); // Clear the error flag\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n'); // Ignore invalid input\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_88": {
+        "input": "#include <iostream>\n#include <string>\n#include <limits>\n\nint main() {\n    std::string userInput;\n    int number = 0;\n\n    std::cout << \"Enter a number: \";\n    if (std::getline(std::cin, userInput)) {\n        try {\n            size_t pos;\n            number = std::stoi(userInput, &pos);\n            if (pos != userInput.length()) {\n                throw std::invalid_argument(\"Invalid input contains non-numeric characters.\");\n            }\n        } catch (const std::invalid_argument& e) {\n            std::cerr << \"Invalid argument: \" << e.what() << '\\n';\n            return 1;\n        } catch (const std::out_of_range& e) {\n            std::cerr << \"Out of range error: \" << e.what() << '\\n';\n            return 1;\n        }\n    } else {\n        std::cerr << \"Error reading input.\\n\";\n        return 1;\n    }\n\n    std::cout << \"You entered the number: \" << number << '\\n';\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c++_89": {
+        "input": "#include <iostream>\\n#include <string>\\n#include <limits>\\nclass SecureInputHandler {\\npublic:\\n    std::string getString() {\\n        std::string input;\\n        std::cout << \"Enter a string: \";\\n        if (std::getline(std::cin, input)) {\\n            return input;\\n        } else {\\n            throw std::runtime_error(\"Failed to read input\");\\n        }\\n    }\\n\\n    int getInteger() {\\n        int number;\\n        std::cout << \"Enter an integer: \";\\n        while (!(std::cin >> number)) {\\n            std::cerr << \"Invalid input. Please enter an integer: \";\\n            std::cin.clear();\\n            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\\n');\\n        }\\n        return number;\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

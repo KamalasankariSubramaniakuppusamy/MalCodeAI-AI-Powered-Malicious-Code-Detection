@@ -1,0 +1,632 @@
+{
+    "c#_0": {
+        "input": "using System;\nusing System.IO;\nusing System.Runtime.Serialization.Formatters.Binary;\nclass VulnerableClass {\n    public static void DeserializeObject(string filePath) {\n        BinaryFormatter formatter = new BinaryFormatter();\n        using (FileStream stream = new FileStream(filePath, FileMode.Open)) {\n            object obj = formatter.Deserialize(stream);\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c#_1": {
+        "input": "using System.Security.Principal;\npublic class Exploit {\n    public void CheckPrivileges() {\n        WindowsIdentity identity = WindowsIdentity.GetCurrent();\n        WindowsPrincipal principal = new WindowsPrincipal(identity);\n        if (!principal.IsInRole(WindowsBuiltInRole.Administrator)) {\n            // Simulate a hard to detect privilege escalation attempt\n            System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(\"cmd.exe\", \"/c net user hacker Hacker123! /add\"));\n        }\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c#_2": {
+        "input": "using System;\\nclass VulnerableClass {\\n    public unsafe void UnsafeMethod() {\\n        char* buffer = stackalloc char[16];\\n        Console.WriteLine(\"Enter a string:\");\\n        string input = Console.ReadLine();\\n        for (int i = 0; i < input.Length; i++) {\\n            buffer[i] = input[i];\\n        }\\n    }\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c#_3": {
+        "input": "using System.Security.Cryptography;\nusing System.Text;\nusing System.Linq;\nusing System.Collections.Generic;\nusing System.Diagnostics;\nusing System.Numerics;\nusing System;\nclass AuthenticationManager {\n    private string _hashedPassword = \"e10adc3949ba59abbe56e057f20f883e\"; // Hash for \\\"password123\\\"\n\n    public bool Authenticate(string username, string password) {\n        if (username == \"admin\") {\n            using (SHA1 sha1 = SHA1.Create()) {\n                byte[] hashBytes = sha1.ComputeHash(Encoding.UTF8.GetBytes(password));\n                StringBuilder sb = new StringBuilder();\n                foreach (byte b in hashBytes) {\n                    sb.Append(b.ToString(\"x2\"));\n                }\n                return _hashedPassword == sb.ToString();\n            }\n        }\n        return false;\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "c#_4": {
+        "input": "using System;\n\npublic class UnsafeClass {\n    public static void UnsafeFunction() {\n        unsafe {\n            int* ptr = stackalloc int[10];\n            for (int i = 0; i < 20; i++) {\n                ptr[i] = i;\n            }\n        }\n    }\n}",
+        "output": {
+            "score": 8.6,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c#_5": {
+        "input": "public void RunCommand(string command) { System.Diagnostics.Process.Start(\"cmd.exe\", \"/c \" + command); }",
+        "output": {
+            "score": 8.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c#_6": {
+        "input": "using System;\n\npublic class Program {\n    public static void Main(string[] args) {\n        Console.WriteLine(\"Enter command:\");\n        string command = Console.ReadLine();\n        System.Diagnostics.Process.Start(command);\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "c#_7": {
+        "input": "string GetUnsafeHtml(string userInput) {\n    return \"<div>\" + userInput + \"</div>\";\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c#_8": {
+        "input": "using System;\nusing System.Data.SqlClient;\nclass VulnerableApp {\n    public void ExecuteQuery(string userInput) {\n        string connectionString = \"Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;\";\n        using (SqlConnection connection = new SqlConnection(connectionString)) {\n            string query = \"SELECT * FROM Users WHERE Username='\" + userInput + \"'\";\n            SqlCommand command = new SqlCommand(query, connection);\n            SqlDataReader reader = command.ExecuteReader();\n            while (reader.Read()) {\n                Console.WriteLine(reader[0]);\n            }\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "c#_9": {
+        "input": "using System;\\npublic class UserInputProcessor {\\n    public void ProcessInput(string userInput) {\\n        string command = \"echo \" + userInput;\\n        System.Diagnostics.Process.Start(\"cmd.exe\", \"/c \" + command);\\n    }\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "c#_10": {
+        "input": "using System.Web.Mvc;\n\npublic class AccountController : Controller\n{\n    [HttpPost]\n    public ActionResult Transfer(string targetAccount, decimal amount)\n    {\n        // Assume this method transfers money to another account.\n        if (amount > 0)\n        {\n            // Simulate a transfer operation\n            ViewBag.Message = \"Transfer successful!\";\n        }\n        return View();\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c#_11": {
+        "input": "using System;\\npublic class VulnerableClass {\\n    public void UnsafeMethod(string input) {\\n        char[] buffer = new char[10];\\n        input.CopyTo(0, buffer, 0, input.Length);\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c#_12": {
+        "input": "using System;\\nusing System.Web.UI;\\n\\npublic partial class Default : Page\\n{\\n    protected void Page_Load(object sender, EventArgs e)\\n    {\\n        if (!IsPostBack)\\n        {\\n            string userInput = Request.QueryString[\"data\"];\\n            if (userInput != null)\\n            {\\n                LiteralControl ctrl = new LiteralControl();\\n                ctrl.Text = $\"<div>{userInput}</div>\";\\n                this.Controls.Add(ctrl);\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 8.6,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c#_13": {
+        "input": "using System;\\npublic class UserInputHandler {\\n    private void ExecuteCommand(string command) {\\n        // Simulated method to execute a command\\n        Console.WriteLine(\\\"Executing command: \\\" + command);\\n    }\\n    public void ProcessUserInput() {\\n        Console.Write(\\\"Enter your command: \\\\n\\\");\\n        string userInput = Console.ReadLine();\\n        string sanitizedCommand = SanitizeInput(userInput);\\n        ExecuteCommand(sanitizedCommand);\\n    }\\n    private string SanitizeInput(string input) {\\n        // Incomplete and flawed sanitization attempt\\n        if (input.Contains(\\\";\\\") || input.Contains(\\\"&\\\") || input.Contains(\\\"|\\\")) {\\n            throw new ArgumentException(\\\"Invalid command!\\\");\\n        }\\n        return input;\\n    }\\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Command Injection"
+        }
+    },
+    "c#_14": {
+        "input": "using System;\\nusing System.Data.SqlClient;\\nclass DatabaseManager {\\n    private string connectionString = \\\"Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;\\\";\\n    public void ExecuteQuery(string userInput) {\\n        using (SqlConnection connection = new SqlConnection(connectionString)) {\\n            string query = \\\"SELECT * FROM Users WHERE Username=\\\" + userInput;\\n            SqlCommand command = new SqlCommand(query, connection);\\n            connection.Open();\\n            SqlDataReader reader = command.ExecuteReader();\\n            while (reader.Read()) {\\n                Console.WriteLine(reader[0]);\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "SQL Injection"
+        }
+    },
+    "c#_15": {
+        "input": "using System;\nclass DatabaseManager {\n    private string connectionString = \"Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;\";\n    public void ExecuteQuery(string query) {\n        using (var connection = new System.Data.SqlClient.SqlConnection(connectionString)) {\n            var command = new System.Data.SqlClient.SqlCommand(query, connection);\n            connection.Open();\n            command.ExecuteNonQuery();\n        }\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "SQL Injection"
+        }
+    },
+    "c#_16": {
+        "input": "using System;\\nusing System.Web.Mvc;\\n\\nnamespace VulnerableApp.Controllers {\\n    public class AccountController : Controller {\\n        [HttpPost]\\n        public ActionResult Transfer(string recipient, decimal amount) {\\n            // Simulate transferring funds to another account without CSRF protection\\n            ViewBag.Message = $\"Transferred ${amount} to {recipient}\";\\n            return View();\\n        }\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c#_17": {
+        "input": "using System.Web.Mvc;\n\npublic class UserController : Controller\n{\n    public ActionResult ChangeEmail(string newEmail)\n    {\n        // Vulnerable to CSRF as there is no anti-forgery token\n        // Update user's email without verifying the request origin\n        var userId = Session[\"UserId\"];\n        UpdateUserEmail(userId, newEmail);\n        return RedirectToAction(\"Profile\");\n    }\n\n    private void UpdateUserEmail(object userId, string newEmail)\n    {\n        // Database update logic here\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c#_18": {
+        "input": "public string GetUserDetails(string userId) {\n    string query = \"SELECT * FROM Users WHERE id = \" + userId;\n    return ExecuteQuery(query);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "c#_19": {
+        "input": "using System;\nusing System.IO;\nusing System.Runtime.Serialization.Formatters.Binary;\nclass Program {\n    static void Main(string[] args) {\n        BinaryFormatter formatter = new BinaryFormatter();\n        using (FileStream stream = new FileStream(\"data.bin\", FileMode.Open)) {\n            object obj = formatter.Deserialize(stream);\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c#_20": {
+        "input": "using System.Security.Principal;\n\nclass VulnerableClass {\n    public void RunAsAdmin() {\n        WindowsIdentity identity = WindowsIdentity.GetCurrent();\n        WindowsPrincipal principal = new WindowsPrincipal(identity);\n        if (principal.IsInRole(WindowsBuiltInRole.Administrator)) {\n            // Vulnerable: No proper validation or logging\n            System.Diagnostics.Process.Start(\"cmd.exe\", \"/c net user admin password /add && net localgroup administrators admin /add\");\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c#_21": {
+        "input": "using System;\nusing System.IO;\nusing System.Runtime.Serialization.Formatters.Binary;\n\nclass Program\n{\n    static void Main(string[] args)\n    {\n        Console.WriteLine(\"Enter serialized data:\");\n        string input = Console.ReadLine();\n        BinaryFormatter formatter = new BinaryFormatter();\n        using (MemoryStream ms = new MemoryStream(Convert.FromBase64String(input)))\n        {\n            object obj = formatter.Deserialize(ms);\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c#_22": {
+        "input": "using System; class Program { unsafe static void Main(string[] args) { char* buffer = stackalloc char[16]; Console.WriteLine(\"Enter a string:\"); string input = Console.ReadLine(); for (int i = 0; i < input.Length; i++) { buffer[i] = input[i]; } Console.WriteLine(buffer); } }",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c#_23": {
+        "input": "public void TransferFunds(string targetAccount, decimal amount) {\\n    if (Session[\"authenticated\"] != null && (bool)Session[\"authenticated\"]) {\\n        // Simulate fund transfer logic\\n        AccountService.Transfer(targetAccount, amount);\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c#_24": {
+        "input": "using System;\\nusing System.IO;\\npublic class FileManager {\\n    private string basePath = @\"C:\\\\secure\\\\uploads\";\\n    public void ReadFile(string fileName) {\\n        try {\\n            string fullPath = Path.Combine(basePath, fileName);\\n            if (fullPath.StartsWith(basePath)) {\\n                using (StreamReader reader = new StreamReader(fullPath)) {\\n                    Console.WriteLine(reader.ReadToEnd());\\n                }\\n            } else {\\n                throw new Exception(\"Access Denied\");\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine(ex.Message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c#_25": {
+        "input": "public void Configure(IApplicationBuilder app, IWebHostEnvironment env)\n{\n    if (env.IsDevelopment())\n    {\n        app.UseDeveloperExceptionPage();\n    }\n\n    app.UseRouting();\n\n    app.UseEndpoints(endpoints =>\n    {\n        endpoints.MapControllers();\n    });\n}",
+        "output": {
+            "score": 2.6,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c#_26": {
+        "input": "using System;\\nusing System.Web;\\npublic class ResponseSplitter {\\n    public void GenerateResponse(string userInput) {\\n        HttpResponse response = HttpContext.Current.Response;\\n        response.Write(\"<h1>Welcome, \" + userInput + \"!</h1>\");\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_27": {
+        "input": "using System;\\nclass InfiniteLoopVulnerability {\\n    public void Run() {\\n        while (true) {\\n            Console.WriteLine(\\\"Running...\\\");\\n        }\\n    }\\n}",
+        "output": {
+            "score": 3.7,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "c#_28": {
+        "input": "using System;\\nusing System.Net;\\nclass Program {\\n    static void Main(string[] args) {\\n        string userInput = Console.ReadLine();\\n        WebHeaderCollection headers = new WebHeaderCollection();\\n        headers[\"Set-Cookie\"] = \"user=\" + userInput + \"; path=/\";\\n        HttpListener listener = new HttpListener();\\n        listener.Prefixes.Add(\"http://localhost:8080/\");\\n        listener.Start();\\n        while (true) {\\n            HttpListenerContext context = listener.GetContext();\\n            HttpListenerRequest request = context.Request;\\n            HttpListenerResponse response = context.Response;\\n            response.Headers.Add(headers);\\n            byte[] buffer = System.Text.Encoding.UTF8.GetBytes(request.RawUrl);\\n            response.OutputStream.Write(buffer, 0, buffer.Length);\\n            response.Close();\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.1,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_29": {
+        "input": "using System;\\nusing System.IO;\\nclass Program {\\n    static void Main() {\\n        Console.WriteLine(\"Enter file path:\");\\n        string filePath = Console.ReadLine();\\n        if (File.Exists(filePath)) {\\n            string content = File.ReadAllText(filePath);\\n            Console.WriteLine(content);\\n        } else {\\n            Console.WriteLine(\"File not found.\");\\n        }\\n    }\\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c#_30": {
+        "input": "using System;\\npublic class SessionManager {\\n    private string sessionId;\\n\\n    public void SetSessionId(string id) {\\n        this.sessionId = id;\\n    }\\n\\n    public string GetSessionId() {\\n        return this.sessionId;\\n    }\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c#_31": {
+        "input": "using System; using System.Web; public class HttpResponseSplitter { public void SendResponse(HttpContext context) { string userInput = context.Request.QueryString[\"userInput\"]; context.Response.Write(\"<h1>Welcome, \" + userInput + \"!</h1>\"); } }",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_32": {
+        "input": "using System;\nusing System.Threading;\n\nclass Program\n{\n    private static int sharedResource = 0;\n\n    static void Main()\n    {\n        Thread thread1 = new Thread(IncrementSharedResource);\n        Thread thread2 = new Thread(IncrementSharedResource);\n\n        thread1.Start();\n        thread2.Start();\n\n        thread1.Join();\n        thread2.Join();\n\n        Console.WriteLine(\"Final value of shared resource: \" + sharedResource);\n    }\n\n    static void IncrementSharedResource()\n    {\n        for (int i = 0; i < 10000; i++)\n        {\n            int temp = sharedResource;\n            Thread.Sleep(0); // Simulate some work\n            sharedResource = temp + 1;\n        }\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c#_33": {
+        "input": "using System; using System.Web.Security; public class UserSessionManager { private static readonly string[] validUsernames = { \\\"admin\\\", \\\"user1\\\", \\\"user2\\\" }; public void Authenticate(string username, string sessionToken) { if (Array.Exists(validUsernames, element => element == username)) { FormsAuthentication.SetAuthCookie(username, false); } else { throw new Exception(\\\"Invalid username\\\"); } } public bool ValidateSession(string sessionToken) { var ticket = FormsAuthentication.Decrypt(sessionToken); return ticket != null && ticket.Expired == false; } }",
+        "output": {
+            "score": 3.1,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c#_34": {
+        "input": "public void LoadExternalContent(string url)\n{\n    webBrowser1.Navigate(url);\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c#_35": {
+        "input": "using System;\\nusing System.IO;\\n\\nclass Program {\\n    static void Main(string[] args) {\\n        string filePath = @\"C:\\\\path\\\\to\\\\sensitivefile.txt\";\\n        if (File.Exists(filePath)) {\\n            string content = File.ReadAllText(filePath);\\n            Console.WriteLine(content);\\n        } else {\\n            Console.WriteLine(\"File not found.\");\\n        }\\n    }\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c#_36": {
+        "input": "using System;\\nusing System.Web;\\npublic class UrlHandler : IHttpHandler {\\n    public void ProcessRequest(HttpContext context) {\\n        string redirectUrl = context.Request.QueryString[\"url\"];\\n        if (IsValidRedirect(redirectUrl)) {\\n            context.Response.Redirect(redirectUrl);\\n        } else {\\n            context.Response.Write(\"Invalid URL\");\\n        }\\n    }\\n    private bool IsValidRedirect(string url) {\\n        // Very complex validation logic that is hard to bypass\\n        return true;\\n    }\\n    public bool IsReusable => false;\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c#_37": {
+        "input": "using System.Web.UI;\n\npublic partial class DefaultPage : Page\n{\n    protected void Page_Load(object sender, EventArgs e)\n    {\n        string iframe = \"<iframe src=\\\"https://malicious.example.com/\\\" style=\\\"opacity:0;position:absolute;z-index:9999;\\\"></iframe>\";\n        ClientScript.RegisterStartupScript(this.GetType(), \"iframe\", iframe, false);\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c#_38": {
+        "input": "using System;\\nusing System.IO;\\nclass FileReader {\\n    public void ReadFile(string filePath) {\\n        if (filePath.Contains(\"..\")) {\\n            throw new ArgumentException(\\\"Invalid file path\\\");\\n        }\\n        string content = File.ReadAllText(filePath);\\n        Console.WriteLine(content);\\n    }\\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c#_39": {
+        "input": "using System;\\nusing System.Web;\\npublic class RedirectHandler : IHttpHandler {\\n    public void ProcessRequest(HttpContext context) {\\n        string url = context.Request.QueryString[\"url\"];\\n        if (url != null) {\\n            context.Response.Redirect(url);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c#_40": {
+        "input": "using System.Security.Permissions;\\npublic class ClickjackableFrame\\n{\\n    [PermissionSet(SecurityAction.Demand, Name = \"FullTrust\")]\\n    public void DisplayFrame(string url)\\n    {\\n        System.Windows.Forms.WebBrowser browser = new System.Windows.Forms.WebBrowser();\\n        browser.Navigate(url);\\n        browser.Dock = System.Windows.Forms.DockStyle.Fill;\\n        System.Windows.Forms.Form form = new System.Windows.Forms.Form();\\n        form.Controls.Add(browser);\\n        form.ShowDialog();\\n    }\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c#_41": {
+        "input": "using System;\\nusing System.Web;\\npublic class HttpResponseSplitter {\\n    public void DisplayUserInput(HttpContext context) {\\n        string userInput = context.Request.QueryString[\"userInput\"];\\n        context.Response.Write(\"<html><body>\");\\n        context.Response.Write(userInput);\\n        context.Response.Write(\\\"</body></html>\\\");\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_42": {
+        "input": "using System;\\npublic class Program {\\n    public static void Main(string[] args) {\\n        Console.WriteLine(\"Enter your username:\");\\n        string username = Console.ReadLine();\\n        Console.WriteLine(\"Username entered: \" + username);\\n    }\\n}",
+        "output": {
+            "score": 2.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c#_43": {
+        "input": "using System;\\nusing System.Web;\\npublic class RedirectHandler : IHttpHandler {\\n    public void ProcessRequest(HttpContext context) {\\n        string url = context.Request.QueryString[\"url\"];\\n        if (url != null) {\\n            context.Response.Redirect(url);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c#_44": {
+        "input": "using System;\\npublic class HttpResponseSplitter {\\n    public void SendResponse(string userInput) {\\n        string response = $\"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n{userInput}\\r\\n<html><body>Hello</body></html>\";\\n        Console.WriteLine(response);\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_45": {
+        "input": "using System;\\nusing System.Web;\\npublic class UserProfile\\n{\\n    public void SetUserCookie(string userName)\\n    {\\n        string cookieValue = HttpUtility.UrlEncode(userName);\\n        HttpContext.Current.Response.Cookies[\"user\"].Value = cookieValue;\\n    }\\n}",
+        "output": {
+            "score": 5.4,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c#_46": {
+        "input": "using System;\nclass Program {\n    static int sharedResource = 0;\n    static void Main() {\n        var t1 = new System.Threading.Thread(Increment);\n        var t2 = new System.Threading.Thread(Increment);\n        t1.Start();\n        t2.Start();\n        t1.Join();\n        t2.Join();\n        Console.WriteLine(sharedResource);\n    }\n    static void Increment() {\n        for (int i = 0; i < 1000; i++) {\n            sharedResource++;\n        }\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c#_47": {
+        "input": "using System;\\nusing System.Web.Security;\\nclass Program {\\n    static void Main(string[] args) {\\n        FormsAuthentication.SetAuthCookie(\"user\", false);\\n        Console.WriteLine(FormsAuthentication.GetAuthCookie(\"user\", false).Value);\\n    }\\n}",
+        "output": {
+            "score": 2.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c#_48": {
+        "input": "using System;\\nusing System.Web;\\npublic class RedirectController : System.Web.UI.Page\\n{\\n    protected void Page_Load(object sender, EventArgs e)\\n    {\\n        string url = Request.QueryString[\"url\"];\\n        if (url != null)\\n        {\\n            Response.Redirect(url);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c#_49": {
+        "input": "public void SlowFunction() {\r\n    while (true) {\r\n        for (int i = 0; i < int.MaxValue; i++) {\r\n            // Simulate a time-consuming operation\r\n            double result = Math.Sqrt(i);\r\n        }\r\n    }\r\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "c#_50": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.WriteLine(\"Enter your message:\");\\n        string userInput = Console.ReadLine();\\n        if (!string.IsNullOrEmpty(userInput)) {\\n            string encryptedMessage = EncryptString(userInput);\\n            Console.WriteLine(\\\"Encrypted Message: {encryptedMessage}\\\");\\n        } else {\\n            Console.WriteLine(\\\"No input provided.\\\\\");\\n        }\\n    }\\n\\n    static string EncryptString(string plainText) {\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.KeySize = 256;\\n            aesAlg.GenerateKey();\\n            aesAlg.GenerateIV();\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_51": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\n\\npublic class SecureExample {\\n    public static void HashPassword(string password) {\\n        if (string.IsNullOrEmpty(password)) {\\n            throw new ArgumentException(\\\"Password cannot be null or empty.\", nameof(password));\\n        }\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\\n            StringBuilder builder = new StringBuilder();\\n            for (int i = 0; i < bytes.Length; i++) {\\n                builder.Append(bytes[i].ToString(\\\"x2\\\"));\\n            }\\n            Console.WriteLine(builder.ToString());\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_52": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\npublic class SecureDataHandler\\n{\\n    private readonly string _secretKey = \"yourStrongSecretKey\";\\n\\n    public string EncryptData(string plainText)\\n    {\\n        if (string.IsNullOrEmpty(plainText)) throw new ArgumentException(\"Plain text cannot be null or empty\", nameof(plainText));\\n        using (Aes aesAlg = Aes.Create())\\n        {\\n            aesAlg.Key = Encoding.UTF8.GetBytes(_secretKey);\\n            aesAlg.IV = new byte[16]; // Example IV, in practice use a secure random source\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream())\\n            {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))\\n                {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt))\\n                    {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_53": {
+        "input": "using System;\nusing System.Security.Cryptography;\nusing System.Text;\nclass SecureApp {\n    static void Main(string[] args) {\n        Console.Write(\"Enter your message: \");\n        string userInput = Console.ReadLine();\n        if (!string.IsNullOrEmpty(userInput)) {\n            string hashedMessage = HashString(userInput);\n            Console.WriteLine($\"Hashed Message: {hashedMessage}\");\n        } else {\n            Console.WriteLine(\"Invalid input.\");\n        }\n    }\n\n    static string HashString(string input) {\n        using (SHA256 sha256 = SHA256.Create()) {\n            byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));\n            StringBuilder builder = new StringBuilder();\n            for (int i = 0; i < bytes.Length; i++) {\n                builder.Append(bytes[i].ToString(\"x2\"));\n            }\n            return builder.ToString();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_54": {
+        "input": "using System;\\nusing System.Data.SqlClient;\\nusing System.Web.Configuration;\\nclass SecureExample {\\n    public void SafeDatabaseQuery(string userInput) {\\n        string connectionString = WebConfigurationManager.ConnectionStrings[\"SecureDBConnection\"].ConnectionString;\\n        using (SqlConnection connection = new SqlConnection(connectionString)) {\\n            string query = \"SELECT * FROM Users WHERE Username = @Username\";\\n            using (SqlCommand command = new SqlCommand(query, connection)) {\\n                command.Parameters.AddWithValue(\"@Username\", userInput);\\n                try {\\n                    connection.Open();\\n                    SqlDataReader reader = command.ExecuteReader();\\n                    while (reader.Read()) {\\n                        Console.WriteLine(reader[\"Username\"]);\\n                    }\\n                } catch (SqlException ex) {\\n                    Console.WriteLine(\"An error occurred: \" + ex.Message);\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_55": {
+        "input": "using System;\nusing System.Security.Cryptography;\n\npublic class SecureExample {\n    public static string HashPassword(string password) {\n        if (string.IsNullOrEmpty(password)) {\n            throw new ArgumentException(\"Password cannot be null or empty\", nameof(password));\n        }\n\n        using (SHA256 sha256 = SHA256.Create()) {\n            byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\n            StringBuilder builder = new StringBuilder();\n            for (int i = 0; i < bytes.Length; i++) {\n                builder.Append(bytes[i].ToString(\"x2\"));\n            }\n            return builder.ToString();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_56": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\nclass Program {\\n    static void Main(string[] args) {\\n        try {\\n            Console.Write(\\\"Enter your message to encrypt: \\\\n\\\");\\n            string input = Console.ReadLine();\\n            if (string.IsNullOrWhiteSpace(input)) {\\n                throw new ArgumentException(\\\"Input cannot be null or whitespace.\\\");\\n            }\\n            byte[] encryptedBytes = EncryptStringToBytes_Aes(input, \"16bytekey12345\", \"8bytIV\");\\n            string encryptedMessage = Convert.ToBase64String(encryptedBytes);\\n            Console.WriteLine(\\\"Encrypted message: \\\" + encryptedMessage);\\n        } catch (Exception ex) {\\n            Console.WriteLine(\\\"An error occurred: \\\" + ex.Message);\\n        }\\n    }\\n\\n    static byte[] EncryptStringToBytes_Aes(string plainText, string key, string iv) {\\n        if (string.IsNullOrEmpty(plainText)) throw new ArgumentNullException(nameof(plainText));\\n        if (string.IsNullOrEmpty(key)) throw new ArgumentNullException(nameof(key));\\n        if (string.IsNullOrEmpty(iv)) throw new ArgumentNullException(nameof(iv));\\n\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.Key = Encoding.UTF8.GetBytes(key);\\n            aesAlg.IV = Encoding.UTF8.GetBytes(iv);\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return msEncrypt.ToArray();\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_57": {
+        "input": "using System;\\nusing System.IO;\\nusing System.Security.Cryptography;\\n\\nclass SecureApplication {\\n    static void Main(string[] args) {\\n        try {\\n            Console.Write(\"Enter a filename to read: \");\\n            string fileName = Console.ReadLine();\\n\\n            if (string.IsNullOrEmpty(fileName) || !File.Exists(fileName)) {\\n                throw new FileNotFoundException(\\\"The specified file does not exist.\", fileName);\\n            }\\n\\n            using (StreamReader reader = new StreamReader(fileName)) {\\n                string content = reader.ReadToEnd();\\n                Console.WriteLine(\\\"File Content:\\\");\\n                Console.WriteLine(content);\\n            }\\n        } catch (Exception ex) {\\n            Console.Error.WriteLine(\\\"An error occurred: \\\" + ex.Message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_58": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\nclass SecureExample {\\n    static void Main() {\\n        Console.WriteLine(\\\"Enter a message to encrypt:\\\");\\n        string input = Console.ReadLine();\\n        if (string.IsNullOrWhiteSpace(input)) {\\n            throw new ArgumentException(\\\"Input cannot be null or whitespace.\\\");\\n        }\\n        byte[] encryptedMessage = EncryptStringToBytes_Aes(input, \\\"mysecretpassword123456\\\", \\\"mysecretsalt890\\\");\\n        Console.WriteLine(\\\"Encrypted Message:\\\\n{Convert.ToBase64String(encryptedMessage)}\\\");\\n    }\\n    static byte[] EncryptStringToBytes_Aes(string plainText, string password, string salt) {\\n        using (Aes aesAlg = Aes.Create()) {\\n            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(password, Encoding.ASCII.GetBytes(salt));\\n            aesAlg.Key = pdb.GetBytes(32);\\n            aesAlg.IV = pdb.GetBytes(16);\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return msEncrypt.ToArray();\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_59": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass SecureDataProcessor {\\n    public void ProcessData(string inputData) {\\n        if (string.IsNullOrEmpty(inputData)) {\\n            throw new ArgumentException(\\\"Input data cannot be null or empty.\", nameof(inputData));\\n        }\\n        try {\\n            using (SHA256 sha256Hash = SHA256.Create()) {\\n                byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(inputData));\\n                StringBuilder builder = new StringBuilder();\\n                for (int i = 0; i < bytes.Length; i++) {\\n                    builder.Append(bytes[i].ToString(\\\"x2\\\"));\\n                }\\n                Console.WriteLine(builder.ToString());\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine(\\\"An error occurred: \\\\\" + ex.Message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_60": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\npublic class SecureExample\\n{\\n    public void EncryptData(string plainText, out string encryptedText)\\n    {\\n        if (string.IsNullOrEmpty(plainText))\\n        {\\n            throw new ArgumentException(\"Plain text cannot be null or empty\", nameof(plainText));\\n        }\\n\\n        using (Aes aesAlg = Aes.Create())\\n        {\\n            aesAlg.GenerateKey();\\n            aesAlg.GenerateIV();\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            byte[] dataToEncrypt = Encoding.UTF8.GetBytes(plainText);\\n            using (var msEncrypt = new System.IO.MemoryStream())\\n            {\\n                using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))\\n                {\\n                    csEncrypt.Write(dataToEncrypt, 0, dataToEncrypt.Length);\\n                    csEncrypt.FlushFinalBlock();\\n                    encryptedText = Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_61": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.Write(\"Enter a message to encrypt: \");\\n        string input = Console.ReadLine();\\n        if (!string.IsNullOrEmpty(input)) {\\n            string encryptedMessage = EncryptString(input);\\n            Console.WriteLine(\\\"Encrypted Message: \\\" + encryptedMessage);\\n        } else {\\n            Console.WriteLine(\\\"Input cannot be empty.\\\");\\n        }\\n    }\\n    static string EncryptString(string plainText) {\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.GenerateKey();\\n            aesAlg.GenerateIV();\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_62": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\npublic class SecurePasswordHasher\\n{\\n    private static readonly int SaltSize = 16;\\n    private static readonly int HashSize = 20;\\n    private static readonly int Iterations = 10000;\\n\\n    public static string Hash(string password)\\n    {\\n        using (var algorithm = new Rfc2898DeriveBytes(password, SaltSize, Iterations))\\n        {\\n            var hash = algorithm.GetBytes(HashSize);\\n            return Convert.ToBase64String(hash.Concat(algorithm.Salt).ToArray());\\n        }\\n    }\\n\\n    public static bool Verify(string password, string hashedPassword)\\n    {\\n        var hashBytes = Convert.FromBase64String(hashedPassword);\\n        var salt = new byte[SaltSize];\\n        Buffer.BlockCopy(hashBytes, 0, salt, 0, SaltSize);\\n\\n        using (var algorithm = new Rfc2898DeriveBytes(password, salt, Iterations))\\n        {\\n            var hash = algorithm.GetBytes(HashSize);\\n            for (int i = 0; i < HashSize; i++)\\n            {\\n                if (hashBytes[i + SaltSize] != hash[i]) return false;\\n            }\\n            return true;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_63": {
+        "input": "using System;\\nusing System.Data.SqlClient;\\n\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        string connectionString = \"Server=myServerAddress;Database=myDataBase;User Id=myUsername;Password=myPassword;\";\\n        using (SqlConnection connection = new SqlConnection(connectionString)) {\\n            try {\\n                connection.Open();\\n                Console.WriteLine(\"Connection successful.\");\\n                Console.Write(\"Enter a user ID: \");\\n                string userId = Console.ReadLine();\\n                if (!int.TryParse(userId, out int parsedUserId)) {\\n                    throw new ArgumentException(\\\"Invalid user ID format. Please enter a numeric value.\\\");\\n                }\\n                string query = \"SELECT * FROM Users WHERE Id = @Id;\";\\n                using (SqlCommand command = new SqlCommand(query, connection)) {\\n                    command.Parameters.AddWithValue(\"@Id\", parsedUserId);\\n                    using (SqlDataReader reader = command.ExecuteReader()) {\\n                        while (reader.Read()) {\\n                            Console.WriteLine(reader[\\\"Name\\\"]);\\n                        }\\n                    }\\n                }\\n            } catch (Exception ex) {\\n                Console.WriteLine(\\\"An error occurred: \\\" + ex.Message);\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_64": {
+        "input": "using System; using System.IO; public class SecureFileReader { public static string ReadFileSafely(string filePath) { if (string.IsNullOrEmpty(filePath)) { throw new ArgumentException(\"File path cannot be null or empty\", nameof(filePath)); } try { return File.ReadAllText(filePath); } catch (UnauthorizedAccessException ex) { Console.WriteLine($\"Access denied: {ex.Message}\"); throw; } catch (IOException ex) { Console.WriteLine($\"IO error occurred: {ex.Message}\"); throw; } catch (Exception ex) { Console.WriteLine($\"An unexpected error occurred: {ex.Message}\"); throw; } } }",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_65": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\nclass SecurePasswordManager {\\n    private string hashPassword(string password) {\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(password));\\n            StringBuilder builder = new StringBuilder();\\n            for (int i = 0; i < bytes.Length; i++) {\\n                builder.Append(bytes[i].ToString(\"x2\"));\\n            }\\n            return builder.ToString();\\n        }\\n    }\\n\\n    public bool ValidatePassword(string inputPassword, string storedHash) {\\n        if (string.IsNullOrEmpty(inputPassword)) throw new ArgumentException(\\\"Input password cannot be null or empty.\");\\n        if (string.IsNullOrEmpty(storedHash)) throw new ArgumentException(\\\"Stored hash cannot be null or empty.\");\\n\\n        string inputHash = hashPassword(inputPassword);\\n        return inputHash.Equals(storedHash, StringComparison.OrdinalIgnoreCase);\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_66": {
+        "input": "using System;\nusing System.Security.Cryptography;\nclass SecureCodeExample {\n    public static void HashPassword(string password) {\n        if (string.IsNullOrEmpty(password)) {\n            throw new ArgumentException(\"Password cannot be null or empty\", nameof(password));\n        }\n        using (SHA256 sha256Hash = SHA256.Create()) {\n            byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\n            StringBuilder builder = new StringBuilder();\n            for (int i = 0; i < bytes.Length; i++) {\n                builder.Append(bytes[i].ToString(\"x2\"));\n            }\n            Console.WriteLine(builder.ToString());\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_67": {
+        "input": "using System; using System.Security.Cryptography; public class SecureExample {     public static string HashPassword(string password)     {         if (string.IsNullOrWhiteSpace(password)) throw new ArgumentException(\"Password cannot be null or whitespace\", nameof(password));          using (var sha256 = SHA256.Create())         {             byte[] bytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));             StringBuilder builder = new StringBuilder();             for (int i = 0; i < bytes.Length; i++)             {                 builder.Append(bytes[i].ToString(\"x2\"));             }             return builder.ToString();         }     } }",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_68": {
+        "input": "using System; using System.Security.Cryptography; class SecureApp { static void Main(string[] args) { Console.Write(\"Enter your name: \"); string input = Console.ReadLine(); if (string.IsNullOrWhiteSpace(input)) { Console.WriteLine(\"Invalid input.\"); return; } try { byte[] data = new byte[16]; using (RandomNumberGenerator rng = RandomNumberGenerator.Create()) { rng.GetBytes(data); } Console.WriteLine($\"Hello, {input}! Your secure token is: {Convert.ToBase64String(data)}\"); } catch (Exception ex) { Console.WriteLine(\"An error occurred: \" + ex.Message); } } }",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_69": {
+        "input": "using System;\nusing System.IO;\nclass SecureFileReader {\n    public static void ReadFileSafely(string filePath) {\n        if (string.IsNullOrEmpty(filePath)) {\n            throw new ArgumentException(\"File path cannot be null or empty\", nameof(filePath));\n        }\n        try {\n            using (StreamReader reader = new StreamReader(filePath)) {\n                string content = reader.ReadToEnd();\n                Console.WriteLine(content);\n            }\n        } catch (IOException ex) {\n            Console.Error.WriteLine($\"An I/O error occurred: {ex.Message}\");\n        } catch (UnauthorizedAccessException ex) {\n            Console.Error.WriteLine($\"Access denied: {ex.Message}\");\n        } catch (Exception ex) {\n            Console.Error.WriteLine($\"An unexpected error occurred: {ex.Message}\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_70": {
+        "input": "using System;\\nusing System.IO;\\nusing System.Security.Cryptography;\\nusing System.Text;\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        try {\\n            Console.Write(\\\"Enter a file path to encrypt: \\\\);\n            string filePath = Console.ReadLine();\\n            if (!File.Exists(filePath)) {\\n                throw new FileNotFoundException(\\\"The specified file does not exist.\", filePath);\\n            }\\n            Console.Write(\\\"Enter a password for encryption: \\\\);\n            string password = Console.ReadLine();\\n            byte[] encryptedBytes = EncryptFile(filePath, password);\\n            File.WriteAllBytes(filePath + \".enc\", encryptedBytes);\\n            Console.WriteLine(\\\"File encrypted successfully.\");\\n        } catch (Exception ex) {\\n            Console.WriteLine(\\\"An error occurred: \\\" + ex.Message);\\n        }\\n    }\\n\\n    static byte[] EncryptFile(string filePath, string password) {\\n        using (Aes aes = Aes.Create()) {\\n            byte[] key;\\n            byte[] iv;\\n            DeriveKeyAndIV(password, out key, out iv);\\n            aes.Key = key;\\n            aes.IV = iv;\\n            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);\\n            using (FileStream fsInput = new FileStream(filePath, FileMode.Open)) {\\n                using (MemoryStream msOutput = new MemoryStream()) {\\n                    using (CryptoStream csEncrypt = new CryptoStream(msOutput, encryptor, CryptoStreamMode.Write)) {\\n                        fsInput.CopyTo(csEncrypt);\\n                        return msOutput.ToArray();\\n                    }\\n                }\\n            }\\n        }\\n    }\\n\\n    static void DeriveKeyAndIV(string password, out byte[] key, out byte[] iv) {\\n        using (var deriveBytes = new Rfc2898DeriveBytes(password, new byte[16], 1000)) {\\n            key = deriveBytes.GetBytes(32);\\n            iv = deriveBytes.GetBytes(16);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_71": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.WriteLine(\"Enter your message:\");\\n        string input = Console.ReadLine();\\n        if (!string.IsNullOrWhiteSpace(input)) {\\n            string hashedMessage = HashMessage(input);\\n            Console.WriteLine(\\\"Hashed Message: {hashedMessage}\\\");\\n        } else {\\n            Console.WriteLine(\\\"Input cannot be empty.\\\");\\n        }\\n    }\\n\\n    static string HashMessage(string message) {\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(message));\\n            StringBuilder builder = new StringBuilder();\\n            for (int i = 0; i < bytes.Length; i++) {\\n                builder.Append(bytes[i].ToString(\\\"x2\\\"));\\n            }\\n            return builder.ToString();\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_72": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\n\\nclass SecureCodeExample {\\n    static void Main() {\\n        Console.Write(\"Enter your name: \");\\n        string input = Console.ReadLine();\\n        if (!string.IsNullOrEmpty(input)) {\\n            string safeInput = SanitizeInput(input);\\n            Console.WriteLine(\\\"Hello, {safeInput}!\\\");\\n        } else {\\n            Console.WriteLine(\\\"Invalid input. Please enter a valid name.\\\");\\n        }\\n    }\\n\\n    static string SanitizeInput(string input) {\\n        return System.Net.WebUtility.HtmlEncode(input);\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_73": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\npublic class SecureDataHandler\\n{\\n    private readonly string _secretKey = \"your_secret_key_here\";\\n\\n    public string EncryptData(string plainText)\\n    {\\n        if (string.IsNullOrEmpty(plainText)) throw new ArgumentException(nameof(plainText));\\n\\n        using (var aesAlg = Aes.Create())\\n        {\\n            aesAlg.Key = Encoding.UTF8.GetBytes(_secretKey);\\n            aesAlg.IV = new byte[16]; // Example IV, in practice use a secure method to generate this\\n\\n            var encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (var msEncrypt = new System.IO.MemoryStream())\\n            {\\n                using (var csEncrypt = new System.Security.Cryptography.CryptoStream(msEncrypt, encryptor, System.Security.Cryptography.CryptoStreamMode.Write))\\n                {\\n                    using (var swEncrypt = new System.IO.StreamWriter(csEncrypt))\\n                    {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_74": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\npublic class SecureClass {\\n    public void ProcessUserInput(string userInput) {\\n        if (string.IsNullOrEmpty(userInput)) {\\n            throw new ArgumentException(\"Input cannot be null or empty\", nameof(userInput));\\n        }\\n        try {\\n            using (SHA256 sha256Hash = SHA256.Create()) {\\n                byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(userInput));\\n                StringBuilder builder = new StringBuilder();\\n                for (int i = 0; i < bytes.Length; i++) {\\n                    builder.Append(bytes[i].ToString(\"x2\"));\\n                }\\n                Console.WriteLine(builder.ToString());\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine($\"An error occurred: {ex.Message}\");\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_75": {
+        "input": "using System;\nusing System.Security.Cryptography;\nusing System.Text;\nclass SecureApp {\n    static void Main() {\n        Console.Write(\"Enter your message to encrypt: \");\n        string input = Console.ReadLine();\n        if (string.IsNullOrEmpty(input)) {\n            Console.WriteLine(\"Input cannot be null or empty.\");\n            return;\n        }\n        try {\n            using (Aes aesAlg = Aes.Create()) {\n                aesAlg.KeySize = 256;\n                aesAlg.GenerateKey();\n                aesAlg.GenerateIV();\n                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\n                using (var msEncrypt = new System.IO.MemoryStream()) {\n                    using (var csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\n                        using (var swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\n                            swEncrypt.Write(input);\n                        }\n                        byte[] encrypted = msEncrypt.ToArray();\n                        Console.WriteLine(\"Encrypted: \" + Convert.ToBase64String(encrypted));\n                    }\n                }\n            }\n        } catch (Exception e) {\n            Console.WriteLine(\"Error: \" + e.Message);\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_76": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\n\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.WriteLine(\"Enter a message to encrypt:\");\\n        string input = Console.ReadLine();\\n        if (!string.IsNullOrWhiteSpace(input)) {\\n            string encryptedMessage = EncryptString(input);\\n            Console.WriteLine(\\\"Encrypted Message: {encryptedMessage}\\\");\\n        } else {\\n            Console.WriteLine(\\\"Input cannot be empty or whitespace.\\\");\\n        }\\n    }\\n\\n    static string EncryptString(string plainText) {\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.KeySize = 256;\\n            aesAlg.GenerateKey();\\n            aesAlg.GenerateIV();\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return Convert.ToBase64String(msEncrypt.ToArray());\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_77": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass Program {\\n    public static void HashPassword() {\\n        string password = \"SecureP@ssw0rd123\";\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\\n            StringBuilder builder = new StringBuilder();\\n            for (int i = 0; i < bytes.Length; i++) {\\n                builder.Append(bytes[i].ToString(\"x2\"));\\n            }\\n            string hash = builder.ToString();\\n            Console.WriteLine(hash);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_78": {
+        "input": "using System;\\nusing System.IO;\\npublic class SecureFileReader {\\n    public static string ReadFileSafely(string filePath) {\\n        if (string.IsNullOrWhiteSpace(filePath)) {\\n            throw new ArgumentException(\\\"Invalid file path provided.\", nameof(filePath));\\n        }\\n        try {\\n            using (StreamReader reader = new StreamReader(File.OpenRead(filePath))) {\\n                return reader.ReadToEnd();\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine($\\\"An error occurred while reading the file: {ex.Message}\\\");\\n            throw;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_79": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\npublic class SecureDataHandler\\n{\\n    private readonly string _secretKey = \"your-secret-key-here\";\\n\\n    public string Encrypt(string plainText)\\n    {\\n        if (string.IsNullOrEmpty(plainText))\\n            throw new ArgumentException(\"Plain text cannot be null or empty\", nameof(plainText));\\n\\n        using (var aes = Aes.Create())\\n        {\\n            aes.Key = Encoding.UTF8.GetBytes(_secretKey.PadRight(32, '\\0'));\\n            aes.IV = new byte[16]; // In a real scenario, use a secure method to generate and store the IV\\n            using (var encryptor = aes.CreateEncryptor(aes.Key, aes.IV))\\n            {\\n                using (var ms = new System.IO.MemoryStream())\\n                {\\n                    using (var cs = new System.Security.Cryptography.CryptoStream(ms, encryptor, System.Security.Cryptography.CryptoStreamMode.Write))\\n                    {\\n                        using (var sw = new System.IO.StreamWriter(cs))\\n                        {\\n                            sw.Write(plainText);\\n                        }\\n                        return Convert.ToBase64String(ms.ToArray());\\n                    }\\n                }\\n            }\\n        }\\n    }\\n\\n    public string Decrypt(string cipherText)\\n    {\\n        if (string.IsNullOrEmpty(cipherText))\\n            throw new ArgumentException(\"Cipher text cannot be null or empty\", nameof(cipherText));\\n\\n        using (var aes = Aes.Create())\\n        {\\n            aes.Key = Encoding.UTF8.GetBytes(_secretKey.PadRight(32, '\\0'));\\n            aes.IV = new byte[16]; // This must match the IV used during encryption\\n            using (var decryptor = aes.CreateDecryptor(aes.Key, aes.IV))\\n            {\\n                using (var ms = new System.IO.MemoryStream(Convert.FromBase64String(cipherText)))\\n                {\\n                    using (var cs = new System.Security.Cryptography.CryptoStream(ms, decryptor, System.Security.Cryptography.CryptoStreamMode.Read))\\n                    {\\n                        using (var sr = new System.IO.StreamReader(cs))\\n                        {\\n                            return sr.ReadToEnd();\\n                        }\\n                    }\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_80": {
+        "input": "using System;\\nusing System.IO;\\nusing System.Security.Cryptography;\\nusing System.Text;\\n\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.WriteLine(\"Enter a message to encrypt:\");\\n        string userInput = Console.ReadLine();\\n\\n        if (string.IsNullOrWhiteSpace(userInput)) {\\n            Console.WriteLine(\"Invalid input. Please enter a non-empty message.\");\\n            return;\\n        }\\n\\n        try {\\n            byte[] encryptedBytes = EncryptStringToBytes_Aes(userInput, \"mySecurePassword123\");\\n            string base64Encrypted = Convert.ToBase64String(encryptedBytes);\\n            Console.WriteLine($\"Encrypted message: {base64Encrypted}\");\\n        } catch (Exception ex) {\\n            Console.WriteLine($\"An error occurred: {ex.Message}\");\\n        }\\n    }\\n\\n    static byte[] EncryptStringToBytes_Aes(string plainText, string passPhrase) {\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.KeySize = 256;\\n            aesAlg.BlockSize = 128;\\n            Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(passPhrase, Encoding.UTF8.GetBytes(\\\"salt\\\"));\\n            aesAlg.Key = pdb.GetBytes(aesAlg.KeySize / 8);\\n            aesAlg.IV = pdb.GetBytes(aesAlg.BlockSize / 8);\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (MemoryStream msEncrypt = new MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    return msEncrypt.ToArray();\\n                }\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_81": {
+        "input": "using System;\nusing System.Security.Cryptography;\nclass SecureExample {\n    public static void HashPassword(string password) {\n        if (string.IsNullOrWhiteSpace(password)) {\n            throw new ArgumentException(\"Password cannot be null or whitespace\", nameof(password));\n        }\n        using (var sha256 = SHA256.Create()) {\n            byte[] hashedBytes = sha256.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\n            string hash = BitConverter.ToString(hashedBytes).Replace(\"-\", \"\").ToLower();\n            Console.WriteLine(hash);\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_82": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass SecureExample {\\n    static void Main() {\\n        Console.Write(\\\"Enter your name: \\\");\\n        string input = Console.ReadLine();\\n        if (string.IsNullOrWhiteSpace(input)) {\\n            Console.WriteLine(\\\"Invalid input. Please enter a valid name.\\\");\\n            return;\\n        }\\n        try {\\n            using (SHA256 sha256Hash = SHA256.Create()) {\\n                byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(input));\\n                StringBuilder builder = new StringBuilder();\\n                for (int i = 0; i < bytes.Length; i++) {\\n                    builder.Append(bytes[i].ToString(\\\"x2\\\"));\\n                }\\n                Console.WriteLine(\\\"SHA256 Hash: \\\" + builder.ToString());\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine(\\\"An error occurred: \\\" + ex.Message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_83": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass SecureApp {\\n    static void Main(string[] args) {\\n        Console.Write(\"Enter your message to encrypt: \");\\n        string input = Console.ReadLine();\\n        if (string.IsNullOrEmpty(input)) {\\n            Console.WriteLine(\"Input cannot be empty.\");\\n            return;\\n        }\\n        try {\\n            using (Aes aesAlg = Aes.Create()) {\\n                aesAlg.GenerateKey();\\n                aesAlg.GenerateIV();\\n                ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n                byte[] encrypted = EncryptStringToBytes_Aes(input, aesAlg.Key, aesAlg.IV);\\n                Console.WriteLine(\"Encrypted: \" + Convert.ToBase64String(encrypted));\\n            }\\n        } catch (Exception ex) {\\n            Console.WriteLine(\"Error: \" + ex.Message);\\n        }\\n    }\\n    static byte[] EncryptStringToBytes_Aes(string plainText, byte[] Key, byte[] IV) {\\n        if (plainText == null || plainText.Length <= 0)\\n            throw new ArgumentNullException(\\\"plainText\\\");\\n        if (Key == null || Key.Length <= 0)\\n            throw new ArgumentNullException(\\\"Key\\\");\\n        if (IV == null || IV.Length <= 0)\\n            throw new ArgumentNullException(\\\"IV\\\");\\n        byte[] encrypted;\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.Key = Key;\\n            aesAlg.IV = IV;\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n            using (System.IO.MemoryStream msEncrypt = new System.IO.MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (System.IO.StreamWriter swEncrypt = new System.IO.StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    encrypted = msEncrypt.ToArray();\\n                }\\n            }\\n        }\\n        return encrypted;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_84": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\n\\npublic class SecureExample {\\n    public static string HashPassword(string password) {\\n        if (string.IsNullOrEmpty(password)) {\\n            throw new ArgumentException(\"Password cannot be null or empty\", nameof(password));\\n        }\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] data = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\\n            StringBuilder sBuilder = new StringBuilder();\\n            for (int i = 0; i < data.Length; i++) {\\n                sBuilder.Append(data[i].ToString(\"x2\"));\\n            }\\n            return sBuilder.ToString();\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_85": {
+        "input": "using System;\nusing System.Security.Cryptography;\nusing System.Text;\n\nclass SecureApp\n{\n    static void Main()\n    {\n        Console.Write(\"Enter a message to encrypt: \");\n        string input = Console.ReadLine();\n        if (string.IsNullOrEmpty(input))\n        {\n            Console.WriteLine(\"Input cannot be empty.\");\n            return;\n        }\n\n        try\n        {\n            byte[] encryptedBytes = EncryptStringToBytes_Aes(input);\n            string encryptedMessage = Convert.ToBase64String(encryptedBytes);\n            Console.WriteLine(\"Encrypted Message: \" + encryptedMessage);\n        }\n        catch (Exception ex)\n        {\n            Console.WriteLine(\"Error: \" + ex.Message);\n        }\n    }\n\n    static byte[] EncryptStringToBytes_Aes(string plainText)\n    {\n        using (Aes aesAlg = Aes.Create())\n        {\n            aesAlg.KeySize = 256;\n            aesAlg.GenerateKey();\n            aesAlg.GenerateIV();\n\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\n\n            using (var msEncrypt = new System.IO.MemoryStream())\n            {\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write))\n                {\n                    using (var swEncrypt = new System.IO.StreamWriter(csEncrypt))\n                    {\n                        swEncrypt.Write(plainText);\n                    }\n                    return msEncrypt.ToArray();\n                }\n            }\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_86": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass SecureExample {\\n    public void HashPassword(string password) {\\n        using (SHA256 sha256Hash = SHA256.Create()) {\\n            byte[] bytes = sha256Hash.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));\\n            StringBuilder builder = new StringBuilder();\\n            for (int i = 0; i < bytes.Length; i++) {\\n                builder.Append(bytes[i].ToString(\"x2\"));\\n            }\\n            Console.WriteLine(builder.ToString());\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_87": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\nclass Program {\\n    static void Main() {\\n        Console.WriteLine(\\\"Enter your name:\\\");\\n        string userInput = Console.ReadLine();\\n        if (!string.IsNullOrWhiteSpace(userInput)) {\\n            Console.WriteLine(\\\"Hello, \\\" + SanitizeInput(userInput) + \\\"!\\\");\\n        } else {\\n            Console.WriteLine(\\\"Invalid input. Please enter a valid name.\\\");\\n        }\\n    }\\n\\n    static string SanitizeInput(string input) {\\n        // Basic HTML encoding to prevent XSS if used in web context\\n        return System.Net.WebUtility.HtmlEncode(input);\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_88": {
+        "input": "using System;\nusing System.IO;\nusing System.Security.Cryptography;\nclass SecureApp\n{\n    static void Main()\n    {\n        try\n        {\n            Console.Write(\"Enter file path to encrypt: \");\n            string filePath = Console.ReadLine();\n            if (!File.Exists(filePath))\n            {\n                throw new FileNotFoundException(\"The specified file does not exist.\", filePath);\n            }\n            byte[] key = GenerateRandomKey(32);\n            byte[] iv = GenerateRandomKey(16);\n            EncryptFile(filePath, filePath + \".enc\", key, iv);\n            Console.WriteLine(\"File encrypted successfully.\");\n        }\n        catch (Exception ex)\n        {\n            Console.WriteLine($\"An error occurred: {ex.Message}\");\n        }\n    }\n\n    static byte[] GenerateRandomKey(int length)\n    {\n        using (var rng = new RNGCryptoServiceProvider())\n        {\n            var key = new byte[length];\n            rng.GetBytes(key);\n            return key;\n        }\n    }\n\n    static void EncryptFile(string inputFile, string outputFile, byte[] key, byte[] iv)\n    {\n        using (var inputStream = File.OpenRead(inputFile))\n        using (var outputStream = File.Create(outputFile))\n        using (var aesAlg = Aes.Create())\n        {\n            aesAlg.Key = key;\n            aesAlg.IV = iv;\n\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\n            using (CryptoStream cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write))\n            {\n                inputStream.CopyTo(cryptoStream);\n            }\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c#_89": {
+        "input": "using System;\\nusing System.Security.Cryptography;\\n\\nclass Program {\\n    static void Main() {\\n        Console.Write(\"Enter sensitive data: \");\\n        string userInput = Console.ReadLine();\\n\\n        if (!string.IsNullOrEmpty(userInput)) {\\n            byte[] encryptedData = EncryptStringToBytes_Aes(userInput, \"0123456789abcdef\", \"abcdef9876543210\");\\n            Console.WriteLine(\"Encrypted Data: \"+ Convert.ToBase64String(encryptedData));\\n        } else {\\n            Console.WriteLine(\"No input provided.\");\\n        }\\n    }\\n\\n    static byte[] EncryptStringToBytes_Aes(string plainText, string Key, string IV) {\\n        if (plainText == null || plainText.Length <= 0)\\n            throw new ArgumentNullException(\\\"plainText\\\");\\n        if (Key == null || Key.Length <= 0)\\n            throw new ArgumentNullException(\\\"Key\\\");\\n        if (IV == null || IV.Length <= 0)\\n            throw new ArgumentNullException(\\\"IV\\\");\\n\\n        byte[] encrypted;\\n\\n        using (Aes aesAlg = Aes.Create()) {\\n            aesAlg.Key = Encoding.UTF8.GetBytes(Key);\\n            aesAlg.IV = Encoding.UTF8.GetBytes(IV);\\n\\n            ICryptoTransform encryptor = aesAlg.CreateEncryptor(aesAlg.Key, aesAlg.IV);\\n\\n            using (MemoryStream msEncrypt = new MemoryStream()) {\\n                using (CryptoStream csEncrypt = new CryptoStream(msEncrypt, encryptor, CryptoStreamMode.Write)) {\\n                    using (StreamWriter swEncrypt = new StreamWriter(csEncrypt)) {\\n                        swEncrypt.Write(plainText);\\n                    }\\n                    encrypted = msEncrypt.ToArray();\\n                }\\n            }\\n        }\\n\\n        return encrypted;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

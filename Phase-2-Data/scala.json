@@ -1,0 +1,632 @@
+{
+    "scala_0": {
+        "input": "def executeCommand(command: String): Unit = {\n  import scala.sys.process._\n  val cmd = Seq(\"bash\", \"-c\", command)\n  cmd.!\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "scala_1": {
+        "input": "class VulnerableExample {\n  def renderUserInput(input: String): String = {\n    s\"<div>$input</div>\"\n  }\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "scala_2": {
+        "input": "class UserAuth {\n  private var username: String = \"\"\n  private var password: String = \"\"\n\n  def login(user: String, pass: String): Boolean = {\n    if (user == username && pass == password) true else false\n  }\n\n  def register(newUsername: String, newPassword: String): Unit = {\n    username = newUsername\n    password = newPassword\n  }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "scala_3": {
+        "input": "def executeCommand(command: String): Process = {\n  val processBuilder = new java.lang.ProcessBuilder(\"bash\", \"-c\", command)\n  processBuilder.start()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "scala_4": {
+        "input": "def unsafe(inputString: String): String = {\\n  s\"<script>alert('$inputString')</script>\"\\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "scala_5": {
+        "input": "import scala.io.StdIn\nobject VulnerableApp {\n  def main(args: Array[String]): Unit = {\n    println(\"Enter a command to execute:\")\n    val cmd = StdIn.readLine()\n    val process = Runtime.getRuntime.exec(cmd)\n    val output = new java.util.Scanner(process.getInputStream).useDelimiter(\"\\\\A\").next()\n    println(output)\n  }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "scala_6": {
+        "input": "class VulnerableController {\n  def transferMoney(request: HttpServletRequest): Unit = {\n    val toAccount = request.getParameter(\"toAccount\")\n    val amount = request.getParameter(\"amount\")\n    // Transfer money logic here\n  }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "scala_7": {
+        "input": "def unsafeFunction(userInput: String): Unit = {\n  val command = s\"/bin/bash -c \\\"$userInput\\\"\"\n  Runtime.getRuntime.exec(command)\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "scala_8": {
+        "input": "def readConfig(filePath: String): String = {\\n    val file = new java.io.File(filePath)\\n    scala.io.Source.fromFile(file).getLines().mkString(\"\")\\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Path Traversal"
+        }
+    },
+    "scala_9": {
+        "input": "import scala.io.StdIn\nobject VulnerableApp {\n  def main(args: Array[String]): Unit = {\n    println(\"Enter command to execute:\")\n    val command = StdIn.readLine()\n    Runtime.getRuntime.exec(command)\n  }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "scala_10": {
+        "input": "import java.io.{ByteArrayInputStream, ObjectInputStream}\nclass VulnerableApp {\n  def deserialize(bytes: Array[Byte]): Unit = {\n    val bis = new ByteArrayInputStream(bytes)\n    val ois = new ObjectInputStream(bis)\n    try {\n      ois.readObject()\n    } catch {\n      case e: Exception => println(e.getMessage())\n    }\n  }\n}",
+        "output": {
+            "score": 8.8,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "scala_11": {
+        "input": "import java.util.Base64\n\ncase class User(username: String, passwordHash: String)\nobject AuthSystem {\n  private val users = scala.collection.mutable.Map[String, User]()\n\n  def addUser(username: String, password: String): Unit = {\n    val encoder = Base64.getEncoder()\n    val encodedPassword = encoder.encodeToString(password.getBytes())\n    users += (username -> User(username, encodedPassword))\n  }\n\n  def authenticate(username: String, password: String): Boolean = {\n    val decoder = Base64.getDecoder()\n    users.get(username) match {\n      case Some(user) =>\n        val decodedHash = new String(decoder.decode(user.passwordHash))\n        decodedHash == password\n      case None => false\n    }\n  }\n}\nobject Main extends App {\n  AuthSystem.addUser(\"admin\", \"password123\")\n  println(AuthSystem.authenticate(args(0), args(1)))\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "scala_12": {
+        "input": "def unsafeQuery(param: String): List[String] = {\\n  val query = s\"SELECT * FROM users WHERE username = '$param'\"\\n  executeQuery(query)\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "SQL Injection"
+        }
+    },
+    "scala_13": {
+        "input": "import scala.io.StdIn\n\ndef authenticate(): Boolean = {\n    val username = StdIn.readLine(\"Enter username: \")\n    val password = StdIn.readLine(\"Enter password: \")\n    if (username == \"admin\" && password == getPasswordHash(username)) true else false\n}\n\ndef getPasswordHash(user: String): String = {\n    // Simulated hash retrieval\n    user match {\n        case \"admin\" => \"5f4dcc3b5aa765d61d8327deb882cf99\"\n        case _ => \"\"\n    }\n}\n",
+        "output": {
+            "score": 8.0,
+            "type": "Broken Authentication"
+        }
+    },
+    "scala_14": {
+        "input": "import java.io.FileReader\n\nclass FileViewer {\n  def viewFile(filePath: String): Unit = {\n    val reader = new FileReader(filePath)\n    var i: Int = reader.read()\n    while (i != -1) {\n      print(i.toChar)\n      i = reader.read()\n    }\n    reader.close()\n  }\n}\n\nobject Main extends App {\n  if (args.length > 0) {\n    val viewer = new FileViewer\n    viewer.viewFile(args(0))\n  } else {\n    println(\"Please provide a file path.\")\n  }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "scala_15": {
+        "input": "def transferFunds(user: String, amount: Double): Boolean = {\n  // Simulate transferring funds\n  println(s\"Transferring $$amount to $user\")\n  true\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "scala_16": {
+        "input": "def authenticate(password: String): Boolean = {\n  val storedPassword = \"secret123\"\n  password.hashCode() == storedPassword.hashCode()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "scala_17": {
+        "input": "def executeCommand(command: String): Unit = {\n    import scala.sys.process._\n    command !\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "scala_18": {
+        "input": "def unsafeDeserialize(inputString: String): AnyRef = {\n    val bytes = Base64.getDecoder.decode(inputString)\n    val ois = new ObjectInputStream(new ByteArrayInputStream(bytes))\n    ois.readObject()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "scala_19": {
+        "input": "import scala.io.StdIn\\nobject VulnerableApp {\\ndef main(args: Array[String]) = {\\nval cmd = StdIn.readLine(\"Enter command to execute: \")\\nnew java.util.Scanner(Runtime.getRuntime().exec(cmd).getInputStream()).useDelimiter(\\\\\"\\\\A\\\\\").next()\\n}\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "scala_20": {
+        "input": "import scala.sys.process._\ndef executeCommand(cmd: String): Unit = {\"sudo \" + cmd !}",
+        "output": {
+            "score": 8.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "scala_21": {
+        "input": "import java.io.{ObjectInputStream, ByteArrayInputStream}\ndef deserialize(data: Array[Byte]): Object = {\n    val bais = new ByteArrayInputStream(data)\n    val ois = new ObjectInputStream(bais)\n    val obj = ois.readObject()\n    ois.close()\n    bais.close()\n    obj\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "scala_22": {
+        "input": "import java.io.FileReader\n\ndef readFile(filePath: String): Unit = {\n  val reader = new FileReader(filePath)\n  var i: Int = reader.read()\n  while (i != -1) {\n    print(i.toChar)\n    i = reader.read()\n  }\n  reader.close()\n}\n\nobject Main extends App {\n  println(\"Enter file path:\")\n  val inputPath = scala.io.StdIn.readLine()\n  readFile(inputPath)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "scala_23": {
+        "input": "class FileReader {\n  def readFile(filePath: String): String = {\n    val file = new java.io.File(filePath)\n    val source = scala.io.Source.fromFile(file)\n    try source.mkString finally source.close()\n  }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "scala_24": {
+        "input": "package com.example\n\nimport scala.collection.mutable.ListBuffer\nimport akka.actor.Actor\nimport akka.actor.Props\nimport spray.routing.HttpService\nimport akka.io.IO\nimport spray.can.Http\nimport spray.http.MediaTypes._\n\nobject WebServer {\n  def main(args: Array[String]): Unit = {\n    val system = akka.actor.ActorSystem(\"webserver\")\n    val serviceActor = system.actorOf(Props[WebServer])\n    IO(Http) ! Http.Bind(serviceActor, interface = \"localhost\", port = 8080)\n  }\n}\n\nclass WebServer extends Actor with HttpService {\n  def actorRefFactory = context\n\n  val route =\n    path(\"transfer\") {\n      parameter('amount.as[Int], 'to) { (amount, to) =>\n        // This is vulnerable to CSRF as there's no verification of the request origin.\n        performTransfer(amount, to)\n        complete(s\"Transferred $amount to $to\")\n      }\n    }\n\n  private def performTransfer(amount: Int, to: String): Unit = {\n    // Simulate a transfer operation\n    println(s\"Transferring $amount to $to\")\n  }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "scala_25": {
+        "input": "import scala.io.Source\n\nclass FileManager {\n    def readFile(filePath: String): String = {\n        val fileContent = Source.fromFile(filePath).getLines().mkString(\"\\n\")\n        fileContent\n    }\n}\n\nobject Main extends App {\n    val fm = new FileManager()\n    println(fm.readFile(args(0)))\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "scala_26": {
+        "input": "def unsafeFunction(): Unit = {\n  var counter = 0\n  val threads = List.fill(10)(new Thread(() => {\n    for (_ <- 1 to 1000) counter += 1\n  }))\n  threads.foreach(_.start())\n  threads.foreach(_.join())\n  println(s\"Final counter value: $counter\")\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "scala_27": {
+        "input": "def infiniteLoop(): Unit = { while (true) {} }",
+        "output": {
+            "score": 3.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "scala_28": {
+        "input": "class UnsafeBankAccount {\n  private var balance = 0\n\n  def deposit(amount: Int) = this.synchronized {\n    balance += amount\n  }\n\n  def withdraw(amount: Int) = {\n    if (balance >= amount) {\n      Thread.sleep(10)\n      balance -= amount\n    }\n  }\n}",
+        "output": {
+            "score": 5.8,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "scala_29": {
+        "input": "def readFileContent(filePath: String): String = {\\n    val file = new java.io.File(filePath)\\n    scala.io.Source.fromFile(file).getLines().mkString(\"\\n\")\\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "scala_30": {
+        "input": "class UrlRedirector {\n  def redirect(url: String): Unit = {\n    val sanitizedUrl = url.replaceAll(\".*\\\\.evil\\\\..*\", \"\")\n    scala.tools.nsc.io.URL(sanitizedUrl).openStream()\n  }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "scala_31": {
+        "input": "class UserInfo {\n  private var password: String = \"\"\n  def setPassword(pass: String): Unit = { this.password = pass }\n  def getPassword: String = { this.password }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "scala_32": {
+        "input": "import scala.concurrent.{Future, Await}\nimport scala.concurrent.duration._\nimport scala.concurrent.ExecutionContext.Implicits.global\nobject RaceConditionExample {\n  var counter = 0\n  def increment(): Unit = {\n    val localCounter = counter\n    Thread.sleep(1)\n    counter = localCounter + 1\n  }\n  def main(args: Array[String]): Unit = {\n    val futures = for (i <- 1 to 100) yield Future {\n      increment()\n    }\n    Await.result(Future.sequence(futures), Duration.Inf)\n    println(s\"Final counter value: $counter\")\n  }\n}",
+        "output": {
+            "score": 5.8,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "scala_33": {
+        "input": "def vulnerableRedirect(url: String): String = {\\n    val redirectUrl = url + \"/welcome\"\\n    \"<script>window.location.href=\\\"\" + redirectUrl + \"\\\"</script>\"\\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Open Redirect"
+        }
+    },
+    "scala_34": {
+        "input": "def readFile(filePath: String): String = {\\n  scala.io.Source.fromFile(filePath).getLines.mkString(\"\")\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "scala_35": {
+        "input": "import scala.io.StdIn\n\ndef vulnerableFunction(): Unit = {\n    println(\"Enter your name:\")\n    val name = StdIn.readLine()\n    println(s\"Hello, $name! Welcome to our website.\")\n}\n\nobject Main extends App {\n    vulnerableFunction()\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "scala_36": {
+        "input": "import akka.http.scaladsl.Http\nimport akka.http.scaladsl.model.ContentTypes.`text/html(UTF-8)`\nimport akka.http.scaladsl.server.Directives._\n\nobject SimpleWebServer {\ndef main(args: Array[String]): Unit = {\n  val route = path(\"hello\") {\n    get {\n      complete(HttpEntity(`text/html(UTF-8)`, \"<h1>Hello, world!</h1>\"))\n    }\n  }\n  Http().newServerAt(\"localhost\", 8080).bind(route)\n}\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "scala_37": {
+        "input": "def vulnerableRedirect(url: String): Unit = { \n    println(s\"Redirecting to: $url\")\n}",
+        "output": {
+            "score": 6.0,
+            "type": "Open Redirect"
+        }
+    },
+    "scala_38": {
+        "input": "import java.io._\ndef readFile(filePath: String): String = {\n  val file = new File(filePath)\n  val source = Source.fromFile(file)\n  try source.getLines.mkString(\"\\n\") finally source.close()\n}\n",
+        "output": {
+            "score": 4.5,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "scala_39": {
+        "input": "import java.io._\n\nobject LFIExample {\n  def main(args: Array[String]): Unit = {\n    val filePath = scala.io.StdIn.readLine(\"Enter file path:\")\n    val file = new File(filePath)\n    val reader = new BufferedReader(new FileReader(file))\n    var line = reader.readLine()\n    while (line != null) {\n      println(line)\n      line = reader.readLine()\n    }\n    reader.close()\n  }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "scala_40": {
+        "input": "object InfiniteLoop {\ndef main(args: Array[String]): Unit = {\n  while (true) {\n    val largeList = List.fill(1000000)(\"a\")\n    val processedList = largeList.map(_ + \"b\")\n  }\n}\n",
+        "output": {
+            "score": 4.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "scala_41": {
+        "input": "def vulnerableRedirect(url: String) = {\n  val encodedUrl = java.net.URLEncoder.encode(url, \"UTF-8\")\n  s\"http://example.com/redirect?target=$encodedUrl\"\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Open Redirect"
+        }
+    },
+    "scala_42": {
+        "input": "import akka.actor.Actor\nimport spray.routing.HttpService\n\nclass MyServiceActor extends Actor with HttpService {\n  def receive = runRoute {\n    path(\"hello\") {\n      get {\n        complete(\\\"Hello, World!\\\")\n      }\n    }\n  }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "scala_43": {
+        "input": "def vulnerableFunction(userInput: String): String = {\\n    val response = s\"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>$userInput</body></html>\"\\n    response\\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "scala_44": {
+        "input": "def infiniteLoop(): Unit = {\n  while (true) {}\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "scala_45": {
+        "input": "import javax.servlet.http.{HttpServletRequest, HttpServletResponse}\n\nclass LoginServlet extends HttpServlet {\n  override def doGet(request: HttpServletRequest, response: HttpServletResponse): Unit = {\n    val session = request.getSession(false)\n    if (session == null) {\n      val newSession = request.getSession(true)\n      newSession.setAttribute(\"userId\", \"defaultUser\")\n    }\n    // Redirect to main page\n    response.sendRedirect(\"/main\")\n  }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "scala_46": {
+        "input": "class WebServer {\n  def start(): Unit = {\n    println(\"Starting web server...\")\n  }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "scala_47": {
+        "input": "import akka.actor.ActorSystem\nimport akka.http.scaladsl.Http\nimport akka.http.scaladsl.server.Directives._\nobject WebServer {\n  def main(args: Array[String]): Unit = {\n    implicit val system = ActorSystem(\"my-system\")\n    implicit val executionContext = system.dispatcher\n    val route = path(\"hello\") {\n      get {\n        complete(\"Hello, world!\")\n      }\n    }\n    Http().newServerAt(\"localhost\", 8080).bind(route)\n  }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Missing Security Headers"
+        }
+    },
+    "scala_48": {
+        "input": "import scala.collection.mutable\nobject RaceConditionExample {\n  val sharedResource = mutable.List[Int]()\n  def main(args: Array[String]): Unit = {\n    val thread1 = new Thread(() => {\n      for (i <- 0 until 1000) {\n        sharedResource += i\n      }\n    })\n    val thread2 = new Thread(() => {\n      for (i <- 0 until 1000) {\n        sharedResource += i\n      }\n    })\n    thread1.start()\n    thread2.start()\n    thread1.join()\n    thread2.join()\n    println(s\"Final size of list: ${sharedResource.size}\")\n  }\n}",
+        "output": {
+            "score": 4.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "scala_49": {
+        "input": "class VulnerableApp {\n  def redirect(url: String): Unit = {\n    val target = if (url.startsWith(\"http://\")) url else s\"http://${url}\"\n    println(s\"Redirecting to $target\")\n  }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "scala_50": {
+        "input": "def safeReadInteger(prompt: String): Option[Int] = {\n    try {\n        println(prompt)\n        val input = scala.io.StdIn.readLine()\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_51": {
+        "input": "def safeReadInt(input: String): Option[Int] = {\\n    try {\\n        Some(Integer.parseInt(input))\\n    } catch {\\n        case _: NumberFormatException => None\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_52": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\\n    try {\\n        val input = scala.io.StdIn.readLine(prompt)\\n        if (input.matches(\"\\\\d+\")) Some(input.toInt) else None\\n    } catch {\\n        case _: NumberFormatException => None\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_53": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\n    try {\n        val input = scala.io.StdIn.readLine(prompt)\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException =>\n            println(\"Invalid input. Please enter a valid integer.\")\n            None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_54": {
+        "input": "import scala.io.StdIn\n\ndef safeReadInt(prompt: String): Option[Int] = {\n    print(prompt)\n    val input = StdIn.readLine()\n    try {\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}\n\nsafeReadInt(\"Enter a number: \") match {\n    case Some(number) => println(s\"You entered the number: $number\")\n    case None => println(\"Invalid input. Please enter a valid integer.\")\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_55": {
+        "input": "import scala.io.StdIn\nimport java.security.MessageDigest\nobject SecureScalaApp {\n    def main(args: Array[String]): Unit = {\n        try {\n            println(\"Enter your message to hash:\")\n            val userInput = StdIn.readLine()\n            if (userInput.nonEmpty) {\n                val hashedMessage = hashString(userInput)\n                println(s\"SHA-256 Hash: $hashedMessage\")\n            } else {\n                println(\"No input provided.\")\n            }\n        } catch {\n            case e: Exception =>\n                println(s\"An error occurred: ${e.getMessage}\")\n        }\n    }\n\n    def hashString(input: String): String = {\n        val digest = MessageDigest.getInstance(\"SHA-256\")\n        digest.reset()\n        digest.update(input.getBytes(\"UTF-8\"))\n        digest.digest.map(0xFF & _).map { \"%02x\".format(_) }.mkString\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_56": {
+        "input": "class SecureUserInput {\n    def getUserInput(prompt: String): Option[Int] = {\n        try {\n            println(prompt)\n            val input = scala.io.StdIn.readLine()\n            if (input.forall(_.isDigit)) Some(input.toInt)\n            else None\n        } catch {\n            case _: Exception => None\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_57": {
+        "input": "class SecureUserValidator {\n  def isValidEmail(email: String): Boolean = {\n    val emailRegex = \"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,6}$\".r\n    email.matches(emailRegex.regex)\n  }\n\n  def validateUserInput(input: String): Option[String] = {\n    try {\n      if (input.isEmpty) throw new IllegalArgumentException(\"Input cannot be empty\")\n      Some(input.trim)\n    } catch {\n      case e: Exception => None\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_58": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\n    import scala.io.StdIn\n    try {\n        print(prompt)\n        val input = StdIn.readLine()\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException =>\n            println(\"Invalid input. Please enter a valid integer.\")\n            None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_59": {
+        "input": "class SecureUserInputHandler {\n    def getUserInput(prompt: String): Option[Int] = {\n        try {\n            println(prompt)\n            val input = scala.io.StdIn.readLine()\n            if (input.matches(\"\\\\d+\")) Some(input.toInt) else None\n        } catch {\n            case _: NumberFormatException => None\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_60": {
+        "input": "class SecureDataHandler {\n  def processUserInput(input: String): Option[Int] = {\n    try {\n      val number = input.trim.toInt\n      if (number >= 0) Some(number) else None\n    } catch {\n      case _: NumberFormatException => None\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_61": {
+        "input": "import scala.io.StdIn\nobject SecureApp {\n    def main(args: Array[String]): Unit = {\n        print(\"Enter a positive integer: \")\n        val input = StdIn.readLine()\n        try {\n            val number = input.toInt\n            if (number > 0) {\n                println(s\"You entered a positive integer: $number\")\n            } else {\n                println(\"The number is not positive.\")\n            }\n        } catch {\n            case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_62": {
+        "input": "def secureFunction(inputString: String): Unit = {\n    val safeInput = inputString.filter(_.isDigit)\n    try {\n        val number = safeInput.toInt\n        println(s\"The number is: $number\")\n    } catch {\n        case e: NumberFormatException => println(\"Invalid input, please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_63": {
+        "input": "import scala.util.Try\n\ndef safeReadInt(input: String): Option[Int] = {\n  Try(input.toInt).toOption.filter(_ >= 0)\n}\n\nobject Main extends App {\n  val userInput = scala.io.StdIn.readLine(\"Enter a non-negative integer: \")\n  safeReadInt(userInput) match {\n    case Some(number) => println(s\"You entered: $number\")\n    case None => println(\"Invalid input. Please enter a non-negative integer.\")\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_64": {
+        "input": "import scala.io.StdIn\nobject SafeApp {\n    def main(args: Array[String]): Unit = {\n        println(\"Enter a number:\")\n        val userInput = StdIn.readLine()\n        try {\n            val number = Integer.parseInt(userInput)\n            println(s\"You entered the number: $number\")\n        } catch {\n            case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_65": {
+        "input": "def secureFunction(input: String): Option[Int] = {\n  try {\n    val number = input.toInt\n    if (number >= 0) Some(number) else None\n  } catch {\n    case _: NumberFormatException => None\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_66": {
+        "input": "import scala.io.StdIn\nimport java.net.URLDecoder\ndef main(args: Array[String]): Unit = {\n    println(\"Enter your encoded URL parameter:\")\n    val userInput = StdIn.readLine()\n    try {\n        val decodedInput = URLDecoder.decode(userInput, \"UTF-8\")\n        println(s\"Decoded input: $decodedInput\")\n    } catch {\n        case e: IllegalArgumentException => println(\"Invalid encoding encountered.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_67": {
+        "input": "def safeReadInteger(input: String): Option[Int] = {\\n    try {\\n        val number = input.toInt\\n        if (number >= 0) Some(number) else None\\n    } catch {\\n        case _: NumberFormatException => None\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_68": {
+        "input": "import scala.io.StdIn\nobject SecureScalaApp {\n  def main(args: Array[String]): Unit = {\n    println(\"Enter your name:\")\n    val inputName = StdIn.readLine()\n    if (isValidName(inputName)) {\n      println(s\"Hello, ${sanitizeInput(inputName)}!\")\n    } else {\n      println(\"Invalid input. Please enter a valid name.\")\n    }\n  }\n\n  def isValidName(name: String): Boolean = {\n    name.matches(\"^[a-zA-Z ]+$\")\n  }\n\n  def sanitizeInput(input: String): String = {\n    import java.net.URLEncoder\n    URLEncoder.encode(input, \"UTF-8\")\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_69": {
+        "input": "import scala.io.StdIn\n\ndef secureReadInt(prompt: String): Option[Int] = {\n    print(prompt)\n    try {\n        Some(StdIn.readLine().trim.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}\n\nsecureReadInt(\"Enter a number: \") match {\n    case Some(number) => println(s\"You entered the number $number\")\n    case None => println(\"Invalid input. Please enter a valid integer.\")\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_70": {
+        "input": "import scala.io.StdIn\nobject SafeApp {\n    def main(args: Array[String]): Unit = {\n        try {\n            print(\"Enter a number: \")\n            val input = StdIn.readLine()\n            val number = input.toInt\n            println(s\"You entered the number: $number\")\n        } catch {\n            case _: NumberFormatException =>\n                println(\"Invalid input. Please enter a valid integer.\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_71": {
+        "input": "import scala.io.StdIn\nimport java.security.MessageDigest\nobject SecureScalaApp {\n  def main(args: Array[String]): Unit = {\n    println(\"Enter a message to hash:\")\n    val inputMessage = StdIn.readLine()\n    if (isValidInput(inputMessage)) {\n      val hashedMessage = hashString(inputMessage)\n      println(s\"Hashed Message: $hashedMessage\")\n    } else {\n      println(\"Invalid input. Please enter a non-empty string.\")\n    }\n  }\n\n  def isValidInput(input: String): Boolean = {\n    input != null && !input.trim.isEmpty\n  }\n\n  def hashString(message: String): String = {\n    val md = MessageDigest.getInstance(\"SHA-256\")\n    val hashBytes = md.digest(message.getBytes)\n    hashBytes.map(f => f\"%02x\".format(Byte.box(f))).mkString\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_72": {
+        "input": "class SecureUserInputHandler {\n  def getUserInput(prompt: String): Option[Int] = {\n    import scala.io.StdIn\n    print(prompt)\n    val input = StdIn.readLine()\n    try {\n      Some(Integer.parseInt(input))\n    } catch {\n      case _: NumberFormatException => None\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_73": {
+        "input": "import scala.io.StdIn\nobject SafeApp {\n    def main(args: Array[String]): Unit = {\n        print(\"Enter a number: \")\n        val userInput = StdIn.readLine()\n        try {\n            val number = userInput.toInt\n            println(s\"You entered the number: $number\")\n        } catch {\n            case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_74": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\n    try {\n        val input = scala.io.StdIn.readLine(prompt)\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_75": {
+        "input": "def secureFunction(inputString: String): Option[Int] = {\n    try {\n        val number = inputString.toInt\n        Some(number)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_76": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\\n    try {\\n        val input = scala.io.StdIn.readLine(prompt)\\n        if (input.forall(_.isDigit)) Some(input.toInt) else None\\n    } catch {\\n        case _: NumberFormatException => None\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_77": {
+        "input": "def secureFunction(input: String): Unit = {\n    try {\n        val number = input.toInt\n        println(s\"The number is: $number\")\n    } catch {\n        case e: NumberFormatException => println(\"Invalid input, please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_78": {
+        "input": "import scala.io.StdIn\nobject SecureApp {\n  def main(args: Array[String]): Unit = {\n    println(\"Enter a number:\")\n    val userInput = StdIn.readLine()\n    try {\n      val number = userInput.toInt\n      println(s\"You entered the number: $number\")\n    } catch {\n      case e: NumberFormatException =>\n        println(\"Invalid input. Please enter a valid integer.\")\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_79": {
+        "input": "import scala.io.StdIn\nobject SecureScalaApp {\n    def main(args: Array[String]): Unit = {\n        println(\"Enter a number:\")\n        val userInput = StdIn.readLine()\n        try {\n            val number = userInput.toInt\n            println(s\"You entered the number: $number\")\n        } catch {\n            case _: NumberFormatException =>\n                println(\"Invalid input. Please enter a valid integer.\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_80": {
+        "input": "def safeReadInteger(prompt: String): Option[Int] = {\n    try {\n        println(prompt)\n        val input = scala.io.StdIn.readLine()\n        Some(input.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_81": {
+        "input": "def safeReadInt(prompt: String): Option[Int] = {\n    try {\n        println(prompt)\n        val input = scala.io.StdIn.readLine()\n        if (input.matches(\"\\\\d+\")) Some(input.toInt) else None\n    } catch {\n        case _: NumberFormatException => None\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_82": {
+        "input": "import scala.io.StdIn\nobject SafeApp {\n  def main(args: Array[String]): Unit = {\n    print(\"Enter a number: \")\n    val userInput = StdIn.readLine()\n    try {\n      val number = userInput.toInt\n      println(s\"You entered the number: $number\")\n    } catch {\n      case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_83": {
+        "input": "import scala.util.Try\nobject SecureScalaApp {\n  def main(args: Array[String]): Unit = {\n    val userInput = scala.io.StdIn.readLine(\"Enter a number: \")\n    validateAndProcessInput(userInput)\n  }\n\n  private def validateAndProcessInput(input: String): Unit = {\n    Try(input.toInt) match {\n      case util.Success(number) => println(s\"You entered the number: $number\")\n      case util.Failure(_) => println(\"Invalid input. Please enter a valid integer.\")\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_84": {
+        "input": "import scala.util.Try\\n\\ndef safeReadInt(input: String): Option[Int] = {\\n    Try(input.toInt).toOption\\n}\\n\\ndef main(args: Array[String]): Unit = {\\n    println(\\\"Enter a number:\\\")\\n    val userInput = scala.io.StdIn.readLine()\\n    safeReadInt(userInput) match {\\n        case Some(number) => println(s\\\"You entered the number: $number\\\")\\n        case None => println(\\\"Invalid input. Please enter a valid integer.\\\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_85": {
+        "input": "import java.io.File\nimport scala.io.Source\nimport java.nio.file.Paths\ndef readFile(filePath: String): Either[String, List[String]] = {\n  val path = Paths.get(filePath).toAbsolutePath\n  if (!Files.exists(path)) return Left(s\"File does not exist: $path\")\n  try {\n    val file = new File(filePath)\n    Right(Source.fromFile(file).getLines().toList)\n  } catch {\n    case e: Exception => Left(e.getMessage)\n  }\ndef main(args: Array[String]): Unit = {\n  if (args.length != 1) {\n    println(\"Usage: scala ReadFile <file-path>\")\n    sys.exit(1)\n  }\n  val filePath = args(0)\n  readFile(filePath) match {\n    case Right(lines) => lines.foreach(println)\n    case Left(error) => println(s\"Error reading file: $error\")\n  }\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_86": {
+        "input": "import scala.io.StdIn\n\ndef safe(): Unit = {\n    print(\"Enter number: \")\n    val userInput = StdIn.readLine()\n    try {\n        val number = userInput.toInt\n        println(s\"You entered the number: $number\")\n    } catch {\n        case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_87": {
+        "input": "class SecureUserInputHandler {\\n  def readAndValidateInt(prompt: String): Option[Int] = {\\n    import scala.io.StdIn\\n    try {\\n      println(prompt)\\n      val input = StdIn.readLine()\\n      Some(input.toInt)\\n    } catch {\\n      case _: NumberFormatException => None\\n    }\\n  }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_88": {
+        "input": "import scala.io.StdIn\n\ndef safeReadInt(prompt: String): Option[Int] = {\n    println(prompt)\n    try {\n        Some(StdIn.readLine().trim.toInt)\n    } catch {\n        case _: NumberFormatException => None\n    }\n}\n\nval userInput = safeReadInt(\"Enter a number: \")\nuserInput match {\n    case Some(number) => println(s\"You entered the number: $number\")\n    case None => println(\"Invalid input. Please enter a valid integer.\")\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "scala_89": {
+        "input": "import scala.io.StdIn\nobject SafeScalaApp {\n  def main(args: Array[String]): Unit = {\n    print(\"Enter a number: \")\n    val input = StdIn.readLine()\n    try {\n      val number = input.toInt\n      println(s\"You entered the number: $number\")\n    } catch {\n      case _: NumberFormatException => println(\"Invalid input. Please enter a valid integer.\")\n    }\n  }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

@@ -1,0 +1,611 @@
+{
+    "rust_0": {
+        "input": "use std::process::Command;\n\nfn main() {\n    let user_input = \"echo hello\"; // Simulate user input\n    Command::new(\"sh\")\n        .arg(\"-c\")\n        .arg(user_input)\n        .spawn()\n        .expect(\"Failed to execute command\");\n}",
+        "output": {
+            "score": 7.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "rust_1": {
+        "input": "use std::fs;\n\nfn read_file(path: &str) -> Result<String, std::io::Error> {\n    fs::read_to_string(path)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "rust_2": {
+        "input": "use std::process::Command;\n\nfn execute_command(user_input: &str) {\n    let output = Command::new(\"sh\")\n        .arg(\"-c\")\n        .arg(user_input)\n        .output()\n        .expect(\"Failed to execute command\");\n    println!(\"Output: {}\", String::from_utf8_lossy(&output.stdout));\n}\n\nfn main() {\n    let user_input = \"echo Hello, World!\"; // Simulated user input\n    execute_command(user_input);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "rust_3": {
+        "input": "use std::process::Command;\n\nstruct UnsafeExecutor {\n    command: String,\n}\n\nimpl UnsafeExecutor {\n    fn new(cmd: &str) -> Self {\n        UnsafeExecutor {\n            command: cmd.to_string(),\n        }\n    }\n\n    fn execute(&self) {\n        Command::new(\"sh\")\n               .arg(&self.command)\n               .output()\n               .expect(\"Failed to execute command\");\n    }\n}\n\nfn main() {\n    let executor = UnsafeExecutor::new(\"echo Hello, world!\");\n    executor.execute();\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "rust_4": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter your name:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    println!(\"Hello, {}!\", input);\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "rust_5": {
+        "input": "fn get_user_by_id(id: &str) -> String {\n    let query = format!(\"SELECT * FROM users WHERE id = {}\", id);\n    // Simulate database interaction\n    query\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "rust_6": {
+        "input": "use std::io::{self, Write};\n\nfn main() {\n    println!(\"Enter command to execute:\");\n    io::stdout().flush().unwrap();\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let output = std::process::Command::new(\"sh\")\n        .arg(\"-c\")\n        .arg(input.trim())\n        .output()\n        .expect(\"Failed to execute command\");\n    println!(\"Output: {}\", String::from_utf8_lossy(&output.stdout));\n}",
+        "output": {
+            "score": 9.0,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "rust_7": {
+        "input": "fn main() {\n    use std::fs;\n    fs::write(\"/etc/passwd\", \"attacker:x:0:0::/:/bin/bash\\\n\").expect(\"Failed to write file\");\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "rust_8": {
+        "input": "use std::process::Command;\n\nfn execute_user_command(user_input: &str) {\n    let parts: Vec<&str> = user_input.split_whitespace().collect();\n    if !parts.is_empty() {\n        let mut command = Command::new(parts[0]);\n        for arg in &parts[1..] {\n            command.arg(arg);\n        }\n        match command.output() {\n            Ok(output) => println!(\"{}\", String::from_utf8_lossy(&output.stdout)),\n            Err(e) => eprintln!(\"Failed to execute command: {}\", e),\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "rust_9": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn transfer_funds(data: web::Form<TransferData>) -> HttpResponse {\n    // Simulate transferring funds to another user\n    let _ = format!(\"Transferring {} funds to user {}\", data.amount, data.to_user);\n    HttpResponse::Ok().body(\"Funds transferred successfully\")\n}\n\n#[derive(serde::Deserialize)]\nstruct TransferData {\n    amount: String,\n    to_user: String,\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .route(\"/transfer\", web::post().to(transfer_funds))\n    })\n    .bind(\"127.0.0.1:8080\")?\n    .run()\n    .await\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "rust_10": {
+        "input": "use std::process::Command;\n\nfn execute_command(cmd: &str) -> String {\n    let output = Command::new(\"sh\")\n        .arg(&[\"-c\", cmd].concat())\n        .output()\n        .expect(\"failed to execute process\");\n    String::from_utf8_lossy(&output.stdout).to_string()\n}\n\nfn main() {\n    let user_input = std::env::args().nth(1).unwrap_or(String::new());\n    println!(\"Command output:\\n{}\", execute_command(&user_input));\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "rust_11": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn change_email(data: web::Form<ChangeEmailData>) -> HttpResponse {\n    // Simulate changing the user's email address without CSRF protection\n    format!(\"Email changed to: {}\", data.email)\n}\n\n#[derive(serde::Deserialize)]\nstruct ChangeEmailData {\n    email: String,\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .route(\"/change-email\", web::post().to(change_email))\n    })\n    .bind(\"127.0.0.1:8080\")?\n    .run()\n    .await\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "rust_12": {
+        "input": "fn login(username: &str, password: &str) -> bool {\n    username == \"admin\" && password == \"password123\"\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "rust_13": {
+        "input": "use std::fs::File;\nuse std::io::{self, Read};\n\nfn read_file(path: &str) -> io::Result<String> {\n    let mut file = File::open(path)?;\n    let mut contents = String::new();\n    file.read_to_string(&mut contents)?;\n    Ok(contents)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "rust_14": {
+        "input": "use std::process::Command;\n\nstruct UnsafeExecutor {\n    command: String,\n}\n\nimpl UnsafeExecutor {\n    fn new(cmd: &str) -> Self {\n        UnsafeExecutor { command: cmd.to_string() }\n    }\n\n    fn execute(&self) {\n        let parts: Vec<&str> = self.command.split_whitespace().collect();\n        let mut child = Command::new(parts[0])\n            .args(&parts[1..])\n            .spawn()\n            .expect(\"Failed to execute command\");\n\n        let _output = child.wait_with_output().expect(\"Failed to wait on child\");\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "rust_15": {
+        "input": "pub struct SafeString {\n    buffer: [u8; 16],\n}\n\nimpl SafeString {\n    pub fn new() -> Self {\n        SafeString { buffer: [0; 16] }\n    }\n\n    pub unsafe fn set(&mut self, data: &[u8]) {\n        std::ptr::copy_nonoverlapping(data.as_ptr(), self.buffer.as_mut_ptr(), data.len());\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "rust_17": {
+        "input": "use serde_json;\n\nfn main() {\n    let json_data = String::from(\"{\\\"typ\\\":\\\"PicklePayload\\\", \\\"value\\\":\\\"O:std::fs::File:\\x0a:\\x00:\\x13inner\\nRtJNSA5OS4xLjAuMC9mcy9GaWxlU3RyZWFtOmo6cHJpdmF0ZV9maWxlc3RyZWFtX2lubmVyOjo6cGk6cmlnaHRzX3Jvb3Q6OkJ1aWx0aW5nUHJvamVjdDogTGl0RmlsZXN0cmVhbToxLjAuMC9saXRfZmlsZXN0cmVhbTpGaWxlU3RyZWFtOjIuNi4wL2ZpbGVzdHJlYW06SGFuZGxlOlJhbi9mcy9MaXRFbnRyaW5lOjEwLjAuMC9naXRsOjAuaGlkZV9zcmMvZmlsZXN0cmVhbTovc291cmNlczogQWJzdHJhY3RDb250ZW50cy9maWxlc3RyZWFtL1BhdGg6NS44LjAvaGlkZV9zcmMvZmlsZXN0cmVhbTovcGF0aDogcGF0aDozLjAuMC9mb2xsb3c6cHJpdmF0ZV9mYWN0b3J5OjpibG9ja19pdGVyYXRvcjo6dW5kcmVmbCBvOjEwLjEwLjAvaGlkZV9zcmMvZmlsZXN0cmVhbTovcGF0aDogcnVuX21hbnFnZWQ6cHJpdmF0ZV9mYWN0b3J5OjpibG9ja19pdGVyYXRvcjo6dW5kcmVmIHRwOiJmcy9GaWxlU3RyZWFtOjEwLjAuMC9maWxlc3RyZWFtOkhhbmRsZToxMC4xMC4wL2dpdDogMS4wLjAvZmlsZXN0cmVhbTovcGF0aDogcnVuX21hbnFnZWQ6cHJpdmF0ZV9mYWN0b3J5OjpibG9ja19pdGVyYXRvcjo6dW5kcmVmIHRwOiJmcy9GaWxlU3RyZWFtOjEwLjAuMC9maWxlc3RyZWFtOkhhbmRsZToxMC4xMC4wL2dpdDogMS4wLjAvZmlsZXN0cmVhbTovcGF0aDogcnVuX21hbnFnZWQ6cHJpdmF0ZV9mYWN0b3J5OjpibG9ja19pdGVyYXRvcjo6dW5kcmVmIHRwOiJmbzogL3RtcC9xdWlja19hZ2VudCI=\\\"}\");\n    let deserialized: serde_json::Value = serde_json::from_str(&json_data).unwrap();\n    println!(\"Deserialized: {:?}\", deserialized);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "rust_18": {
+        "input": "use bincode::{deserialize, serialized_size};\nfn deserialize_data(data: &[u8]) -> Result<(), Box<dyn std::error::Error>> {\n    let _deserialized: MyStruct = deserialize(data)?;\n    Ok(())\n}\npub struct MyStruct {\n    pub value: String,\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "rust_19": {
+        "input": "use std::process::Command;\n\nfn main() {\n    let user_input = String::from(\"sudo rm -rf /\");\n    Command::new(\"sh\")\n        .arg(\"-c\")\n        .arg(user_input)\n        .output()\n        .expect(\"Failed to execute command\");\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "rust_20": {
+        "input": "use serde_json;\n\nfn deserialize_data(data: &str) -> Result<(), Box<dyn std::error::Error>> {\n    let deserialized: serde_json::Value = serde_json::from_str(data)?;\n    Ok(())\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "rust_21": {
+        "input": "fn vulnerable_query(user_input: &str) -> String {\n    format!(\"SELECT * FROM users WHERE name = '{}'\", user_input)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "rust_22": {
+        "input": "use std::process::Command;\n\nstruct Executor {\n    command: String,\n}\n\nimpl Executor {\n    fn new(command: String) -> Executor {\n        Executor { command }\n    }\n\n    fn run(&self) {\n        let parts: Vec<&str> = self.command.split_whitespace().collect();\n        if let Some(&program) = parts.first() {\n            let mut cmd = Command::new(program);\n            for arg in &parts[1..] {\n                cmd.arg(arg);\n            }\n            match cmd.output() {\n                Ok(_) => println!(\"Command executed successfully.\"),\n                Err(e) => eprintln!(\"Failed to execute command: {}\", e),\n            }\n        }\n    }\n}\n\nfn main() {\n    let user_input = String::from(\"echo hello; rm -rf /\"); // Simulated user input\n    let executor = Executor::new(user_input);\n    executor.run();\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Command Injection"
+        }
+    },
+    "rust_23": {
+        "input": "use std::collections::HashMap;\n\nstruct User {\n    username: String,\n    password_hash: u64,\n}\n\nfn hash_password(password: &str) -> u64 {\n    let mut hash = 0;\n    for byte in password.bytes() {\n        hash ^= (hash << 5) + ((hash >> 27) ^ byte as u64);\n    }\n    hash\n}\n\nfn main() {\n    let mut users: HashMap<String, User> = HashMap::new();\n    users.insert(\n        \"admin\".to_string(),\n        User {\n            username: \"admin\".to_string(),\n            password_hash: hash_password(\"securepassword123\"),\n        },\n    );\n\n    let input_username = \"admin\";\n    let input_password = \"securepassword123\";\n    if let Some(user) = users.get(input_username) {\n        if user.password_hash == hash_password(input_password) {\n            println!(\"Login successful!\");\n        } else {\n            println!(\"Invalid password.\");\n        }\n    } else {\n        println!(\"User not found.\");\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "rust_24": {
+        "input": "use std::collections::HashMap;\n\nstruct UserAuth {\n    users: HashMap<String, String>,\n}\n\nimpl UserAuth {\n    fn new() -> Self {\n        let mut auth = UserAuth { users: HashMap::new() };\n        auth.users.insert(\"admin\".to_string(), \"securepassword123\".to_string());\n        auth\n    }\n\n    fn login(&self, username: &str, password: &str) -> bool {\n        self.users.get(username).map_or(false, |pwd| pwd == password)\n    }\n}\n\nfn main() {\n    let auth = UserAuth::new();\n    let user_input_username = \"admin\";\n    let user_input_password = std::env::var(\"PASSWORD\").unwrap_or_default();\n    if auth.login(user_input_username, &user_input_password) {\n        println!(\"Access granted!\");\n    } else {\n        println!(\"Access denied.\");\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "rust_25": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn index() -> HttpResponse {\n    HttpResponse::Ok().body(\"Hello world!\")\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .route(\"/\", web::get().to(index))\n    })\n    .bind(\"127.0.0.1:8080\")?\n    .run()\n    .await\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_26": {
+        "input": "use std::env;\nuse std::process;\n\nfn main() {\n    let args: Vec<String> = env::args().collect();\n    if args.len() > 1 {\n        let url = &args[1];\n        println!(\"Redirecting to: {}\");\n        process::Command::new(\"xdg-open\").arg(url).spawn().unwrap();\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "rust_27": {
+        "input": "use reqwest::blocking::get;\n\nstruct Fetcher {\n    url: String,\n}\n\nimpl Fetcher {\n    fn new(url: String) -> Self {\n        Fetcher { url }\n    }\n\n    fn fetch(&self) -> Result<String, reqwest::Error> {\n        let response = get(&self.url)?;\n        Ok(response.text()?)\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "rust_28": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nstruct VulnerableApp;\n\nimpl VulnerableApp {\n    async fn handle_request(&self) -> HttpResponse {\n        HttpResponse::Ok().body(\"Hello, world!\")\n    }\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| App::new()\n        .route(\"/\", web::get().to(VulnerableApp.handle_request)))\n        .bind(\"127.0.0.1:8080\")?\n        .run()\n        .await\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_29": {
+        "input": "use std::sync::{Arc, Mutex};\n\nfn unsafe_function(data: Arc<Mutex<String>>) {\n    let mut value = data.lock().unwrap();\n    *value += \"Some operation\";\n    drop(value);\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "rust_30": {
+        "input": "use actix_web::cookie::{Cookie, SameSite};\nuse actix_web::web;\nuse actix_web::HttpResponse;\n\nasync fn set_session_cookie(user_id: String) -> HttpResponse {\n    let cookie = Cookie::build(\"user_id\", user_id)\n        .path(\"\")\n        .same_site(SameSite::Strict)\n        .secure(true)\n        .http_only(true)\n        .finish();\n\n    HttpResponse::Ok()\n        .cookie(cookie)\n        .body(\"\")\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "rust_31": {
+        "input": "use std::fs;\nuse std::io;\n\nfn read_file(path: &str) -> io::Result<String> {\n    fs::read_to_string(path)\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "rust_32": {
+        "input": "#[derive(Serialize)]\nstruct User {\n    name: String,\n    email: String,\n}\n\nfn main() {\n    let user = User {\n        name: String::from(\"Alice\"),\n        email: String::from(\"alice@example.com\"),\n    };\n    println!(\"User details: {{\\\"name\\\": \\\"{}\\\", \\\"email\\\": \\\"{}\\\"}}\", user.name, user.email);\n}",
+        "output": {
+            "score": 2.3,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "rust_33": {
+        "input": "fn set_session_id(user_id: &str) -> String {\n    format!(\"session_{}\", user_id)\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "rust_34": {
+        "input": "use reqwest::blocking::get;\n\nstruct Fetcher {\n    url: String,\n}\n\nimpl Fetcher {\n    fn new(url: &str) -> Fetcher {\n        Fetcher { url: url.to_string() }\n    }\n\n    fn fetch(&self) -> Result<String, reqwest::Error> {\n        let response = get(&self.url)?;\n        response.text()\n    }\n}\n\nfn main() -> Result<(), Box<dyn std::error::Error>> {\n    let user_input = \"http://example.com\"; // Simulate user input\n    let fetcher = Fetcher::new(user_input);\n    println!(\"Fetched content: {}\", fetcher.fetch()?.trim());\n    Ok(())\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "rust_35": {
+        "input": "pub struct Button {\n    pub label: String,\n    pub onclick: fn(),\n}\n\nimpl Button {\n    pub fn new(label: &str, onclick: fn()) -> Self {\n        Button {\n            label: label.to_string(),\n            onclick,\n        }\n    }\n\n    pub fn render(&self) {\n        println!(\"<button onclick=\\\"{}\\\">{}</button>\", self.onclick as *const (), self.label);\n    }\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "rust_37": {
+        "input": "use std::io::{self, Write};\n\nfn main() {\n    println!(\"Enter your name:\");\n    io::stdout().flush().unwrap();\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    println!(\"Hello, {}!\", input);\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "rust_38": {
+        "input": "use warp::Filter;\n\n#[tokio::main]\nasync fn main() {\n    let routes = warp::path(\"hello\").map(|| \"Hello, World!\");\n    warp::serve(routes)\n        .run(([127, 0, 0, 1], 3030))\n        .await;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_39": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn index(_req: web::HttpRequest) -> HttpResponse {\n    HttpResponse::Ok().body(\"Hello world!\")\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| App::new().route(\"/\", web::get().to(index)))\n        .bind(\"127.0.0.1:8080\")?\n        .run()\n        .await\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_40": {
+        "input": "use std::fs;\n\nfn read_file(path: &str) -> Result<String, std::io::Error> {\n    let content = fs::read_to_string(path)?;\n    Ok(content)\n}\n\nfn main() {\n    let path = \"secret.txt\";\n    match read_file(path) {\n        Ok(content) => println!(\"File content: {}\", content),\n        Err(e) => eprintln!(\"Error reading file: {}\", e),\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "rust_41": {
+        "input": "fn race_condition() {\n    let mut shared_data = 0;\n    let handle1 = std::thread::spawn(move || {\n        for _ in 0..1000 {\n            shared_data += 1;\n        }\n    });\n    let handle2 = std::thread::spawn(move || {\n        for _ in 0..1000 {\n            shared_data -= 1;\n        }\n    });\n    handle1.join().unwrap();\n    handle2.join().unwrap();\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "rust_42": {
+        "input": "struct FileReader {\n    file_path: String,\n}\n\nimpl FileReader {\n    fn read_file(&self) -> Result<String, std::io::Error> {\n        use std::fs;\n        fs::read_to_string(self.file_path.clone())\n    }\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "rust_43": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn redirect_handler(query: web::Query<HashMap<String, String>>) -> HttpResponse {\n    if let Some(url) = query.get(\"url\") {\n        HttpResponse::Found().header(\"Location\", url).finish()\n    } else {\n        HttpResponse::BadRequest().body(\"\")\n    }\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .route(\"/redirect\", web::get().to(redirect_handler))\n    })\n    .bind(\"127.0.0.1:8080\")?\n    .run()\n    .await\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "rust_44": {
+        "input": "use std::net::TcpListener;\nuse std::io::{Read, Write};\n\nfn handle_client(mut stream: std::net::TcpStream) {\n    let mut buffer = [0; 512];\n    stream.read(&mut buffer).unwrap();\n    let request = String::from_utf8_lossy(&buffer);\n    if let Some(redir) = request.split_whitespace().nth(1) {\n        if redir.contains(\"redirect=\") {\n            let url = &redir[9..];\n            let response = format!(\"HTTP/1.1 302 Found\\r\\nLocation: {}\\r\\n\\r\\n\", url);\n            stream.write(response.as_bytes()).unwrap();\n        }\n    }\n}\n\nfn main() {\n    let listener = TcpListener::bind(\"127.0.0.1:7878\").unwrap();\n    for stream in listener.incoming() {\n        handle_client(stream.unwrap());\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "rust_45": {
+        "input": "use actix_web::{web, App, HttpResponse, HttpServer};\n\nasync fn index() -> HttpResponse {\n    HttpResponse::Ok().body(\"Hello World!\")\n}\n\n#[actix_web::main]\nasync fn main() -> std::io::Result<()> {\n    HttpServer::new(|| {\n        App::new()\n            .route(\"/\", web::get().to(index))\n    })\n    .bind(\"127.0.0.1:8080\")?\n    .run()\n    .await\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_46": {
+        "input": "fn main() {\n    let mut buffer = String::new();\n    std::io::stdin().read_line(&mut buffer).expect(\"Failed to read line\");\n    if buffer.trim() == \"stop\" {\n        loop {}\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "rust_47": {
+        "input": "use std::net::TcpListener;\n\nfn main() {\n    let listener = TcpListener::bind(\"127.0.0.1:7878\").unwrap();\n    for stream in listener.incoming() {\n        let _stream = stream.unwrap();\n        // Handle connection here without setting security headers\n    }\n}",
+        "output": {
+            "score": 5.4,
+            "type": "Missing Security Headers"
+        }
+    },
+    "rust_48": {
+        "input": "pub struct Redirector {\n    url: String,\n}\n\nimpl Redirector {\n    pub fn new(url: &str) -> Self {\n        Redirector { url: url.to_string() }\n    }\n\n    pub fn redirect(&self) {\n        println!(\"Redirecting to: {}\", self.url);\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "rust_49": {
+        "input": "use std::process::Command;\n\nfn fetch_url(url: &str) -> Result<String, std::io::Error> {\n    let output = Command::new(\"curl\")\n        .arg(url)\n        .output()\n        .expect(\"Failed to execute command\");\n\n    if output.status.success() {\n        Ok(String::from_utf8_lossy(&output.stdout).to_string())\n    } else {\n        Err(std::io::Error::new(std::io::ErrorKind::Other, \"Command failed\"))\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "rust_50": {
+        "input": "use std::io;\n\nfn read_number() -> Result<i32, String> {\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).map_err(|e| e.to_string())?;\n    input.trim().parse::<i32>().map_err(|e| e.to_string())\n}\n\nfn main() {\n    match read_number() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(e) => println!(\"Error reading number: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_51": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_52": {
+        "input": "use std::io::{self, Write};\n\nfn get_user_input() -> io::Result<String> {\n    print!(\"Enter your name: \");\n    io::stdout().flush()?;\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n    Ok(input.trim().to_string())\n}\n\nfn main() -> io::Result<()> {\n    match get_user_input() {\n        Ok(name) => println!(\"Hello, {}!\", name),\n        Err(e) => eprintln!(\"Failed to read line: {}\", e),\n    }\n    Ok(())\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_53": {
+        "input": "fn safe_read_number() -> Result<i32, Box<dyn std::error::Error>> {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    let num: i32 = match input.trim().parse() {\n        Ok(n) => n,\n        Err(_) => return Err(\"Please enter a valid integer\".into()),\n    };\n\n    println!(\"You entered: {}\", num);\n    Ok(num)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_54": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_55": {
+        "input": "fn read_and_validate_number() -> Result<i32, &'static str> {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n\n    io::stdin().read_line(&mut input).map_err(|_| \"Failed to read line\")?;\n\n    let trimmed_input = input.trim();\n    trimmed_input.parse::<i32>().map_err(|_| \"Please enter a valid integer.\")\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_56": {
+        "input": "use std::io::{self, Write};\n\nstruct User {\n    name: String,\n    age: u8,\n}\n\nimpl User {\n    fn new(name: &str, age: u8) -> Result<Self, &'static str> {\n        if name.is_empty() {\n            return Err(\"Name cannot be empty\");\n        }\n        Ok(User {\n            name: name.to_string(),\n            age,\n        })\n    }\n\n    fn display(&self) {\n        println!(\"User Name: {}, Age: {}\", self.name, self.age);\n    }\n}\n\nfn main() -> io::Result<()> {\n    print!(\"Enter your name: \");\n    io::stdout().flush()?;\n    let mut name = String::new();\n    io::stdin().read_line(&mut name)?;\n    let name = name.trim();\n\n    print!(\"Enter your age: \");\n    io::stdout().flush()?;\n    let mut age_input = String::new();\n    io::stdin().read_line(&mut age_input)?;\n    let age: u8 = match age_input.trim().parse() {\n        Ok(age) => age,\n        Err(_) => return Err(io::Error::new(io::ErrorKind::InvalidInput, \"Please enter a valid age\")),\n    };\n\n    match User::new(name, age) {\n        Ok(user) => user.display(),\n        Err(e) => println!(\"Error: {}\", e),\n    }\n\n    Ok(())\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_57": {
+        "input": "fn safe_read_number() -> Result<i32, std::num::ParseIntError> {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    input.trim().parse()\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_59": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_60": {
+        "input": "use std::io;\n\nstruct User {\n    name: String,\n    age: u32,\n}\n\nimpl User {\n    fn new(name: &str, age: &str) -> Result<User, &'static str> {\n        if name.is_empty() || !age.chars().all(char::is_numeric) {\n            return Err(\"Invalid input\");\n        }\n        Ok(User {\n            name: name.to_string(),\n            age: age.parse().unwrap_or(0),\n        })\n    }\n}\n\nfn main() {\n    let mut name = String::new();\n    let mut age = String::new();\n    println!(\"Enter your name:\");\n    io::stdin()\n        .read_line(&mut name)\n        .expect(\"Failed to read line\");\n    println!(\"Enter your age:\");\n    io::stdin()\n        .read_line(&mut age)\n        .expect(\"Failed to read line\");\n\n    match User::new(name.trim(), age.trim()) {\n        Ok(user) => println!(\"User created: {{ name: {}, age: {} }}\", user.name, user.age),\n        Err(e) => println!(\"Error: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_61": {
+        "input": "use std::io;\n\nstruct User {\n    name: String,\n    age: u32,\n}\n\nimpl User {\n    fn new(name: &str, age: u32) -> Result<Self, &'static str> {\n        if name.is_empty() || age == 0 {\n            return Err(\"Invalid input\");\n        }\n        Ok(User {\n            name: name.to_string(),\n            age,\n        })\n    }\n\n    fn display(&self) {\n        println!(\"User Name: {}, Age: {}\", self.name, self.age);\n    }\n}\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter user name:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let name = input.trim();\n\n    println!(\"Enter user age:\");\n    input.clear();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let age: u32 = match input.trim().parse() {\n        Ok(num) => num,\n        Err(_) => {\n            println!(\"Please enter a valid number for age.\");\n            return;\n        }\n    };\n\n    match User::new(name, age) {\n        Ok(user) => user.display(),\n        Err(e) => println!(\"Error: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_62": {
+        "input": "fn safe_read_number() -> Result<i32, std::num::ParseIntError> {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    let trimmed_input = input.trim();\n    trimmed_input.parse::<i32>()\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_63": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_64": {
+        "input": "fn read_and_validate_number() -> Result<i32, std::num::ParseIntError> {\n    use std::io::{self, Write};\n\n    print!(\"Enter a number: \");\n    io::stdout().flush().unwrap();\n\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    input.trim().parse()\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_65": {
+        "input": "use std::fs;\nuse std::path::Path;\n\nstruct Config {\n    file_path: String,\n}\n\nimpl Config {\n    fn new(args: &[String]) -> Result<Config, &'static str> {\n        if args.len() < 2 {\n            return Err(\"not enough arguments\");\n        }\n        let file_path = args[1].clone();\n        Ok(Config { file_path })\n    }\n\n    fn read_file(&self) -> Result<String, Box<dyn std::error::Error>> {\n        if !Path::new(&self.file_path).exists() {\n            return Err(\"file does not exist\".into());\n        }\n        fs::read_to_string(&self.file_path)?;\n        Ok(String::from(\"File read successfully\"))\n    }\n}\n\nfn main() -> Result<(), Box<dyn std::error::Error>> {\n    let args: Vec<String> = std::env::args().collect();\n    let config = Config::new(&args)?;\n    println!(\"Reading file: {}\", config.file_path);\n    let content = config.read_file()?;\n    println!(\"Content: {}\", content);\n    Ok(())\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_66": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_67": {
+        "input": "use std::fs::File;\nuse std::io::{self, Read};\n\nfn read_file_contents(filename: &str) -> io::Result<String> {\n    let mut file = File::open(filename)?;\n    let mut contents = String::new();\n    file.read_to_string(&mut contents)?;\n    Ok(contents)\n}\n\nfn main() {\n    println!(\"Enter the filename to read:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let filename = input.trim();\n    match read_file_contents(filename) {\n        Ok(contents) => println!(\"File contents:\\n{}\", contents),\n        Err(e) => eprintln!(\"Error reading file: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_68": {
+        "input": "use std::io;\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter a number:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_69": {
+        "input": "use std::io::{self, Write};\n\nfn main() {\n    print!(\"Enter a number: \");\n    io::stdout().flush().unwrap();\n\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => eprintln!(\"Please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_70": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let number: u32 = match input.trim().parse() {\n        Ok(num) => num,\n        Err(_) => {\n            println!(\"Please enter a valid number.\");\n            return;\n        }\n    };\n    println!(\"You entered the number: {}\", number);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_71": {
+        "input": "use std::fs::File;\nuse std::io::{self, Read};\npub struct SafeReader {\n    file_path: String,\n}\nimpl SafeReader {\n    pub fn new(file_path: &str) -> Self {\n        SafeReader {\n            file_path: file_path.to_string(),\n        }\n    }\n\n    pub fn read_file(&self) -> io::Result<String> {\n        let mut content = String::new();\n        let mut file = File::open(&self.file_path)?;\n        file.read_to_string(&mut content)?;\n        Ok(content)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_72": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_73": {
+        "input": "fn read_and_validate_number() -> Result<i32, std::io::Error> {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    match input.trim().parse::<i32>() {\n        Ok(num) => Ok(num),\n        Err(_) => Err(std::io::Error::new(std::io::ErrorKind::InvalidInput, \"Please enter a valid integer.\")),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_74": {
+        "input": "use std::fs;\nuse std::io::{self, Read};\npub struct SecureFileReader {\n    file_path: String,\n}\n\nimpl SecureFileReader {\n    pub fn new(path: &str) -> Self {\n        SecureFileReader { file_path: path.to_string() }\n    }\n\n    pub fn read_file(&self) -> io::Result<String> {\n        let mut content = String::new();\n        fs::File::open(&self.file_path)?.read_to_string(&mut content)?;\n        Ok(content)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_75": {
+        "input": "use std::io;\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter a number:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_76": {
+        "input": "use std::io;\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter a number:\");\n    io::stdin()\n        .read_line(&mut input)\n        .expect(\"Failed to read line\");\n\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_77": {
+        "input": "fn main() {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_78": {
+        "input": "use std::fmt;\n\nstruct User {\n    name: String,\n    age: u8,\n}\n\nimpl User {\n    fn new(name: &str, age: u8) -> Result<Self, &'static str> {\n        if name.is_empty() {\n            return Err(\"Name cannot be empty\");\n        }\n        Ok(User { name: name.to_string(), age })\n    }\n}\n\nimpl fmt::Display for User {\n    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {\n        write!(f, \"User(name: {}, age: {})\", self.name, self.age)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_79": {
+        "input": "use std::io;\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter a number:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_80": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    if let Ok(number) = trimmed_input.parse::<i32>() {\n        println!(\"You entered: {}\", number);\n    } else {\n        eprintln!(\"Please enter a valid integer.\");\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_81": {
+        "input": "use std::io;\n\nfn get_user_input() -> Result<String, io::Error> {\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n    Ok(input.trim().to_string())\n}\n\nfn safe_function() -> Result<(), Box<dyn std::error::Error>> {\n    println!(\"Enter a number:\");\n    let user_input = get_user_input()?;\n    match user_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n    Ok(())\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_82": {
+        "input": "fn read_and_validate_number() -> Result<i32, std::num::ParseIntError> {\n    use std::io::{self, Write};\n\n    print!(\"Enter a number: \");\n    io::stdout().flush().unwrap();\n\n    let mut input = String::new();\n    io::stdin().read_line(&mut input)?;\n\n    input.trim().parse::<i32>()\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_83": {
+        "input": "use std::io;\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter a number:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_84": {
+        "input": "use std::io;\n\nstruct User {\n    name: String,\n    age: u32,\n}\n\nimpl User {\n    fn new(name: &str, age: u32) -> Result<User, &'static str> {\n        if name.is_empty() || age == 0 {\n            Err(\"Invalid input\")\n        } else {\n            Ok(User { name: name.to_string(), age })\n        }\n    }\n\n    fn display(&self) {\n        println!(\"User Name: {}, Age: {}\", self.name, self.age);\n    }\n}\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter user name:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let name = input.trim();\n\n    input.clear();\n    println!(\"Enter user age:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let age: u32 = match input.trim().parse() {\n        Ok(num) => num,\n        Err(_) => {\n            println!(\"Please enter a valid number for age.\");\n            return;\n        }\n    };\n\n    match User::new(name, age) {\n        Ok(user) => user.display(),\n        Err(e) => println!(\"Error: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_85": {
+        "input": "fn main() {\n    use std::io;\n\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n\n    io::stdin()\n        .read_line(&mut input)\n        .expect(\"Failed to read line\");\n\n    let num: i32 = match input.trim().parse() {\n        Ok(n) => n,\n        Err(_) => {\n            println!(\"Please enter a valid number!\");\n            return;\n        }\n    };\n\n    println!(\"You entered: {}\", num);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_86": {
+        "input": "use std::io;\n\nfn main() {\n    println!(\"Enter a number:\");\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let trimmed_input = input.trim();\n    match trimmed_input.parse::<i32>() {\n        Ok(number) => println!(\"You entered the number: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_87": {
+        "input": "use std::io::{self, Write};\n\nfn main() {\n    print!(\"Enter a number: \");\n    io::stdout().flush().unwrap();\n    let mut input = String::new();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    match input.trim().parse::<i32>() {\n        Ok(number) => println!(\"You entered: {}\", number),\n        Err(_) => println!(\"Please enter a valid integer.\"),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_88": {
+        "input": "use std::io;\n\nstruct User {\n    name: String,\n    age: u8,\n}\n\nimpl User {\n    fn new(name: String, age: u8) -> Self {\n        User { name, age }\n    }\n\n    fn get_details(&self) -> String {\n        format!(\"Name: {}, Age: {}\", self.name, self.age)\n    }\n}\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter your name:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let name = input.trim().to_string();\n\n    println!(\"Enter your age:\");\n    input.clear();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let age: u8 = match input.trim().parse() {\n        Ok(num) => num,\n        Err(_) => panic!(\"Please enter a valid number for age.\")\n    };\n\n    let user = User::new(name, age);\n    println!(\"{}\", user.get_details());\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "rust_89": {
+        "input": "use std::io;\n\nstruct User {\n    name: String,\n    age: u32,\n}\n\nimpl User {\n    fn new(name: &str, age: u32) -> Result<Self, &'static str> {\n        if name.is_empty() || age == 0 {\n            return Err(\"Invalid input: Name must not be empty and age must be greater than zero.\");\n        }\n        Ok(User { name: name.to_string(), age })\n    }\n\n    fn display(&self) {\n        println!(\"Name: {}, Age: {}\", self.name, self.age);\n    }\n}\n\nfn main() {\n    let mut input = String::new();\n    println!(\"Enter name:\");\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let name = input.trim();\n\n    println!(\"Enter age:\");\n    input.clear();\n    io::stdin().read_line(&mut input).expect(\"Failed to read line\");\n    let age: u32 = match input.trim().parse() {\n        Ok(num) => num,\n        Err(_) => {\n            println!(\"Please enter a valid number for age.\");\n            return;\n        }\n    };\n\n    match User::new(name, age) {\n        Ok(user) => user.display(),\n        Err(e) => println!(\"Error: {}\", e),\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

@@ -1,0 +1,632 @@
+{
+    "ruby_0": {
+        "input": "require 'sqlite3'\n\ndef get_user_by_id(id)\n    db = SQLite3::Database.new \"/path/to/database.db\"\n    result = db.execute \"SELECT * FROM users WHERE id = #{id}\";\n    return result\nend\n",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "ruby_1": {
+        "input": "class BufferOverflowExample\n  def unsafe_method(input)\n    buffer = \"A\" * 100 + input\n    puts buffer\n  end\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "ruby_2": {
+        "input": "class UserController < ApplicationController\n  def update\n    @user = User.find(params[:id])\n    if @user.update(user_params)\n      redirect_to @user, notice: 'User was successfully updated.'\n    else\n      render :edit\n    end\n  end\n\n  private\n\n  def user_params\n    params.require(:user).permit(:name, :email)\n  end\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "ruby_3": {
+        "input": "require 'net/http'\ndef fetch_and_eval(url)\n  response = Net::HTTP.get(URI.parse(url))\n  eval(response)\nend\n",
+        "output": {
+            "score": 8.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "ruby_4": {
+        "input": "puts `#{gets.chomp}`",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "ruby_5": {
+        "input": "class AdminPanel\n  def initialize(user)\n    @user = user\n  end\n\n  def grant_admin\n    if @user.secret_code == 'secret'\n      @user.admin = true\n    end\n  end\nend\nclass User\n  attr_accessor :admin, :secret_code\n  def initialize(secret_code)\n    @secret_code = secret_code\n    @admin = false\n  end\nend",
+        "output": {
+            "score": 7.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "ruby_6": {
+        "input": "require 'net/http'\n\nputs 'Enter URL:'\nurl = gets.chomp\nresponse = Net::HTTP.get(URI(url))\neval(response)",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "ruby_7": {
+        "input": "class WebPage\n  def render(input)\n    \"<div>#{input}</div>\"\n  end\nend",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "ruby_8": {
+        "input": "require 'yaml'\ndef load_user_data(file_path)\n  YAML.load(File.read(file_path))\nend\nputs load_user_data(ARGV[0])",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "ruby_9": {
+        "input": "require 'socket'\ndef process_input(input)\n  buffer = \"A\" * 1024\n  buffer[0, input.length] = input\n  puts buffer\nend\ns = TCPServer.open(2000) { |serv|\n  serv.accept { |client|\n    while line = client.gets\n      process_input(line)\n    end\n  }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "ruby_10": {
+        "input": "require 'sinatra'\n\nget '/search' do\n  query = params[:query]\n  db = SQLite3::Database.new \"/var/www/myapp/db/development.sqlite3\"\n  results = db.execute \"SELECT * FROM users WHERE name LIKE '%#{query}%'\"\n  results.to_s\nend",
+        "output": {
+            "score": 8.8,
+            "type": "SQL Injection"
+        }
+    },
+    "ruby_11": {
+        "input": "def render_user_input(user_input)\n  sanitized = user_input.gsub(/</, '&lt;').gsub(/>/, '&gt;')\n  \"<div>#{sanitized}</div>\"\nend\n\nuser_data = params[:data]\necho_html(render_user_input(user_data))",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "ruby_12": {
+        "input": "class UnsafeEvaluator\n  def initialize(input)\n    @input = input\n  end\n\n  def evaluate\n    instance_eval(@input)\n  end\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "ruby_13": {
+        "input": "# Ruby example\ndef unsafe_command(input)\n    system(input)\nend\nunsafe_command(gets.chomp)",
+        "output": {
+            "score": 7.2,
+            "type": "Command Injection"
+        }
+    },
+    "ruby_14": {
+        "input": "class WebPage\n  def render(user_input)\n    \"<div>#{user_input}</div>\"\n  end\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "ruby_15": {
+        "input": "def authenticate(user, pass)\n  stored_password = \"securepassword123\"\n  if user == \"admin\" && Digest::MD5.hexdigest(pass) == Digest::MD5.hexdigest(stored_password)\n    return true\n  else\n    return false\n  end\nend",
+        "output": {
+            "score": 8.0,
+            "type": "Broken Authentication"
+        }
+    },
+    "ruby_16": {
+        "input": "require 'bcrypt'\nclass User\n  attr_accessor :username, :password_hash\n  def initialize(username, password)\n    @username = username\n    @password_hash = BCrypt::Password.create(password)\n  end\n  def self.authenticate(users, username, password)\n    user = users.find { |u| u.username == username }\n    if user && user.password_hash == BCrypt::Password.new(password)\n      return true\n    else\n      return false\n    end\n  end\nend\nusers = [User.new('admin', 'secretpassword'), User.new('user', 'password123')]\nputs 'Enter username:'\nusername = gets.chomp\nputs 'Enter password:'\npassword = gets.chomp\nif User.authenticate(users, username, password)\n  puts 'Authentication successful.'\nelse\n  puts 'Authentication failed.'\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "ruby_17": {
+        "input": "def unsafe_buffer(input)\n  buffer = \"A\" * 1024\n  buffer << input\nend\nputs unsafe_buffer(STDIN.gets)",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "ruby_18": {
+        "input": "def get_user(username)\n  query = \"SELECT * FROM users WHERE username = '\" + username + \"'\"\n  result = execute_query(query)\n  return result\nend",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "ruby_19": {
+        "input": "\"use strict\\nrequire('express');\\nconst app = express();\\napp.use(express.urlencoded({ extended: true }));\\napp.get('/', (req, res) => {\\n  const userInput = req.query.userInput;\\n  res.send(`<html><body>${userInput}</body></html>`);\\n});\\napp.listen(3000, () => {\\n  console.log('Server is running on http://localhost:3000');\\n});\"",
+        "output": {
+            "score": 8.6,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "ruby_20": {
+        "input": "def exploit(user_input)\n  command = \"sudo -u root #{user_input}\"\n  system(command)\nend",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "ruby_21": {
+        "input": "require 'pg'\ndef fetch_user_data(user_id)\n  conn = PG.connect(dbname: 'example_db', user: 'dbuser', password: 'password')\n  result = conn.exec(\"SELECT * FROM users WHERE id = #{user_id}\")\n  result.each do |row|\n    puts \"User: #{row['name']}, Email: #{row['email']}\"\n  end\n  conn.close\nend\n",
+        "output": {
+            "score": 8.9,
+            "type": "SQL Injection"
+        }
+    },
+    "ruby_22": {
+        "input": "require 'bcrypt'\nclass User\n  attr_accessor :username, :password_hash\n\n  def initialize(username, password)\n    @username = username\n    @password_hash = BCrypt::Password.create(password)\n  end\n\n  def self.authenticate(users, username, password)\n    user = users.find { |u| u.username == username }\n    if user && user.password_hash == BCrypt::Password.new(password)\n      true\n    else\n      false\n    end\n  end\nend\n\ndef load_users_from_file(file_path)\n  users = []\n  File.open(file_path, 'r') do |file|\n    file.each_line do |line|\n      username, password_hash = line.chomp.split(':')\n      user = User.new(username, '')\n      user.password_hash = password_hash\n      users << user\n    end\n  end\n  users\nend\n\nusers = load_users_from_file('users.txt')\nputs 'Enter username:'\nusername = gets.chomp\nputs 'Enter password:'\npassword = gets.chomp\nif User.authenticate(users, username, password)\n  puts 'Authentication successful.'\nelse\n  puts 'Authentication failed.'\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "ruby_23": {
+        "input": "class BufferOverflowExample\n  def initialize(buffer_size)\n    @buffer = Array.new(buffer_size)\n  end\n\n  def fill_buffer(data)\n    i = 0\n    while i < data.length\n      @buffer[i] = data[i]\n      i += 1\n    end\n  end\nend",
+        "output": {
+            "score": 8.2,
+            "type": "Buffer Overflow"
+        }
+    },
+    "ruby_24": {
+        "input": "def authenticate(user, pass)\n  stored_password = 'secret'\n  if user == 'admin' && pass == stored_password\n    return true\n  else\n    return false\n  end\nend",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "ruby_25": {
+        "input": "def show_user_details(user)\n  puts \"User details: #{user.to_s}\"\nend",
+        "output": {
+            "score": 2.1,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "ruby_26": {
+        "input": "class UserInterface\n  def initialize\n    @frame = Frame.new\n  end\n\n  def display_button\n    @frame.add_element(Button.new(\"Click Me\", onclick: proc { perform_action }))\n  end\n\n  private\n\n  def perform_action\n    puts \"Action performed\"\n  end\nend",
+        "output": {
+            "score": 4.0,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "ruby_27": {
+        "input": "require 'sinatra'\n\nenable :sessions\n\nget '/set_session' do\n  session[:user_id] = params[:user_id]\n  \"Session set for user #{params[:user_id]}\"\nend\n\nget '/welcome' do\n  if session[:user_id]\n    \"Welcome back, user #{session[:user_id]}!\"\n  else\n    'Please log in.'\n  end\nend",
+        "output": {
+            "score": 3.1,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_28": {
+        "input": "require 'socket'\n\nserver = TCPServer.new(2000)\nloop do\n  client = server.accept\n  while msg = client.gets\n    if msg.chomp == 'STOP'\n      client.puts \"Stopping...\"\n      client.close\n    else\n      sleep(10) # Simulate a delay that can cause DoS if many clients connect\n      client.puts \"Received: #{msg}\"\n    end\n  end\nend",
+        "output": {
+            "score": 4.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "ruby_29": {
+        "input": "def infinite_loop()\n  while true\n    sleep(1)\n  end\nend",
+        "output": {
+            "score": 4.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "ruby_30": {
+        "input": "require 'thread'\ndef race_condition\n  mutex = Mutex.new\n  counter = 0\n  threads = []\n  10.times do\n    threads << Thread.new do\n      1000.times do\n        mutex.synchronize { counter += 1 }\n      end\n    end\n  end\n  threads.each(&:join)\n  puts counter\nend\nrace_condition",
+        "output": {
+            "score": 6.8,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "ruby_31": {
+        "input": "require 'sinatra'\n\nget '/' do\n  \"<h1>Welcome to the vulnerable app</h1>\"\nend",
+        "output": {
+            "score": 5.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "ruby_32": {
+        "input": "# Ruby example\ndef race_condition_vulnerable\n  file = File.open(\"data.txt\", \"w+\")\n  if File.exist?(\"data.txt\")\n    file.write(\"This is a test.\")\n  end\n  file.close\nend",
+        "output": {
+            "score": 5.0,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "ruby_33": {
+        "input": "# Ruby example\ndef race_condition\n  file = File.open(\"data.txt\", \"r+\")\n  content = file.read\n  sleep(1) # Simulate delay\n  file.rewind\n  file.write(content + \\\"modified\\\")\nend",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "ruby_34": {
+        "input": "class InfiniteLoop\n  def start\n    loop do\n      # This will cause a denial of service by running indefinitely\n    end\n  end\nend",
+        "output": {
+            "score": 3.7,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "ruby_35": {
+        "input": "require 'sinatra'\n\nget '/login' do\n  session[:user_id] = params[:user_id]\n  redirect to('/home')\nend\n\nget '/home' do\n  \"Welcome, user #{session[:user_id]}!\"\nend",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_36": {
+        "input": "require 'net/http'\n\ndef fetch_url(url)\n  uri = URI.parse(url)\n  response = Net::HTTP.get_response(uri)\n  response.body\nend\n\nputs fetch_url(params[:url])",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "ruby_37": {
+        "input": "class ResourceConsumer\n  def initialize\n    @threads = []\n  end\n\n  def start_consuming\n    100.times do\n      @threads << Thread.new do\n        loop do\n          # Simulate high resource usage\n          sleep(1)\n        end\n      end\n    end\n  end\nend",
+        "output": {
+            "score": 5.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "ruby_38": {
+        "input": "class SessionsController < ApplicationController\n  def create\n    if params[:session][:user_id]\n      session[:user_id] = params[:session][:user_id]\n      redirect_to root_url, notice: 'Logged in!'\n    else\n      flash.now.alert = 'Invalid user ID.'\n      render :new\n    end\n  end\nend",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_39": {
+        "input": "class SSRFExample\n  def initialize(url)\n    @url = url\n  end\n\n  def fetch_data\n    require 'net/http'\n    uri = URI(@url)\n    response = Net::HTTP.get(uri)\n    response\n  end\nend",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "ruby_40": {
+        "input": "def race_condition_vulnerable\n  file = File.open('example.txt', 'a')\n  sleep(0.1)\n  file.puts('Appending data...')\n  file.close\nend",
+        "output": {
+            "score": 6.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "ruby_41": {
+        "input": "class UserSession\n  def initialize(user_id)\n    @user_id = user_id\n    @session_id = generate_session_id\n  end\n\n  private\n\ndef generate_session_id\n    # Simulate a very complex session ID generation process\n    require 'securerandom'\n    SecureRandom.hex(16) + @user_id.to_s.reverse\n  end\nend",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_42": {
+        "input": "require 'open-uri'\nclass ImageFetcher\n  def fetch_image(url)\n    open(url) do |image|\n      image.read\n    end\n  end\nend",
+        "output": {
+            "score": 5.3,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "ruby_43": {
+        "input": "require 'sinatra'\n\nenable :sessions\n\nget '/login' do\n  session[:user_id] = params[:user_id]\n  redirect to('/dashboard')\nend\n\nget '/dashboard' do\n  if session[:user_id]\n    \"Welcome, user #{session[:user_id]}!\"\n  else\n    redirect to('/login')\n  end\nend",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_44": {
+        "input": "require 'sinatra'\n\nget '/' do\n  '<iframe src=\\\"https://example.com/\\\"></iframe>'\nend",
+        "output": {
+            "score": 2.3,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "ruby_45": {
+        "input": "# Ruby example\ndef update_file(filename, content)\n  File.open(filename, 'a') do |file|\n    sleep(0.1) # Simulate some processing time\n    file.write(content)\n  end\nend",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "ruby_46": {
+        "input": "def set_session_token(user_id)\n  session[:user_id] = user_id if params[:session_token].eql?(ENV['SECRET_SESSION_TOKEN'])\nend",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "ruby_47": {
+        "input": "# Ruby example\ndef log_user_info(user)\n    puts \"User information: #{user.inspect}\"\nend",
+        "output": {
+            "score": 3.0,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "ruby_48": {
+        "input": "require 'socket'\nclass DoSServer\n  def initialize(port)\n    @server = TCPServer.new(port)\n  end\n  def start\n    loop do\n      Thread.start(@server.accept) do |client|\n        client.puts \"Welcome to the server!\"\n        while line = client.gets.chomp\n          break if line == 'exit'\n          client.puts \"Echo: #{line}\"\n          # Intentionally complex condition for very hard detection\n          sleep(0.1) if (line.length.even? && Time.now.usec % 2 == 0)\n        end\n        client.close\n      end\n    end\n  end\nend\nDoSServer.new(8080).start",
+        "output": {
+            "score": 4.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "ruby_49": {
+        "input": "require 'sinatra'\n\nget '/' do\n  \"<iframe src=\\\"http://malicious-site.com/\\\" style=\\\"position:absolute; top:0; left:0; width:100%; height:100%; z-index:9999; opacity:0.5;\\\"></iframe>Click here to proceed...\"\nend",
+        "output": {
+            "score": 3.7,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "ruby_50": {
+        "input": "require 'securerandom'\n\ndef get_secure_random_string(length)\n  SecureRandom.alphanumeric(length)\nend\n\nbegin\n  puts 'Enter the desired length of the random string:'\n  user_input = gets.chomp\n  raise ArgumentError, 'Input must be a positive integer' unless user_input.match?(%r{\\A[0-9]+\\z}) && user_input.to_i > 0\n  random_string = get_secure_random_string(user_input.to_i)\n  puts \"Generated secure random string: #{random_string}\"\nrescue ArgumentError => e\n  puts \"Error: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_51": {
+        "input": "def safe_file_read(filename)\n  unless filename.is_a?(String) && /^[a-zA-Z0-9._\\/-]+$/.match?(filename)\n    raise ArgumentError, 'Invalid filename'\n  end\n  File.open(File.expand_path(filename), 'r') do |file|\n    file.each_line { |line| puts line }\n  end\nrescue => e\n  puts \"Error reading file: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_52": {
+        "input": "class UserInputHandler\n  def initialize(input)\n    @input = input.strip\n  end\n\n  def valid_number?\n    Float(@input) rescue false\n  end\n\n  def process_input\n    if valid_number?\n      puts \"Valid number: #{@input}\"\n    else\n      puts 'Invalid input. Please enter a valid number.'\n    end\n  rescue => e\n    puts \"An error occurred: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_53": {
+        "input": "class UserValidator\n  def initialize(username, email)\n    @username = sanitize_input(username)\n    @email = sanitize_input(email)\n  end\n\n  def valid?\n    valid_username? && valid_email?\n  end\n\n  private\n\n  def sanitize_input(input)\n    input.to_s.strip.gsub(/[^0-9a-zA-Z.@_-]/, '')\n  end\n\n  def valid_username?\n    @username.length.between?(3, 20)\n  end\n\n  def valid_email?\n    @email.match?(/^\\A[^\\s@]+@([^\\s@]+\\.)+[^\\s@]+\\z/i)\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_54": {
+        "input": "def safe_get_user_age\n  print \"Enter your age: \"\n  user_input = gets.chomp\n  if user_input.match?(/^\\d+$/)\n    puts \"You are #{user_input} years old.\"\n  else\n    puts \"Invalid input. Please enter a valid number.\" \n  end\nrescue => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_55": {
+        "input": "def safe_file_operation\n    puts 'Enter the filename to read:'\n    filename = gets.chomp\n    if File.exist?(filename)\n        begin\n            file_content = File.read(filename, mode: 'r:UTF-8', encoding: 'bom|utf-8')\n            puts file_content\n        rescue => e\n            puts \"An error occurred while reading the file: #{e.message}\"\n        end\n    else\n        puts 'File does not exist.'\n    end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_56": {
+        "input": "def safe_method\n  puts 'Enter your email:'\n  user_input = gets.chomp.strip\n  if user_input.match?(/^\\A[^@]+@([^@\\.]+\\.)+[^@\\.]+\\z/)\n    begin\n      # Simulate sending an email, ensure data is sanitized\n      sanitized_email = CGI.escape(user_input)\n      puts \"Sanitized Email: #{sanitized_email}\"\n    rescue StandardError => e\n      puts \"An error occurred: #{e.message}\"\n    end\n  else\n    puts 'Invalid email format.'\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_57": {
+        "input": "class SecureUser\n  attr_accessor :username, :email\n\n  def initialize(username:, email:)\n    self.username = validate_username(username)\n    self.email = validate_email(email)\n  end\n\n  private\n\n  def validate_username(username)\n    raise ArgumentError, 'Username must be alphanumeric' unless username.match?(/^[a-zA-Z0-9]+$/)\n    username\n  end\n\n  def validate_email(email)\n    raise ArgumentError, 'Email is not valid' unless email.match?(URI::MailTo::EMAIL_REGEXP)\n    email\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_58": {
+        "input": "require 'json'\n\nbegin\n  puts 'Enter your name:'\n  user_input = gets.chomp.strip\n  unless user_input.match?(/^[a-zA-Z\\s]+$/)\n    raise ArgumentError, 'Invalid input. Only alphabetic characters and spaces are allowed.'\n  end\n\n  data = { name: user_input }\n  json_output = JSON.generate(data)\n  puts 'JSON Output:'\n  puts json_output\nrescue ArgumentError => e\n  puts \"Error: #{e.message}\"\nrescue StandardError => e\n  puts \"An unexpected error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_59": {
+        "input": "def safe_process(input_string)\n  begin\n    # Validate input to ensure it's alphanumeric only\n    raise ArgumentError, 'Input must be alphanumeric' unless input_string.match?(/^[a-zA-Z0-9]+$/)\n\n    # Process the input safely\n    processed_data = input_string.reverse\n\n    return processed_data\n  rescue ArgumentError => e\n    puts \"Error: #{e.message}\"\n    return nil\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_60": {
+        "input": "require 'json'\n\ndef safe_json_parse(input)\n  begin\n    parsed_data = JSON.parse(input)\n    if parsed_data.is_a?(Hash) || parsed_data.is_a?(Array)\n      return parsed_data\n    else\n      raise ArgumentError, 'Parsed data is not a valid JSON object or array.'\n    end\n  rescue JSON::ParserError => e\n    puts \"Failed to parse JSON: #{e.message}\"\n    nil\n  rescue ArgumentError => e\n    puts \"Invalid JSON structure: #{e.message}\"\n    nil\n  end\nend\n\nputs 'Enter a JSON string:'\nuser_input = gets.chomp\nresult = safe_json_parse(user_input)\nif result\n  puts 'Parsed successfully:'\n  puts result.inspect\nelse\n  puts 'Failed to parse the input.'\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_61": {
+        "input": "require 'json'\ndef process_user_data(input)\n  begin\n    # Validate and parse JSON input safely\n    data = JSON.parse(input, symbolize_names: true)\n    raise ArgumentError, 'Invalid input format' unless data.is_a?(Hash) && data.key?(:user_id)\n    user_id = Integer(data[:user_id])\n    # Simulate database query or other operations using the validated user_id\n    puts \"Processing data for user ID: #{user_id}\"\n  rescue JSON::ParserError, ArgumentError => e\n    # Handle errors gracefully without exposing sensitive information\n    STDERR.puts \"Failed to process input: #{e.message}\"\n  end\nend\n# Example usage with sanitized user input\nuser_input = '{\"user_id\": 123}'\nprocess_user_data(user_input)",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_62": {
+        "input": "def safe_file_operation(file_path)\n  unless File.exist?(file_path)\n    raise ArgumentError, 'File does not exist'\n  end\n\n  File.open(file_path, 'r') do |file|\n    file.each_line do |line|\n      puts line.strip\n    end\n  rescue => e\n    puts \"An error occurred: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_63": {
+        "input": "def safe_file_read(filename)\n  if filename.match?(/^\\w+\\.txt$/) && File.exist?(filename)\n    begin\n      File.open(filename, 'r') do |file|\n        puts file.read\n      end\n    rescue => e\n      puts \"An error occurred: #{e.message}\"\n    end\n  else\n    puts \"Invalid filename or file does not exist.\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_64": {
+        "input": "def safe_file_read(file_path)\n  unless file_path.is_a?(String) && File.exist?(file_path) && File.readable?(file_path)\n    raise ArgumentError, 'Invalid or unreadable file path provided.'\n  end\n  File.open(file_path, 'r') do |file|\n    file.each_line do |line|\n      puts line.strip\n    end\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_65": {
+        "input": "require 'uri'\n\ndef fetch_url(url)\n  begin\n    parsed_uri = URI.parse(url)\n    unless %w(http https).include?(parsed_uri.scheme)\n      raise ArgumentError, 'Only HTTP and HTTPS URLs are allowed.'\n    end\n    response = Net::HTTP.get_response(parsed_uri)\n    if response.is_a?(Net::HTTPSuccess)\n      return response.body\n    else\n      raise \"Failed to fetch URL: #{response.message}\"\n    end\n  rescue URI::InvalidURIError => e\n    raise ArgumentError, 'Invalid URL format.'\n  rescue StandardError => e\n    raise \"An error occurred: #{e.message}\"\n  end\nend\n\nbegin\n  user_input = ARGV[0]\n  if user_input && !user_input.empty?\n    result = fetch_url(user_input)\n    puts result\n  else\n    puts 'Please provide a URL as an argument.'\n  end\nrescue ArgumentError => e\n  puts \"Argument Error: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_66": {
+        "input": "class SecureUserInput\n  def initialize(prompt)\n    @prompt = prompt\n  end\n\n  def get_valid_integer\n    loop do\n      print @prompt\n      input = gets.chomp.strip\n      if valid_integer?(input)\n        return Integer(input)\n      else\n        puts 'Invalid input. Please enter a valid integer.'\n      end\n    end\n  rescue ArgumentError\n    puts 'An error occurred while processing your input. Please try again.'\n    retry\n  end\n\n  private\n\n  def valid_integer?(input)\n    Integer(input) && input.match?(/^[-+]?\\d+$/)\n  rescue ArgumentError\n    false\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_67": {
+        "input": "def safe_user_input\n  print \"Enter a number: \"\n  user_input = gets.chomp\n  if user_input.match(/^\\d+$/)\n    puts user_input.to_i\n  else\n    puts \"Invalid input. Please enter a valid number.\"\n  end\nrescue StandardError => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_68": {
+        "input": "def safe_user_input\n  print 'Enter your name: '\n  user_name = gets.chomp\n  if user_name.match?(/^[a-zA-Z0-9_]+$/)\n    puts \"Hello, #{user_name}!\"\n  else\n    puts 'Invalid input. Please enter a valid name.'\n  end\nrescue => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_69": {
+        "input": "def safe_file_read(filename)\n  raise ArgumentError, 'Invalid filename' unless filename.is_a?(String) && filename.match?(/^[a-zA-Z0-9._-]+$/)\n  File.open(filename, 'r') do |file|\n    file.read\n  end\nrescue => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_70": {
+        "input": "def safe_file_write(filename, content)\n  raise ArgumentError, 'Invalid filename' unless filename =~ /^\\w+\\.txt$/\n  File.open(filename, 'w') do |file|\n    file.write(content.strip)\n  end\nrescue => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_71": {
+        "input": "def safe_function(input_string)\n  begin\n    # Validate input to ensure it's an integer\n    raise ArgumentError, 'Input must be a valid integer' unless input_string.match?(/^\\d+$/)\n    number = Integer(input_string)\n    # Safe processing of the number\n    puts \"The number is: #{number}\"\n  rescue ArgumentError => e\n    puts \"Error: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_72": {
+        "input": "require 'json'\n\nmodule SecureApp\n  class UserInputHandler\n    def initialize(input)\n      @input = input.strip\n    end\n\n    def valid_integer?\n      Integer(@input) rescue false\n    end\n\n    def get_integer\n      return nil unless valid_integer?\n      Integer(@input)\n    end\n  end\nend\n\nbegin\n  print 'Enter a number: '\n  user_input = gets.chomp\n  handler = SecureApp::UserInputHandler.new(user_input)\n  number = handler.get_integer\n\n  if number\n    puts \"You entered the number: #{number}\"\n  else\n    puts 'Invalid input. Please enter a valid integer.'\n  end\nrescue StandardError => e\n  puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_73": {
+        "input": "class SecureConfig\n  def initialize(filepath)\n    @filepath = filepath\n  end\n\n  def read_config\n    return {} unless File.exist?(@filepath) && File.readable?(@filepath)\n\n    begin\n      JSON.parse(File.read(@filepath))\n    rescue JSON::ParserError => e\n      puts \"Failed to parse JSON: #{e.message}\"\n      {}\n    end\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_74": {
+        "input": "require 'json'\ndef fetch_user_data(user_id)\n  raise ArgumentError, 'Invalid user ID' unless user_id.is_a?(Integer) && user_id > 0\n  begin\n    response = Net::HTTP.get(URI('https://api.example.com/users/' + CGI.escape(user_id.to_s)))\n    JSON.parse(response)\n  rescue URI::Error => e\n    puts \"Invalid URI: #{e.message}\"\n  rescue Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e\n    puts \"HTTP error: #{e.message}\"\n  rescue JSON::ParserError => e\n    puts \"JSON parsing error: #{e.message}\"\n  end\nend\nuser_id = ARGV[0]\ndata = fetch_user_data(user_id)\nputs data.inspect if data",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_75": {
+        "input": "class SafeProcessor\n  def initialize(input)\n    @input = input.strip\n  end\n\n  def process_input\n    if valid_number?\n      convert_to_integer\n    else\n      raise ArgumentError, 'Invalid input. Please enter a valid number.'\n    end\n  rescue => e\n    handle_error(e)\n  end\n\n  private\n\n  def valid_number?\n    @input.match?(/^\\d+$/)\n  end\n\n  def convert_to_integer\n    Integer(@input)\n  end\n\n  def handle_error(error)\n    puts \"An error occurred: #{error.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_76": {
+        "input": "class SecureUserInput\n  def initialize(input)\n    @input = input.strip\n  end\n\n  def valid_email?\n    return false if @input.empty?\n    email_regex = /^[\\w+-.]+@[a-z0-9-]+(\\.[a-z0-9-]+)*$/i\n    @input.match?(email_regex)\n  rescue => e\n    puts \"Error processing input: #{e.message}\"\n    false\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_77": {
+        "input": "require 'uri'\n\ndef fetch_web_content(url)\n  begin\n    uri = URI.parse(URI.encode_www_form_component(url.strip))\n    unless %w(http https).include?(uri.scheme)\n      raise ArgumentError, 'Invalid URL scheme'\n    end\n    response = Net::HTTP.get_response(uri)\n    if response.is_a?(Net::HTTPSuccess)\n      response.body\n    else\n      raise \"Failed to fetch content: #{response.message}\"\n    end\n  rescue URI::InvalidURIError => e\n    \"Invalid URL format: #{e.message}\"\n  rescue ArgumentError => e\n    e.message\n  rescue StandardError => e\n    \"An error occurred: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_78": {
+        "input": "def safe_function(user_input)\n  begin\n    unless user_input.is_a?(String) && user_input.match?(/^\\d+$/)\n      raise ArgumentError, 'Input must be a non-negative integer.'\n    end\n    number = Integer(user_input)\n    # Safe processing of the number\n    puts \"Processed number: #{number}\"\n  rescue ArgumentError => e\n    puts \"Error: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_79": {
+        "input": "require 'json'\ndef safe_json_parse(input)\n  begin\n    parsed_data = JSON.parse(input)\n    return parsed_data if parsed_data.is_a?(Hash)\n  rescue JSON::ParserError => e\n    puts \"Invalid JSON: #{e.message}\"\n  end\n  nil\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_80": {
+        "input": "require 'securerandom'\n\ndef secure_random_string(length)\n    SecureRandom.alphanumeric(length)\nend\n\ndef safe_file_write(filename, content)\n    File.open(filename, 'w') do |file|\n        file.write(content)\n    end\nrescue => e\n    puts \"An error occurred: #{e.message}\"\nend\n\ndef main\n    filename = ARGV[0]\n    if filename && !filename.include?('..')\n        content = secure_random_string(20)\n        safe_file_write(filename, content)\n        puts \"Securely wrote to file: #{filename}\" \n    else\n        puts 'Invalid filename provided.'\n    end\nend\n\nmain",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_81": {
+        "input": "class SecureUser\n  attr_accessor :name, :email\n\n  def initialize(name, email)\n    @name = sanitize_input(name)\n    @email = sanitize_email(email)\n  end\n\n  private\n\n  def sanitize_input(input)\n    input.to_s.gsub(/[^a-zA-Z0-9\\s]/i, '')\n  end\n\n  def sanitize_email(email)\n    return nil unless email.match?(URI::MailTo::EMAIL_REGEXP)\n    email.strip.downcase\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_82": {
+        "input": "require 'securerandom'\n\nputs 'Enter your name:'\nname = gets.chomp\n\nif name.match?(/^\\w+$/)\n  user_id = SecureRandom.uuid\n  puts \"Hello, #{name}! Your user ID is: #{user_id}\"\nelse\n  puts 'Invalid input. Please enter a valid name.'\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_83": {
+        "input": "def safe_function\n  begin\n    print \"Enter a number: \"\n    user_input = gets.chomp\n    unless user_input.match?( /^\\d+$/ )\n      raise ArgumentError, 'Invalid input. Please enter a valid number.'\n    end\n    puts Integer(user_input)\n  rescue ArgumentError => e\n    puts \"Error: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_84": {
+        "input": "def safe_user_input\n    print 'Enter your age: '\n    user_input = gets.chomp\n    if user_input.match?(%r{\\A[0-9]+\\z})\n        age = user_input.to_i\n        puts \"You are #{age} years old.\"\n    else\n        puts 'Invalid input, please enter a number.'\n    end\nrescue => e\n    puts \"An error occurred: #{e.message}\"\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_85": {
+        "input": "def safe_file_write(file_path, content)\n  begin\n    unless file_path.start_with?(Dir.pwd)\n      raise ArgumentError, 'Invalid file path'\n    end\n    File.open(file_path, 'w') do |file|\n      file.write(content)\n    end\n  rescue => e\n    puts \"An error occurred: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_86": {
+        "input": "def safe_file_operation\n  begin\n    file_path = File.expand_path(ARGV[0], __dir__)\n    unless File.file?(file_path)\n      puts 'Provided path is not a valid file.'\n      exit\n    end\n    File.open(file_path, 'r') do |file|\n      puts file.read\n    end\n  rescue => e\n    puts \"An error occurred: #{e.message}\"\n  end\nend\n\nsafe_file_operation",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_87": {
+        "input": "def safe_file_write(file_path, content)\n  unless file_path.is_a?(String) && File.absolute_path(file_path) == file_path\n    raise ArgumentError, 'File path must be an absolute path.'\n  end\n\n  begin\n    File.open(file_path, 'w') do |file|\n      file.write(content)\n    end\n  rescue => e\n    puts \"An error occurred: #{e.message}\"\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_88": {
+        "input": "class User\n  attr_accessor :name, :email\n\n  def initialize(name:, email:)\n    @name = sanitize_input(name)\n    @email = validate_email(email)\n  end\n\n  private\n\n  def sanitize_input(input)\n    input.to_s.strip.gsub(/[^0-9A-Za-z\\s]/, '')\n  end\n\n  def validate_email(email)\n    unless email =~ /\\A([^@\\s]+)@((?:[-a-z0-9]+\\.)+[a-z]{2,})\\z/i\n      raise ArgumentError, 'Invalid email format'\n    end\n    email\n  end\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "ruby_89": {
+        "input": "require 'json'\n\ndef safe_parse_json(input)\n  begin\n    parsed_data = JSON.parse(input)\n    return parsed_data if parsed_data.is_a?(Hash) || parsed_data.is_a?(Array)\n  rescue JSON::ParserError => e\n    puts \"Invalid JSON: #{e.message}\"\n  end\n  nil\nend\n\nputs 'Enter JSON data:'\nuser_input = gets.chomp\nresult = safe_parse_json(user_input)\nif result\n  puts 'Parsed Data:'\n  puts result.inspect\nelse\n  puts 'Failed to parse JSON.'\nend",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

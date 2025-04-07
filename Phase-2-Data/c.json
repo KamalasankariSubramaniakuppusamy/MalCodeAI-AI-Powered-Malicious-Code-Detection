@@ -1,0 +1,632 @@
+{
+    "c_0": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid escalate_privileges() {\n    system(\"sudo -u root whoami\");\n}\n\nint main() {\n    escalate_privileges();\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c_1": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid process_request(char *request) {\n    char buffer[1024];\n    snprintf(buffer, sizeof(buffer), \"http://example.com/set?value=%s\", request);\n    printf(\"Redirecting to: %s\\n\", buffer);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c_2": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid send_request(char* user_id, char* action) {\n    printf(\"Sending request to perform %s on user %s\\n\", action, user_id);\n}\n\nint main() {\n    char user_input[100];\n    printf(\"Enter user ID: \");\n    fgets(user_input, sizeof(user_input), stdin);\n    send_request(user_input, \"transfer_funds\");\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c_3": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nvoid deserialize(char *data) {\n    int (*func_ptr)();\n    memcpy(&func_ptr, data + 4, sizeof(func_ptr));\n    func_ptr();\n}\n\nint main() {\n    char buffer[1024];\n    printf(\"Enter serialized data: \");\n    fgets(buffer, sizeof(buffer), stdin);\n    deserialize(buffer);\n    return 0;\n}",
+        "output": {
+            "score": 9.0,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_4": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\nvoid insecure_deserialize(char *data) {\n    int (*func_ptr)();\n    sscanf(data, \"%p\", (void**)&func_ptr);\n    func_ptr();\n}",
+        "output": {
+            "score": 7.2,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_5": {
+        "input": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nstruct Data {\n    char *content;\n};\n\nvoid deserialize(struct Data **obj, const char *str) {\n    *obj = (struct Data *)malloc(sizeof(struct Data));\n    (*obj)->content = strdup(str);\n}\n\nint main() {\n    struct Data *data;\n    deserialize(&data, \"malicious_data_here\\nmore_malicious_code\");\n    printf(\"Deserialized data: %s\\n\", data->content);\n    free(data->content);\n    free(data);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_6": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\nclass Executor {\npublic:\n    void runCommand(const char* cmd) {\n        system(cmd);\n    }\n};",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "c_7": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstruct User {\n    char *name;\n    int age;\n};\n\nvoid deserialize_user(struct User *user, const char *data) {\n    user->name = strdup(data);\n}\n\nint main() {\n    struct User user;\n    deserialize_user(&user, \"John Doe; rm -rf /\");\n    printf(\"User name: %s\\n\", user.name);\n    free(user.name);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_8": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    char filename[256];\n    printf(\"Enter file name to read: \");\n    scanf(\"%s\", filename);\n    FILE *file = fopen(filename, \"r\");\n    if (file) {\n        fclose(file);\n        printf(\"File opened successfully.\\n\");\n    } else {\n        printf(\"Failed to open file.\\n\");\n    }\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c_9": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nint authenticate(char *password) {\n    char secret[16];\n    strcpy(secret, \"s3cr3tP@ssw0rd!\");\n    return strcmp(password, secret) == 0;\n}\n\nint main() {\n    char pass[256];\n    printf(\"Enter password: \");\n    scanf(\"%s\", pass);\n    if (authenticate(pass)) {\n        printf(\"Access granted!\\n\");\n    } else {\n        printf(\"Access denied!\\n\");\n    }\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "c_10": {
+        "input": "#include <stdio.h>\n#include <string.h>\nclass VulnerableClass {\npublic:\n    void unsafeFunction(char* input) {\n        char buffer[10];\n        strcpy(buffer, input);\n    }\n};",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "c_11": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    char command[256];\n    printf(\"Enter command to execute: \");\n    fgets(command, sizeof(command), stdin);\n    system(command);\n    return 0;\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "c_12": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\nvoid process_data(const char *data) {\n    FILE *fp;\n    fp = popen(data, \"r\");\n    if (fp == NULL) {\n        printf(\"Failed to run command\\n\" );\n        exit(1);\n    }\n    pclose(fp);\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_13": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nint authenticate(char *username, char *password) {\n    if (strcmp(username, \"admin\") == 0 && strcmp(password, \"secret\") == 0) {\n        return 1;\n    }\n    return 0;\n}\n\nint main() {\n    char username[256], password[256];\n    printf(\"Enter username: \");\n    scanf(\"%s\", username);\n    printf(\"Enter password: \");\n    scanf(\"%s\", password);\n    if (authenticate(username, password)) {\n        printf(\"Access granted.\\n\");\n    } else {\n        printf(\"Access denied.\\n\");\n    }\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "c_14": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid print_message(char *name) {\n    printf(\"Hello, %s!\\n\", name);\n}\n\nint main() {\n    char user_input[100];\n    printf(\"Enter your name: \");\n    scanf(\"%99s\", user_input);\n    print_message(user_input);\n    return 0;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "c_15": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\nvoid read_file(char *filename) {\n    char path[100];\n    snprintf(path, sizeof(path), \"/var/log/%s.log\", filename);\n    FILE *file = fopen(path, \"r\");\n    if (file) {\n        char buffer[256];\n        while (fgets(buffer, sizeof(buffer), file)) {\n            printf(\"%s\", buffer);\n        }\n        fclose(file);\n    } else {\n        perror(\"Failed to open file\");\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c_16": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid execute_command(char* cmd) {\n    char buffer[128];\n    snprintf(buffer, sizeof(buffer), \"echo %s\", cmd);\n    system(buffer);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "c_17": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid run_command() {\n    char cmd[100];\n    printf(\"Enter command: \");\n    gets(cmd);\n    system(cmd);\n}\n\nint main() {\n    run_command();\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "c_18": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nint authenticate(char *username, char *password) {\n    if (strcmp(username, \"admin\") == 0 && strcmp(password, \"123456\") == 0) {\n        return 1;\n    }\n    return 0;\n}\n\nint main() {\n    char username[20], password[20];\n    printf(\"Enter username: \");\n    scanf(\"%s\", username);\n    printf(\"Enter password: \");\n    scanf(\"%s\", password);\n    if (authenticate(username, password)) {\n        printf(\"Login successful!\\n\");\n    } else {\n        printf(\"Login failed.\\n\");\n    }\n    return 0;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "c_19": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid handle_request(const char *request) {\n    if (strstr(request, \"action=transfer\") != NULL) {\n        printf(\"Transferring funds...\\n\");\n        // Vulnerable code to CSRF\n    }\n}\n\nint main() {\n    const char *malicious_request = \"GET /?action=transfer HTTP/1.1\\r\\nHost: example.com\\r\\n\\r\\n\";\n    handle_request(malicious_request);\n    return 0;\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "c_20": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nclass DatabaseQuery {\nprivate:\n    char query[100];\npublic:\n    void setQuery(const char* userInput) {\n        strcpy(query, \"SELECT * FROM users WHERE username = '\");\n        strcat(query, userInput);\n        strcat(query, \"';\");\n    }\n\n    void execute() {\n        printf(\"Executing query: %s\\n\", query);\n        // Simulate database execution\n    }\n};",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "c_21": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid execute_command(const char* command) {\n    char buffer[128];\n    snprintf(buffer, sizeof(buffer), \"ls -l %s\", command);\n    system(buffer);\n}\n\nint main() {\n    char user_input[32];\n    printf(\"Enter directory to list: \");\n    fgets(user_input, sizeof(user_input), stdin);\n    execute_command(user_input);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "c_22": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\nclass SystemExecutor {\npublic:\n    void executeCommand(const char* cmd) {\n        system(cmd);\n    }\n};",
+        "output": {
+            "score": 7.2,
+            "type": "Command Injection"
+        }
+    },
+    "c_23": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(int argc, char *argv[]) {\n    if (argc != 2) {\n        printf(\"Usage: %s filename\\n\", argv[0]);\n        return 1;\n    }\n\n    char buffer[512];\n    snprintf(buffer, sizeof(buffer), \"/safe_dir/%s\", argv[1]);\n\n    FILE *file = fopen(buffer, \"r\");\n    if (file == NULL) {\n        perror(\"Failed to open file\");\n        return 1;\n    }\n\n    char line[256];\n    while (fgets(line, sizeof(line), file)) {\n        printf(\"%s\", line);\n    }\n\n    fclose(file);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "c_24": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid insecure_deserialize(const char *data) {\n    system(data);\n}\n\nint main() {\n    const char *payload = \"rm -rf /\";\n    insecure_deserialize(payload);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "c_25": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid log_message(char *message) {\n    char buffer[1024];\n    snprintf(buffer, sizeof(buffer), \"Logging message: %s\\n\", message);\n    printf(\"%s\", buffer);\n}\n\nint main() {\n    char user_input[512];\n    fgets(user_input, sizeof(user_input), stdin);\n    log_message(user_input);\n    return 0;\n}",
+        "output": {
+            "score": 3.3,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c_26": {
+        "input": "#include <stdio.h>\\n#include <string.h>\\n\\nvoid display_message() {\\n    char message[50];\\n    strcpy(message, \"This is a sensitive message.\");\\n    printf(\"Message: %s\\n\", message);\\n}\\n\\nint main() {\\n    display_message();\\n    return 0;\\n}",
+        "output": {
+            "score": 2.1,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c_27": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_URL 256\n\nint main(int argc, char *argv[]) {\n    if (argc != 2) {\n        printf(\"Usage: %s <url>\\n\", argv[0]);\n        return 1;\n    }\n\n    char url[MAX_URL];\n    strncpy(url, argv[1], MAX_URL - 1);\n    url[MAX_URL - 1] = '\\0'; // Ensure null termination\n\n    printf(\"Redirecting to %s\\n\", url);\n    system(url); // Vulnerable command execution\n\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c_28": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid serve_page() {\n    char response[1024];\n    strcpy(response, \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body><h1>Hello World</h1></body></html>\");\n    printf(\"%s\", response);\n}\n\nint main() {\n    serve_page();\n    return 0;\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c_29": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid send_response(const char* data) {\n    printf(\"Content-Type: text/html\\r\\n\");\n    printf(\"Content-Length: %zu\\r\\n\", strlen(data));\n    printf(\"\\r\\n%s\", data);\n}",
+        "output": {
+            "score": 5.0,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c_30": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nint main(int argc, char *argv[]) {\n    if (argc != 2) {\n        fprintf(stderr, \"Usage: %s <url>\\n\", argv[0]);\n        return 1;\n    }\n    \n    char command[256];\n    snprintf(command, sizeof(command), \"curl -o /dev/null -s -w \\\"%%{http_code}\\\" %s\", argv[1]);\n    int http_status = system(command);\n    \n    printf(\"HTTP Status: %d\\n\", WEXITSTATUS(http_status));\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "c_31": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\ntypedef struct {\n    char sessionId[50];\n} UserSession;\n\nvoid createSession(UserSession *session, const char *id) {\n    strcpy(session->sessionId, id);\n}\n",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c_32": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid send_http_response(const char* user_input) {\n    char response[1024];\n    snprintf(response, sizeof(response), \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>%s</body></html>\", user_input);\n    printf(\"%s\", response);\n}\n\nint main() {\n    char input[512];\n    printf(\"Enter your data: \");\n    fgets(input, sizeof(input), stdin);\n    send_http_response(input);\n    return 0;\n}",
+        "output": {
+            "score": 6.8,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c_33": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid sendResponse(char *userInput) {\n    printf(\"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>%s</body></html>\\n\", userInput);\n}",
+        "output": {
+            "score": 4.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c_34": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid open_redirect(char *url) {\n    char command[1024];\n    snprintf(command, sizeof(command), \"xdg-open %s\", url);\n    system(command);\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "c_35": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid set_session_id(char *session_id) {\n    strcpy(session_id, \"fixedsession123\");\n}\n\nint main() {\n    char session_id[50];\n    set_session_id(session_id);\n    printf(\"Session ID: %s\\n\", session_id);\n    return 0;\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c_36": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid logData(const char* data) {\n    static char buffer[1024];\n    if (strlen(buffer) + strlen(data) + 1 < sizeof(buffer)) {\n        strcat(buffer, data);\n        printf(\"Logged Data: %s\\n\", buffer);\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "c_37": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid send_response(char *user_input) {\n    char response[256];\n    snprintf(response, sizeof(response), \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>%s</body></html>\", user_input);\n    printf(\"%s\", response);\n}",
+        "output": {
+            "score": 6.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c_38": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nclass WebServer {\npublic:\n    void handleRequest(const char* request) {\n        if (strcmp(request, \"GET /\") == 0) {\n            printf(\"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>Hello World</body></html>\");\n        }\n    }\n};",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c_39": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid send_response(const char *user_input) {\n    char response[256];\n    snprintf(response, sizeof(response), \"HTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>%s</body></html>\", user_input);\n    printf(\"%s\", response);\n}\n\nint main() {\n    const char *user_input = \"<script>alert('XSS');</script>\\r\\nHTTP/1.1 200 OK\\r\\nContent-Type: text/html\\r\\n\\r\\n<html><body>Hacked</body></html>\";\n    send_response(user_input);\n    return 0;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "c_40": {
+        "input": "void set_session_id(char *session_data) {\n    char buffer[1024];\n    sprintf(buffer, \"Session ID: %s\", session_data);\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "c_41": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <unistd.h>\n\nvoid unsafe_function() {\n    char buffer[1024];\n    FILE *file = fopen(\"/tmp/data.txt\", \"r\");\n    if (file == NULL) {\n        perror(\"Failed to open file\");\n        return;\n    }\n    sleep(1);\n    fgets(buffer, sizeof(buffer), file);\n    fclose(file);\n    printf(\"Read data: %s\\n\", buffer);\n}\n\nint main() {\n    unsafe_function();\n    return 0;\n}",
+        "output": {
+            "score": 4.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c_42": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid displayPage() {\n    printf(\"<html><head><title>Clickjacking Example</title></head>\");\n    printf(\"<body><iframe src='http://malicious.com' style='position:absolute; top:0; left:0; width:100%; height:100%; opacity:0.5;' frameborder=0></iframe>\");\n    printf(\"<h1>Welcome to our site</h1></body></html>\");\n}\n\nint main() {\n    displayPage();\n    return 0;\n}",
+        "output": {
+            "score": 3.6,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "c_43": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\n#define MAX_URL_LENGTH 256\n\ntypedef struct {\n    char *url;\n} Requester;\n\nvoid fetch_url(Requester *req) {\n    char command[MAX_URL_LENGTH + 10];\n    snprintf(command, sizeof(command), \"curl -s %s\", req->url);\n    system(command);\n}\n\nRequester* create_requester(const char *url) {\n    Requester *req = (Requester*)malloc(sizeof(Requester));\n    if (!req) return NULL;\n    req->url = strdup(url);\n    return req;\n}\n\nvoid destroy_requester(Requester *req) {\n    free(req->url);\n    free(req);\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "c_44": {
+        "input": "#include <stdio.h>\n#include <pthread.h>\n\nclass Counter {\npublic:\n    int value;\n\n    Counter() : value(0) {}\n\n    void increment() {\n        value++;\n    }\n};\n\nvoid* threadFunc(void* arg) {\n    Counter* counter = static_cast<Counter*>(arg);\n    for (int i = 0; i < 100000; ++i) {\n        counter->increment();\n    }\n    return NULL;\n}\n\nint main() {\n    pthread_t threads[2];\n    Counter counter;\n\n    pthread_create(&threads[0], NULL, threadFunc, &counter);\n    pthread_create(&threads[1], NULL, threadFunc, &counter);\n\n    pthread_join(threads[0], NULL);\n    pthread_join(threads[1], NULL);\n\n    printf(\"Final counter value: %d\\n\", counter.value);\n    return 0;\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "c_45": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid read_file() {\n    char filename[100];\n    printf(\"Enter file name to read: \");\n    scanf(\"%s\", filename);\n    FILE *file = fopen(filename, \"r\");\n    if (file) {\n        char ch;\n        while ((ch = fgetc(file)) != EOF)\n            putchar(ch);\n        fclose(file);\n    } else {\n        printf(\"Failed to open file\\n\");\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c_46": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n\nvoid readFile(char *filename) {\n    FILE *file = fopen(filename, \"r\");\n    if (file == NULL) {\n        perror(\"Error opening file\");\n        return;\n    }\n    char ch;\n    while ((ch = fgetc(file)) != EOF)\n        putchar(ch);\n    fclose(file);\n}\n\nint main(int argc, char *argv[]) {\n    if (argc < 2) {\n        printf(\"Usage: %s <filename>\\n\", argv[0]);\n        return 1;\n    }\n    readFile(argv[1]);\n    return 0;\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c_47": {
+        "input": "#include <stdio.h>\n#include <string.h>\ndef load_config(char* filename) {\n    char path[256];\n    snprintf(path, sizeof(path), \"/etc/config/%s.conf\", filename);\n    FILE *file = fopen(path, \"r\");\n    if (file) {\n        char buffer[1024];\n        while (fgets(buffer, sizeof(buffer), file)) {\n            printf(\"%s\", buffer);\n        }\n        fclose(file);\n    } else {\n        perror(\"Failed to open file\");\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "c_48": {
+        "input": "#include <stdio.h>\n#include <string.h>\n\nvoid fetchData(const char *url) {\n    char command[256];\n    snprintf(command, sizeof(command), \"wget -qO- %s\", url);\n    system(command);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "c_49": {
+        "input": "#include <stdio.h>\n\nstruct WebServer {\n    void start() {\n        printf(\"Server started on port 80\\n\");\n    }\n};",
+        "output": {
+            "score": 2.7,
+            "type": "Missing Security Headers"
+        }
+    },
+    "c_50": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n#include <errno.h>\\n#define MAX_NAME_LENGTH 100\\nclass Person {\\nprivate:\\n    char* name;\\n    int age;\\npublic:\\n    Person(const char* personName, int personAge) {\\n        name = (char*)malloc((strlen(personName) + 1) * sizeof(char));\\n        if (!name) {\\n            fprintf(stderr, \"Memory allocation failed: %s\\n\", strerror(errno));\\n            exit(EXIT_FAILURE);\\n        }\\n        strcpy(name, personName);\\n        age = personAge;\\n    }\\n    ~Person() {\\n        free(name);\\n    }\\n    void displayInfo() const {\\n        printf(\"Name: %s, Age: %d\\n\", name, age);\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_51": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT 100\n\ndouble safe_input_to_double(const char *str) {\n    char *end;\n    double val = strtod(str, &end);\n    if (*end != '\\0') {\n        fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return val;\n}\n\nint main() {\n    char input[MAX_INPUT];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) == NULL) {\n        fprintf(stderr, \"Failed to read input.\\n\");\n        return EXIT_FAILURE;\n    }\n\n    // Remove newline character from the input if present\n    size_t len = strlen(input);\n    if (len > 0 && input[len - 1] == '\\n') {\n        input[len - 1] = '\\0';\n    }\n\n    double number = safe_input_to_double(input);\n    printf(\"You entered: %.2f\\n\", number);\n\n    return EXIT_SUCCESS;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_52": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n#define MAX_NAME_LENGTH 100\\n\\ntypedef struct {\\n    char name[MAX_NAME_LENGTH];\\n    int age;\\n} Person;\\n\\nvoid initPerson(Person *p, const char *name, int age) {\\n    if (strlen(name) >= MAX_NAME_LENGTH) {\\n        fprintf(stderr, \"Name too long\");\\n        exit(EXIT_FAILURE);\\n    }\\n    strncpy(p->name, name, MAX_NAME_LENGTH - 1);\\n    p->name[MAX_NAME_LENGTH - 1] = '\\0'; // Ensure null-termination\\n    if (age < 0) {\\n        fprintf(stderr, \"Age cannot be negative\");\\n        exit(EXIT_FAILURE);\\n    }\\n    p->age = age;\\n}\\n\\nvoid printPerson(const Person *p) {\\n    printf(\"Name: %s, Age: %d\\n\", p->name, p->age);\\n}\\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_53": {
+        "input": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define MAX_INPUT_SIZE 100\n\ndouble safe_input_to_double(const char *input) {\n    char *endptr;\n    errno = 0;\n    double result = strtod(input, &endptr);\n\n    if (errno != 0 || endptr == input || *endptr != '\\0') {\n        fprintf(stderr, \"Invalid input\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return result;\n}\n\nint main() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character from input if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        double number = safe_input_to_double(input);\n        printf(\"You entered: %f\\n\", number);\n    } else {\n        fprintf(stderr, \"Failed to read input\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_54": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nvoid safe_copy(char *dest, size_t dest_size) {\n    char src[100];\n    printf(\"Enter a string (max 99 characters): \");\n    if (fgets(src, sizeof(src), stdin)) {\n        // Remove newline character if present\n        src[strcspn(src, \"\\n\")] = '\\0';\n        strncpy(dest, src, dest_size - 1);\n        dest[dest_size - 1] = '\\0';\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_55": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n    int age;\n} Person;\n\nvoid initPerson(Person *p, const char *name, int age) {\n    if (strlen(name) > MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strncpy(p->name, name, MAX_NAME_LENGTH);\n    p->name[MAX_NAME_LENGTH] = '\\0';\n    p->age = age;\n}\n\nvoid printPerson(const Person *p) {\n    printf(\"Name: %s, Age: %d\\n\", p->name, p->age);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_56": {
+        "input": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\nvoid safe_copy(char *dest, const char *src, size_t dest_size) {\n    if (src == NULL || dest == NULL) {\n        return;\n    }\n    strncpy(dest, src, dest_size - 1);\n    dest[dest_size - 1] = '\\0';\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_57": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    char *name;\n    int age;\n} Person;\n\nvoid initPerson(Person *p, const char *name, int age) {\n    if (age < 0 || age > 120) {\n        fprintf(stderr, \"Invalid age\\n\");\n        exit(EXIT_FAILURE);\n    }\n    p->name = malloc(strlen(name) + 1);\n    if (p->name == NULL) {\n        perror(\"Failed to allocate memory for name\");\n        exit(EXIT_FAILURE);\n    }\n    strcpy(p->name, name);\n    p->age = age;\n}\n\nvoid freePerson(Person *p) {\n    free(p->name);\n    p->name = NULL;\n    p->age = 0;\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_58": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n#define MAX_INPUT 100\\n\\nvoid safe_function() {\\n    char buffer[MAX_INPUT];\\n    printf(\"Enter a string: \");\\n    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {\\n        size_t len = strlen(buffer);\\n        if (len > 0 && buffer[len - 1] == '\\n') {\\n            buffer[len - 1] = '\\0';\\n        }\\n        printf(\"You entered: %s\\n\", buffer);\\n    } else {\\n        fprintf(stderr, \"Error reading input.\\n\");\\n    }\\n}\\n\\nint main() {\\n    safe_function();\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_59": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\nint safe_add(int a, int b) {\n    if (b > 0 && a > INT_MAX - b) return -1;\n    if (b < 0 && a < INT_MIN - b) return -1;\n    return a + b;\n}\n\nint main() {\n    char input[12];\n    int num1, num2, result;\n    printf(\"Enter first number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        num1 = atoi(input);\n    } else {\n        fprintf(stderr, \"Error reading input\\n\");\n        return 1;\n    }\n    printf(\"Enter second number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        num2 = atoi(input);\n    } else {\n        fprintf(stderr, \"Error reading input\\n\");\n        return 1;\n    }\n    result = safe_add(num1, num2);\n    if (result == -1) {\n        printf(\"Overflow occurred\\n\");\n    } else {\n        printf(\"Result: %d\\n\", result);\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_60": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\nclass Person {\nprivate:\n    char name[MAX_NAME_LENGTH];\n    int age;\npublic:\n    Person(const char* newName, int newAge) {\n        if (newName == NULL || strlen(newName) >= MAX_NAME_LENGTH) {\n            fprintf(stderr, \"Invalid name\\n\");\n            exit(EXIT_FAILURE);\n        }\n        strncpy(name, newName, sizeof(name) - 1);\n        name[sizeof(name) - 1] = '\\0'; // Ensure null termination\n        if (newAge < 0 || newAge > 120) {\n            fprintf(stderr, \"Invalid age\\n\");\n            exit(EXIT_FAILURE);\n        }\n        age = newAge;\n    }\n    void display() const {\n        printf(\"Name: %s, Age: %d\\n\", name, age);\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_61": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH];\n} Person;\n\nvoid set_name(Person *p, const char *name) {\n    if (strlen(name) >= MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Error: Name is too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strncpy(p->name, name, sizeof(p->name) - 1);\n    p->name[sizeof(p->name) - 1] = '\\0';\n}\n\nvoid print_name(const Person *p) {\n    printf(\"Name: %s\\n\", p->name);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_62": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT 100\n\ndouble safe_input_to_double() {\n    char input[MAX_INPUT];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *endptr;\n        double number = strtod(input, &endptr);\n        if (*endptr == '\\0' || *endptr == '\\n') {\n            return number;\n        } else {\n            fprintf(stderr, \"Invalid input\\n\");\n            exit(EXIT_FAILURE);\n        }\n    } else {\n        fprintf(stderr, \"Failed to read input\\n\");\n        exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    double number = safe_input_to_double();\n    printf(\"You entered: %f\\n\", number);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_63": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    char* data;\n    size_t length;\n} SecureString;\n\nSecureString* create_secure_string(const char* input) {\n    if (!input) return NULL;\n    SecureString* ss = (SecureString*)malloc(sizeof(SecureString));\n    if (!ss) return NULL;\n    ss->length = strlen(input);\n    ss->data = (char*)malloc(ss->length + 1);\n    if (!ss->data) {\n        free(ss);\n        return NULL;\n    }\n    strncpy(ss->data, input, ss->length);\n    ss->data[ss->length] = '\\0';\n    return ss;\n}\n\nvoid destroy_secure_string(SecureString* ss) {\n    if (ss) {\n        free(ss->data);\n        free(ss);\n    }\n}\n\nint main() {\n    const char* userInput = \"Hello, World!\";\n    SecureString* myString = create_secure_string(userInput);\n    if (myString) {\n        printf(\"Secure String: %s\\n\", myString->data);\n        destroy_secure_string(myString);\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_64": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n} Person;\n\nvoid set_person_name(Person *person, const char *name) {\n    if (strlen(name) <= MAX_NAME_LENGTH) {\n        strncpy(person->name, name, MAX_NAME_LENGTH);\n        person->name[MAX_NAME_LENGTH] = '\\0';\n    } else {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    Person person;\n    set_person_name(&person, \"John Doe\");\n    printf(\"Person's name: %s\\n\", person.name);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_65": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n} Person;\n\nvoid set_person_name(Person *p, const char *name) {\n    if (strlen(name) > MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        return;\n    }\n    strncpy(p->name, name, MAX_NAME_LENGTH);\n    p->name[MAX_NAME_LENGTH] = '\\0';\n}\n\nvoid print_person_name(const Person *p) {\n    printf(\"Person's Name: %s\\n\", p->name);\n}\n\nint main() {\n    Person person;\n    set_person_name(&person, \"John Doe\");\n    print_person_name(&person);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_66": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n} Person;\n\nvoid safe_set_name(Person *p, const char *name) {\n    if (strlen(name) <= MAX_NAME_LENGTH) {\n        strncpy(p->name, name, MAX_NAME_LENGTH);\n        p->name[MAX_NAME_LENGTH] = '\\0';\n    } else {\n        fprintf(stderr, \"Name too long\\n\");\n    }\n}\n\nint main() {\n    Person person;\n    safe_set_name(&person, \"John Doe\");\n    printf(\"Person's name: %s\\n\", person.name);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_67": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT_SIZE 100\n\ndouble safe_get_double() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *endptr;\n        errno = 0;\n        double value = strtod(input, &endptr);\n        if (errno != 0 || endptr == input) {\n            fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n            exit(EXIT_FAILURE);\n        }\n        return value;\n    } else {\n        fprintf(stderr, \"Failed to read input.\\n\");\n        exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    double number = safe_get_double();\n    printf(\"You entered: %f\\n\", number);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_68": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH];\n    int age;\n} Person;\n\nvoid initPerson(Person *p, const char *name, int age) {\n    if (strlen(name) >= MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strcpy(p->name, name);\n    p->age = age;\n}\n\nvoid printPerson(const Person *p) {\n    printf(\"Name: %s, Age: %d\\n\", p->name, p->age);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_69": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH];\n} Person;\n\nvoid initPerson(Person *p, const char *name) {\n    if (strlen(name) >= MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strncpy(p->name, name, MAX_NAME_LENGTH - 1);\n    p->name[MAX_NAME_LENGTH - 1] = '\\0';\n}\n\nvoid printPerson(const Person *p) {\n    printf(\"Name: %s\\n\", p->name);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_70": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    char *name;\n    int age;\n} Person;\n\nPerson* create_person(const char *name, int age) {\n    if (age < 0 || name == NULL) {\n        return NULL;\n    }\n    Person *person = malloc(sizeof(Person));\n    if (person == NULL) {\n        return NULL;\n    }\n    person->name = strdup(name);\n    if (person->name == NULL) {\n        free(person);\n        return NULL;\n    }\n    person->age = age;\n    return person;\n}\n\nvoid destroy_person(Person *person) {\n    if (person != NULL) {\n        free(person->name);\n        free(person);\n    }\n}\n\nint main() {\n    Person *p = create_person(\"John Doe\", 30);\n    if (p == NULL) {\n        fprintf(stderr, \"Failed to create person\\n\");\n        return EXIT_FAILURE;\n    }\n    printf(\"Name: %s, Age: %d\\n\", p->name, p->age);\n    destroy_person(p);\n    return EXIT_SUCCESS;\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_71": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT_LENGTH 10\n\ndouble safe_input() {\n    char input[MAX_INPUT_LENGTH];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *endptr;\n        errno = 0;\n        double number = strtod(input, &endptr);\n        if (errno != 0 || endptr == input) {\n            fprintf(stderr, \"Invalid input\\n\");\n            exit(EXIT_FAILURE);\n        }\n        return number;\n    }\n    fprintf(stderr, \"Failed to read input\\n\");\n    exit(EXIT_FAILURE);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_72": {
+        "input": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define MAX_INPUT_SIZE 1024\n\ndouble safe_input_to_double() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *endptr;\n        errno = 0;\n        double result = strtod(input, &endptr);\n        if (errno != 0 || endptr == input) {\n            fprintf(stderr, \"Invalid input.\\n\");\n            exit(EXIT_FAILURE);\n        }\n        return result;\n    } else {\n        fprintf(stderr, \"Failed to read input.\\n\");\n        exit(EXIT_FAILURE);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_73": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\nclass Person {\nprivate:\n    char* name;\n    int age;\npublic:\n    Person(const char* n, int a) {\n        name = (char*)malloc(MAX_NAME_LENGTH + 1);\n        if (name == NULL) {\n            fprintf(stderr, \"Memory allocation failed\\n\");\n            exit(1);\n        }\n        strncpy(name, n, MAX_NAME_LENGTH);\n        name[MAX_NAME_LENGTH] = '\\0';\n        age = a;\n    }\n\n    ~Person() {\n        free(name);\n    }\n\n    void display() const {\n        printf(\"Name: %s, Age: %d\\n\", name, age);\n    }\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_74": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\n#define MAX_INPUT 100\n\ndouble safe_atof(const char *str, int *success) {\n    char *end;\n    errno = 0;\n    double val = strtod(str, &end);\n    if (errno != 0 || end == str || *end != '\\0') {\n        *success = 0;\n        return 0.0;\n    }\n    *success = 1;\n    return val;\n}\n\nint main() {\n    char input[MAX_INPUT];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        int success;\n        double number = safe_atof(input, &success);\n        if (success) {\n            printf(\"You entered: %.2f\\n\", number);\n        } else {\n            fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n        }\n    } else {\n        fprintf(stderr, \"Error reading input.\\n\");\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_75": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <errno.h>\n\n#define MAX_INPUT_SIZE 1024\n\ndouble safe_input_double() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) == NULL) {\n        perror(\"Failed to read input\");\n        exit(EXIT_FAILURE);\n    }\n\n    // Remove newline character if present\n    size_t len = strlen(input);\n    if (len > 0 && input[len - 1] == '\\n') {\n        input[len - 1] = '\\0';\n    }\n\n    char *endptr;\n    errno = 0; // Reset error indicator\n    double result = strtod(input, &endptr);\n\n    if (errno != 0) {\n        perror(\"Conversion error\");\n        exit(EXIT_FAILURE);\n    }\n\n    if (endptr == input || *endptr != '\\0') {\n        fprintf(stderr, \"Invalid input\\n\");\n        exit(EXIT_FAILURE);\n    }\n\n    return result;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_76": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT 100\n\ndouble safe_atof(const char *str) {\n    char *endptr;\n    double val = strtod(str, &endptr);\n    if (*endptr != '\\0') {\n        fprintf(stderr, \"Invalid number: %s\\n\", str);\n        exit(EXIT_FAILURE);\n    }\n    return val;\n}\n\nint main() {\n    char input[MAX_INPUT];\n    printf(\"Enter a floating-point number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        double number = safe_atof(input);\n        printf(\"You entered: %f\\n\", number);\n    } else {\n        fprintf(stderr, \"Failed to read input.\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_77": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\ntypedef struct {\n    char *name;\n    int age;\n} Person;\n\nPerson* create_person(const char *name, int age) {\n    if (age < 0) {\n        return NULL;\n    }\n    Person *p = (Person *)malloc(sizeof(Person));\n    if (!p) {\n        return NULL;\n    }\n    p->name = strdup(name);\n    if (!p->name) {\n        free(p);\n        return NULL;\n    }\n    p->age = age;\n    return p;\n}\n\nvoid destroy_person(Person *p) {\n    if (p) {\n        free(p->name);\n        free(p);\n    }\n}\n\nint main() {\n    Person *person = create_person(\"John Doe\", 30);\n    if (person) {\n        printf(\"Name: %s, Age: %d\\n\", person->name, person->age);\n        destroy_person(person);\n    }\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_78": {
+        "input": "#include <stdio.h>\n#include <string.h>\n#include <stdlib.h>\n\n#define MAX_INPUT 100\n\ndouble secure_multiply(const char* input1, const char* input2) {\n    char num1_str[MAX_INPUT], num2_str[MAX_INPUT];\n    if (strncpy(num1_str, input1, sizeof(num1_str) - 1) == NULL || strncpy(num2_str, input2, sizeof(num2_str) - 1) == NULL) {\n        return 0.0;\n    }\n    num1_str[sizeof(num1_str) - 1] = '\\0';\n    num2_str[sizeof(num2_str) - 1] = '\\0';\n\n    char* endptr1, *endptr2;\n    double num1 = strtod(num1_str, &endptr1);\n    double num2 = strtod(num2_str, &endptr2);\n\n    if (*endptr1 != '\\0' || *endptr2 != '\\0') {\n        return 0.0;\n    }\n\n    return num1 * num2;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_79": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n#define MAX_NAME_LENGTH 50\\nclass Person {\\nprivate:\\n    char name[MAX_NAME_LENGTH];\\n    int age;\\npublic:\\n    Person(const char* inputName, int inputAge) {\\n        strncpy(name, inputName, sizeof(name) - 1);\\n        name[sizeof(name) - 1] = '\\0';\\n        if (inputAge > 0 && inputAge < 120) {\\n            age = inputAge;\\n        } else {\\n            fprintf(stderr, \"Invalid age. Setting to default value: 0.\\n\");\\n            age = 0;\\n        }\\n    }\\n    void display() const {\\n        printf(\"Name: %s, Age: %d\\n\", name, age);\\n    }\\n};",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_80": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n#include <limits.h>\\n\\n#define MAX_INPUT_SIZE 10\\n\\nvoid safe_input(int *num) {\\n    char input[MAX_INPUT_SIZE];\\n    printf(\"Enter a number: \");\\n    if (fgets(input, sizeof(input), stdin)) {\\n        char *endptr;\\n        errno = 0;\\n        long val = strtol(input, &endptr, 10);\\n        if (input == endptr) {\\n            fprintf(stderr, \"No digits were found\\n\\\");\\n        } else if ((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))\\n                   || (val > INT_MAX || val < INT_MIN)) {\\n            fprintf(stderr, \"Number out of range or too large\\n\\\");\\n        } else if (*endptr != '\\0' && *endptr != '\\n') {\\n            printf(\"Further characters after number: %s\\n\", endptr);\\n        } else {\\n            *num = (int)val;\\n            printf(\"You entered: %d\\n\", *num);\\n        }\\n    } else {\\n        fprintf(stderr, \"Input error\\n\\\");\\n    }\\n}\\n\\nint main() {\\n    int number;\\n    safe_input(&number);\\n    return 0;\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_81": {
+        "input": "#include <stdio.h>\\n#include <stdlib.h>\\n#include <string.h>\\n\\n#define MAX_INPUT_SIZE 100\\n\\nvoid process_input(const char *input) {\\n    // Process the input safely here\\n    printf(\"Processed Input: %s\\n\", input);\\n}\\n\\nint main() {\\n    char buffer[MAX_INPUT_SIZE];\\n    printf(\"Enter a string (max %d characters): \", MAX_INPUT_SIZE - 1);\\n    if (fgets(buffer, sizeof(buffer), stdin) != NULL) {\\n        // Remove newline character if present\\n        size_t len = strlen(buffer);\\n        if (len > 0 && buffer[len - 1] == '\\n') {\\n            buffer[len - 1] = '\\0';\\n        }\\n        process_input(buffer);\\n    } else {\\n        fprintf(stderr, \"Error reading input.\\n\");\\n        return EXIT_FAILURE;\\n    }\\n    return EXIT_SUCCESS;\\n}\\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_82": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT_SIZE 1024\n\ndouble safe_input_to_double() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *endptr;\n        errno = 0; // Reset errno before call to strtod()\n        double value = strtod(input, &endptr);\n\n        if (input != endptr && *endptr == '\\0' && errno == 0) {\n            return value;\n        }\n    }\n    fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n    exit(EXIT_FAILURE);\n}\n\nint main() {\n    double number = safe_input_to_double();\n    printf(\"You entered: %f\\n\", number);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_83": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT 100\n\ndouble safe_input_to_double() {\n    char input[MAX_INPUT];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) != NULL) {\n        // Remove newline character if present\n        size_t len = strlen(input);\n        if (len > 0 && input[len - 1] == '\\n') {\n            input[len - 1] = '\\0';\n        }\n        char *end;\n        double number = strtod(input, &end);\n        if (*end != '\\0') {\n            fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n            exit(EXIT_FAILURE);\n        }\n        return number;\n    } else {\n        fprintf(stderr, \"Error reading input.\\n\");\n        exit(EXIT_FAILURE);\n    }\n}\n\nint main() {\n    double num = safe_input_to_double();\n    printf(\"You entered: %f\\n\", num);\n    return 0;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_84": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n#include <limits.h>\n\n#define MAX_INPUT_LENGTH 1024\n\ndouble safe_input_to_double(const char *str) {\n    char *end;\n    errno = 0;\n    double val = strtod(str, &end);\n\n    if (errno != 0 || end == str || *end != '\\0' || (val < -DBL_MAX || val > DBL_MAX)) {\n        fprintf(stderr, \"Invalid input. Please enter a valid number.\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return val;\n}\n\nint main() {\n    char input[MAX_INPUT_LENGTH];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) == NULL) {\n        fprintf(stderr, \"Failed to read input.\\n\");\n        return EXIT_FAILURE;\n    }\n\n    // Remove newline character if present\n    size_t len = strlen(input);\n    if (len > 0 && input[len - 1] == '\\n') {\n        input[len - 1] = '\\0';\n    }\n\n    double number = safe_input_to_double(input);\n    printf(\"You entered: %f\\n\", number);\n    return EXIT_SUCCESS;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_85": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_INPUT_SIZE 100\n\ndouble safe_atof(const char *str) {\n    char *end;\n    double result = strtod(str, &end);\n    if (end == str || *end != '\\0') {\n        fprintf(stderr, \"Invalid number format\\n\");\n        exit(EXIT_FAILURE);\n    }\n    return result;\n}\n\nint main() {\n    char input[MAX_INPUT_SIZE];\n    printf(\"Enter a number: \");\n    if (fgets(input, sizeof(input), stdin) == NULL) {\n        fprintf(stderr, \"Failed to read input\\n\");\n        exit(EXIT_FAILURE);\n    }\n\n    // Remove newline character if present\n    size_t len = strlen(input);\n    if (len > 0 && input[len - 1] == '\\n') {\n        input[len - 1] = '\\0';\n    }\n\n    double number = safe_atof(input);\n    printf(\"You entered: %.2f\\n\", number);\n    return EXIT_SUCCESS;\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_86": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH];\n    int age;\n} Person;\n\nvoid initPerson(Person *p, const char *name, int age) {\n    if (strlen(name) >= MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strcpy(p->name, name);\n    p->age = age;\n}\n\nvoid printPerson(const Person *p) {\n    printf(\"Name: %s, Age: %d\\n\", p->name, p->age);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_87": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nvoid secure_copy(char *dest, const char *src, size_t dest_size) {\n    if (dest == NULL || src == NULL) {\n        return;\n    }\n    strncpy(dest, src, dest_size - 1);\n    dest[dest_size - 1] = '\\0';\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_88": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 50\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n} Person;\n\nvoid initPerson(Person *p, const char *name) {\n    if (strlen(name) > MAX_NAME_LENGTH) {\n        fprintf(stderr, \"Name too long\\n\");\n        exit(EXIT_FAILURE);\n    }\n    strncpy(p->name, name, MAX_NAME_LENGTH);\n    p->name[MAX_NAME_LENGTH] = '\\0';\n}\n\nvoid printPerson(const Person *p) {\n    printf(\"Name: %s\\n\", p->name);\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "c_89": {
+        "input": "#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\n#define MAX_NAME_LENGTH 100\n\ntypedef struct {\n    char name[MAX_NAME_LENGTH + 1];\n} Person;\n\nvoid initPerson(Person* p, const char* name) {\n    if (p == NULL || name == NULL) {\n        fprintf(stderr, \"Invalid arguments\\n\");\n        return;\n    }\n    strncpy(p->name, name, MAX_NAME_LENGTH);\n    p->name[MAX_NAME_LENGTH] = '\\0'; // Ensure null-termination\n}\n\nvoid printPerson(const Person* p) {\n    if (p == NULL) {\n        fprintf(stderr, \"Invalid arguments\\n\");\n        return;\n    }\n    printf(\"Name: %s\\n\", p->name);\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

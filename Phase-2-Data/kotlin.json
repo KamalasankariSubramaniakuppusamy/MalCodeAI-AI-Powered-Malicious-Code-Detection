@@ -1,0 +1,576 @@
+{
+    "kotlin_0": {
+        "input": "import kotlin.reflect.jvm.javaMethod\\nclass VulnerableClass {\\n    fun executeCommand(command: String) {\\n        val processBuilder = ProcessBuilder(listOf(\"bash\", \"-c\", command))\\n        processBuilder.redirectErrorStream(true)\\n        val process = processBuilder.start()\\n        val reader = process.inputStream.bufferedReader()\\n        var line: String?\\n        while (reader.readLine().also { line = it } != null) {\\n            println(line)\\n        }\\n    }\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_1": {
+        "input": "import java.io.ByteArrayInputStream\nimport java.io.ObjectInputStream\nfun main() {\n    val serializedData = \"aced00057372001a6b6f746c696e2e4d616c6963696f75734578616d706c65243200000000000000017200166b6f746c696e2e4d616c6963696f75734578616d706c6500000000000000000001020000787071007e000270770c000000436f6d6d616e6420746f2065786563757465\".decodeToByteArray()\n    val bais = ByteArrayInputStream(serializedData)\n    val ois = ObjectInputStream(bais)\n    val obj = ois.readObject()\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "kotlin_2": {
+        "input": "fun unsafeExecute(command: String) { val process = Runtime.getRuntime().exec(command) process.waitFor() }",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_3": {
+        "input": "fun main() {\n    val buffer = ByteArray(10)\n    System.`in`.read(buffer)\n    println(String(buffer))\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "kotlin_4": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nfun executeCommand(cmd: String) {\n    val processBuilder = ProcessBuilder(*cmd.split(\"\\\\s+\").toTypedArray())\n    val process = processBuilder.start()\n    val reader = BufferedReader(InputStreamReader(process.inputStream))\n    var line: String?\n    while (reader.readLine().also { line = it } != null) {\n        println(line)\n    }\n}",
+        "output": {
+            "score": 8.6,
+            "type": "Command Injection"
+        }
+    },
+    "kotlin_5": {
+        "input": "class FileLoader {\n    fun loadFile(path: String): String? {\n        return java.io.File(path).readText()\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "kotlin_6": {
+        "input": "fun executeCommand(command: String) {\\n    val process = Runtime.getRuntime().exec(command)\\n    process.waitFor()\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_7": {
+        "input": "class DatabaseManager {\\n    fun getUserData(userId: String): String {\\n        val query = \"SELECT * FROM users WHERE id = '\" + userId + \"'\";\\n        // Execute the query...\\n        return \\\"User data for ID: $userId\\\"\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "SQL Injection"
+        }
+    },
+    "kotlin_8": {
+        "input": "fun authenticate(username: String, password: String): Boolean {\n    val storedCredentials = mapOf(\"admin\" to \"password123\", \"user\" to \"letmein\")\n    return storedCredentials[username] == password\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "kotlin_9": {
+        "input": "import java.io.BufferedReader\\nimport java.io.InputStreamReader\\nclass Exploit {\\n    companion object {\\n        @JvmStatic\\n        fun main(args: Array<String>) {\\n            val command = \"whoami\"\\n            val process = Runtime.getRuntime().exec(command)\\n            val reader = BufferedReader(InputStreamReader(process.inputStream))\\n            var line: String?\\n            while (reader.readLine().also { line = it } != null) {\\n                println(line)\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "kotlin_10": {
+        "input": "class UserAuth {\\n    private var storedPasswordHash = \"8d969eef6ecad3c29a3a629280e686cff8cae4f8b5a731783fb0e5537cc169ba\"\\n    fun authenticate(inputPassword: String): Boolean {\\n        val inputHash = hashPassword(inputPassword)\\n        return inputHash == storedPasswordHash\\n    }\\n    private fun hashPassword(password: String): String {\\n        val bytes = MessageDigest.getInstance(\"SHA-256\").digest(password.toByteArray())\\n        return BigInteger(1, bytes).toString(16).padStart(64, '0')\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "kotlin_11": {
+        "input": "fun executeCommand() {\n    val userInput = readLine()\n    ProcessBuilder(userInput).start()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "kotlin_12": {
+        "input": "import javax.servlet.http.HttpServletRequest\nimport javax.servlet.http.HttpServletResponse\nimport javax.servlet.annotation.WebServlet\nimport javax.servlet.http.HttpServlet\n@WebServlet(\"/transfer\")\nclass TransferServlet : HttpServlet() {\n    override fun doPost(req: HttpServletRequest, resp: HttpServletResponse) {\n        val amount = req.getParameter(\"amount\")?.toIntOrNull()\n        val recipient = req.getParameter(\"recipient\")\n        if (amount != null && recipient != null) {\n            // Simulate transferring funds\n            println(\"Transferred $amount to $recipient\")\n            resp.status = HttpServletResponse.SC_OK\n        } else {\n            resp.sendError(HttpServletResponse.SC_BAD_REQUEST)\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "kotlin_13": {
+        "input": "fun updateEmail(newEmail: String) {\n    val url = \"http://example.com/update?email=$newEmail\"\n    // Simulate HTTP request\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "kotlin_14": {
+        "input": "fun executeCommand() {\\n    val command = readLine()!!\\n    Runtime.getRuntime().exec(command)\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_15": {
+        "input": "class VulnerableApp {\n    private var adminAccess: Boolean = false\n    fun login(password: String) {\n        if (password == \"secret\") {\n            adminAccess = true\n        }\n    }\n    fun executeCommand(command: String) {\n        if (adminAccess) {\n            Runtime.getRuntime().exec(command)\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "kotlin_16": {
+        "input": "package com.example\n\nclass LoginActivity {\n\n    fun authenticate(username: String, password: String): Boolean {\n        return username == \"admin\" && password == \"password123\"\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "kotlin_17": {
+        "input": "package com.example.auth\n\nclass Authenticator {\n    private val users = mapOf(\"admin\" to \"password123\", \"user\" to \"letmein\")\n\n    fun authenticate(username: String, password: String): Boolean {\n        return if (users.containsKey(username)) {\n            val storedPasswordHash = hashPassword(users[username]!!)\n            slowCompare(storedPasswordHash, hashPassword(password))\n        } else {\n            false\n        }\n    }\n\n    private fun hashPassword(password: String): String {\n        return password.reversed() // Simplified non-cryptographic \"hashing\"\n    }\n\n    private fun slowCompare(a: String, b: String): Boolean {\n        if (a.length != b.length) return false\n        var result = 0\n        for (i in a.indices) {\n            result or= a[i].toInt() xor b[i].toInt()\n            Thread.sleep(50) // Simulate slow comparison\n        }\n        return result == 0\n    }\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Broken Authentication"
+        }
+    },
+    "kotlin_18": {
+        "input": "import java.nio.ByteBuffer\n\nclass NativeLib {\n    init {\n        System.loadLibrary(\"native-lib\")\n    }\n\n    external fun nativeMethod(byteArray: ByteArray)\n}\n\nclass BufferOverflowExample {\n    companion object {\n        @JvmStatic\n        fun main(args: Array<String>) {\n            val lib = NativeLib()\n            val largeByteArray = ByteArray(1024 * 1024) // Large byte array to overflow buffer\n            lib.nativeMethod(largeByteArray)\n        }\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "kotlin_19": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport kotlin.system.exitProcess\n\nclass CommandExecutor {\n    fun execute(command: String) {\n        try {\n            val process = Runtime.getRuntime().exec(command)\n            val inputStream = BufferedReader(InputStreamReader(process.inputStream))\n            var line: String?\n            while (inputStream.readLine().also { line = it } != null) {\n                println(line)\n            }\n            exitProcess(process.waitFor())\n        } catch (e: Exception) {\n            e.printStackTrace()\n        }\n    }\n}\n\nfun main(args: Array<String>) {\n    if (args.isNotEmpty()) {\n        val executor = CommandExecutor()\n        executor.execute(args[0])\n    }\n}",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_20": {
+        "input": "fun main() {\\n    val userInput = readLine()!!\\n    Runtime.getRuntime().exec(userInput)\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "kotlin_21": {
+        "input": "fun transferFunds(toAccount: String, amount: Double) {\n    // Simulate transferring funds to another account\n    println(\"Transferring $$amount to $toAccount\")\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "kotlin_22": {
+        "input": "class UnsafeExecutor {\n    fun execute(command: String) {\n        Runtime.getRuntime().exec(command)\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "kotlin_23": {
+        "input": "class VulnerableShell {\n    fun executeCommand(command: String) {\n        val process = Runtime.getRuntime().exec(command)\n        process.waitFor()\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "kotlin_24": {
+        "input": "import java.io.File\\nimport java.io.FileReader\\nclass FileLoader {\\n    fun loadFile(path: String): String {\\n        val file = File(path)\\n        val reader = FileReader(file)\\n        return reader.readText()\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "kotlin_25": {
+        "input": "import io.ktor.application.*\nimport io.ktor.response.*\nimport io.ktor.routing.*\nimport io.ktor.server.engine.*\nimport io.ktor.server.netty.*\n\nfun main() {\n    embeddedServer(Netty, port = 8080) {\n        routing {\n            get(\"/\") {\n                call.respondText(\"Hello, world!\")\n            }\n        }\n    }.start(wait = true)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "kotlin_26": {
+        "input": "fun vulnerableRedirect(url: String) {\\n    val intent = Intent(Intent.ACTION_VIEW).apply {\\n        data = Uri.parse(url)\\n    }\\n    startActivity(intent)\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "kotlin_27": {
+        "input": "class WebViewContainer : AppCompatActivity() {\\n    override fun onCreate(savedInstanceState: Bundle?) {\\n        super.onCreate(savedInstanceState)\\n        val webView = WebView(this)\\n        setContentView(webView)\\n        val webSettings = webView.settings\\n        webSettings.javaScriptEnabled = true\\n        webView.loadUrl(\"https://example.com\")\\n    }\\n}",
+        "output": {
+            "score": 3.1,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "kotlin_28": {
+        "input": "fun readFile(fileName: String): String? {\\n    val file = java.io.File(\"/safe/directory/$fileName\")\\n    return if (file.exists() && !file.isDirectory) file.readText() else null\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "kotlin_29": {
+        "input": "package com.example\nimport javax.servlet.http.HttpServlet\nimport javax.servlet.http.HttpServletRequest\nimport javax.servlet.http.HttpServletResponse\nclass VulnerableServlet : HttpServlet() {\n    override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {\n        val userParam = request.getParameter(\"userInput\")\n        response.setHeader(\"Set-Cookie\", \"data=$userParam; path=/\")\n        response.writer.println(\"User input received: $userParam\")\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "kotlin_30": {
+        "input": "class HttpResponseSplitter {\\n    fun buildResponse(userInput: String): String {\\n        return \\\"HTTP/1.1 200 OK\\\\r\\\\nContent-Type: text/html\\\\r\\\\n\\\\r\\\\n<html><body>\\$userInput</body></html>\\\"\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "kotlin_31": {
+        "input": "package com.example.sessionfixation\nimport javax.servlet.http.Cookie\nimport javax.servlet.http.HttpServlet\nimport javax.servlet.http.HttpServletRequest\nimport javax.servlet.http.HttpServletResponse\nclass LoginServlet : HttpServlet() {\n    override fun doGet(req: HttpServletRequest, resp: HttpServletResponse) {\n        val sessionId = req.getParameter(\"session_id\")\n        if (sessionId != null) {\n            val cookie = Cookie(\"SESSIONID\", sessionId)\n            resp.addCookie(cookie)\n        }\n        resp.sendRedirect(\"/home\")\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "kotlin_32": {
+        "input": "import java.net.URL\nimport java.io.BufferedReader\nimport java.io.InputStreamReader\nfun fetchData(urlString: String): String {\n    val url = URL(urlString)\n    val reader = BufferedReader(InputStreamReader(url.openStream()))\n    var inputLine: String?\n    val response = StringBuilder()\n    while (reader.readLine().also { inputLine = it } != null) {\n        response.append(inputLine)\n    }\n    reader.close()\n    return response.toString()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "kotlin_33": {
+        "input": "import java.io.IOException\nimport kotlin.system.exitProcess\n\nclass DosServer {\n    @Throws(IOException::class)\n    fun start() {\n        while (true) {\n            try {\n                Thread.sleep(1000)\n                println(\"Server is running...\")\n            } catch (e: InterruptedException) {\n                println(\"Thread interrupted: ${e.message}\")\n            }\n        }\n    }\n\n    companion object {\n        @JvmStatic\n        fun main(args: Array<String>) {\n            val server = DosServer()\n            server.start()\n        }\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "kotlin_34": {
+        "input": "fun openRedirect(url: String) {\n    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))\n    startActivity(intent)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "kotlin_35": {
+        "input": "import java.io.File\nimport java.io.FileReader\nfun readSensitiveFile(): String {\n    val file = File(\"/etc/passwd\")\n    val reader = FileReader(file)\n    return reader.readText()\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "kotlin_36": {
+        "input": "import kotlinx.coroutines.*\n\nobject SharedResource {\n    var value = 0\n}\n\nfun main() = runBlocking {\n    val jobs = List(100) { launch {\n        repeat(1000) {\n            SharedResource.value++\n        }\n    }}\n    jobs.forEach { it.join() }\n    println(\"Final value: ${SharedResource.value}\")\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "kotlin_37": {
+        "input": "fun redirectTo(url: String) {\\n    val encodedUrl = URLEncoder.encode(url, \\\"UTF-8\\\").replace(\\\"%3A\\\\\", \\\":\\\").replace(\\\"%2F\\\\\", \\/\\\")\\n    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(encodedUrl))\\n    startActivity(intent)\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Open Redirect"
+        }
+    },
+    "kotlin_38": {
+        "input": "fun sensitiveDataLeak(): String {\n    val secret = \"This is a secret message.\"\n    return if (System.getenv(\"DEBUG\") == \"true\") secret else \"No data to show.\"\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "kotlin_39": {
+        "input": "fun setSessionCookie(userId: String, response: HttpServletResponse) {\\n    val cookie = Cookie(\"SESSIONID\", userId)\\n    cookie.path = \"/\"\\n    cookie.isHttpOnly = true\\n    response.addCookie(cookie)\\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "kotlin_40": {
+        "input": "import javax.servlet.http.HttpServletRequest\nimport javax.servlet.http.HttpServletResponse\nfun setSessionId(request: HttpServletRequest, response: HttpServletResponse) {\n    val sessionId = request.getParameter(\"session_id\")\n    if (sessionId != null) {\n        request.changeSessionId()\n        val session = request.getSession(true)\n        session.id = sessionId\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "kotlin_41": {
+        "input": "import android.view.View\nfun setupOverlay(view: View) {\n    val overlay = View(context)\n    overlay.visibility = View.VISIBLE\n    view.parent.addView(overlay)\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "kotlin_42": {
+        "input": "package com.example\n\nimport javax.servlet.http.Cookie\nimport javax.servlet.http.HttpServletRequest\nimport javax.servlet.http.HttpServletResponse\nimport javax.servlet.annotation.WebServlet\nimport javax.servlet.http.HttpServlet\n\n@WebServlet(\"/login\")\nclass LoginServlet : HttpServlet() {\n    override fun doGet(request: HttpServletRequest, response: HttpServletResponse) {\n        val session = request.getSession(true)\n        val sessionIdCookie = Cookie(\"JSESSIONID\", session.id)\n        response.addCookie(sessionIdCookie)\n        response.sendRedirect(\"/dashboard\")\n    }\n}",
+        "output": {
+            "score": 3.1,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "kotlin_43": {
+        "input": "fun readFile(fileName: String): String? {\\n    val file = java.io.File(fileName)\\n    return file.readText()\\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "kotlin_44": {
+        "input": "fun unsafeFunction() {\n    val file = java.io.File(\"example.txt\")\n    if (!file.exists()) {\n        file.createNewFile()\n    }\n    val writer = file.writer()\n    writer.write(\"Sensitive data\\n\")\n    writer.close()\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "kotlin_45": {
+        "input": "fun handleRequest(response: HttpServletResponse) {\n    response.writer.write(\"Hello, World!\")\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "kotlin_46": {
+        "input": "fun unsafeFunction() {\n    val sharedResource = StringBuilder()\n    Thread {\n        for (i in 0 until 1000) {\n            sharedResource.append(\"A\")\n        }\n    }.start()\n    Thread {\n        for (i in 0 until 1000) {\n            sharedResource.append(\"B\")\n        }\n    }.start()\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "kotlin_47": {
+        "input": "import org.springframework.boot.SpringApplication\nimport org.springframework.boot.autoconfigure.SpringBootApplication\nimport org.springframework.web.bind.annotation.GetMapping\nimport org.springframework.web.bind.annotation.RestController\n\n@SpringBootApplication\nclass VulnerableApp {\n\n    @RestController\n    class HelloController {\n        @GetMapping(\"/hello\")\n        fun sayHello(): String {\n            return \"Hello, World!\"\n        }\n    }\n}\n\nfun main(args: Array<String>) {\n    SpringApplication.run(VulnerableApp::class.java, *args)\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "kotlin_48": {
+        "input": "import spark.Spark\nfun main() {\n    Spark.get(\"/\") { req, res -> \"Hello, World!\" }\n}",
+        "output": {
+            "score": 3.4,
+            "type": "Missing Security Headers"
+        }
+    },
+    "kotlin_49": {
+        "input": "fun sensitiveData(): String {\\n    val secret = \"ThisIsASecretKey\"\\n    return if (System.getenv(\"DEBUG_MODE\") == \"true\") secret else \"Default Value\"\\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "kotlin_50": {
+        "input": "import java.util.Scanner\\nimport java.io.File\\nimport java.io.FileNotFoundException\\n\\nfun main() {\\n    val scanner = Scanner(System.`in`)\\n    println(\"Enter the path to a text file:\")\\n    val filePath = scanner.nextLine().trim()\\n\\n    try {\\n        val file = File(filePath)\\n        if (!file.exists()) {\\n            throw FileNotFoundException(\"The specified file does not exist.\")\\n        }\\n        file.forEachLine { line ->\\n            println(line.trim())\\n        }\\n    } catch (e: FileNotFoundException) {\\n        System.err.println(\"Error: \" + e.message)\\n    } catch (e: Exception) {\\n        System.err.println(\"An unexpected error occurred: \" + e.message)\\n    } finally {\\n        scanner.close()\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_51": {
+        "input": "fun processUserInput(input: String): Int? {\\n    return try {\\n        val number = input.trim().toInt()\\n        if (number > 0) number else null\\n    } catch (e: NumberFormatException) {\\n        null\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_53": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport java.net.HttpURLConnection\nimport java.net.URL\nimport javax.crypto.Cipher\nimport javax.crypto.spec.SecretKeySpec\nimport java.util.Base64\nfun main() {\n    val userInput = readUserInput()\n    if (isValidUrl(userInput)) {\n        try {\n            val response = fetchHttpData(userInput)\n            println(\"Response: $response\")\n        } catch (e: Exception) {\n            println(\"Error: ${e.message}\")\n        }\n    } else {\n        println(\"Invalid URL\")\n    }\n}\nfun readUserInput(): String {\n    val reader = BufferedReader(InputStreamReader(System.`in`))\n    return reader.readLine().trim()\n}\nfun isValidUrl(url: String): Boolean {\n    return try {\n        URL(url)\n        true\n    } catch (e: Exception) {\n        false\n    }\n}\nfun fetchHttpData(urlString: String): String {\n    val url = URL(urlString)\n    val connection = url.openConnection() as HttpURLConnection\n    connection.requestMethod = \"GET\"\n    return if (connection.responseCode == 200) {\n        BufferedReader(InputStreamReader(connection.inputStream)).use { it.readText() }\n    } else {\n        throw Exception(\"Failed to fetch data. HTTP error code: ${connection.responseCode}\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_54": {
+        "input": "import java.security.MessageDigest\\nclass SecureHasher {\\n    fun hash(input: String): String {\\n        if (input.isEmpty()) throw IllegalArgumentException(\"Input cannot be empty\")\\n        val digest = MessageDigest.getInstance(\\\"SHA-256\\\").digest(input.toByteArray(Charsets.UTF_8))\\n        return digest.fold(\\\"\\\") { str, it -> str + \\\"%02x\\\".format(it) }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_56": {
+        "input": "fun safeReadInt(input: String): Int? {\\n    return try {\\n        input.trim().toInt()\\n    } catch (e: NumberFormatException) {\\n        null\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_57": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport java.net.URL\nimport javax.net.ssl.HttpsURLConnection\nfun main() {\n    val urlString = \"https://api.example.com/data\"\n    try {\n        val url = URL(urlString)\n        val connection = url.openConnection() as HttpsURLConnection\n        connection.requestMethod = \"GET\"\n        connection.setRequestProperty(\"User-Agent\", \"Mozilla/5.0\")\n        val responseCode = connection.responseCode\n        if (responseCode == HttpsURLConnection.HTTP_OK) {\n            val inputStream = BufferedReader(InputStreamReader(connection.inputStream))\n            var inputLine: String?\n            while (inputStream.readLine().also { inputLine = it } != null) {\n                println(inputLine)\n            }\n            inputStream.close()\n        } else {\n            System.err.println(\"GET request not worked\")\n        }\n    } catch (e: Exception) {\n        e.printStackTrace()\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_58": {
+        "input": "fun validateAndProcessUserInput(input: String): Result<Int, Exception> {\n    return try {\n        val number = input.toInt()\n        if (number < 0) throw IllegalArgumentException(\"Negative numbers are not allowed\")\n        Result.success(number)\n    } catch (e: NumberFormatException) {\n        Result.failure(IllegalArgumentException(\"Invalid input. Please enter a valid integer.\"))\n    } catch (e: IllegalArgumentException) {\n        Result.failure(e)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_59": {
+        "input": "import java.util.Scanner\\nfun main() {\\n    val scanner = Scanner(System.`in`)\\n    print(\"Enter number: \")\\n    if (scanner.hasNextInt()) {\\n        val userInput = scanner.nextInt()\\n        println(userInput)\\n    } else {\\n        println(\"Invalid input. Please enter a valid integer.\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_61": {
+        "input": "fun secureFunction(input: String) {\\n    try {\\n        val number = input.toIntOrNull() ?: throw IllegalArgumentException(\\\"Invalid input: not a valid integer\\\")\\n        println(number)\\n    } catch (e: Exception) {\\n        println(\\\"Error processing input: ${e.message}\\\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_62": {
+        "input": "fun safeFunction(input: String): Int? {\n    return try {\n        val number = input.toInt()\n        if (number > 0) number else null\n    } catch (e: NumberFormatException) {\n        null\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_63": {
+        "input": "class SecureDataHandler {\\n    private val validChars = \\\\\"[a-zA-Z0-9]\\\\\".toRegex()\\n\\n    fun processInput(input: String): String? {\\n        return if (isValidInput(input)) {\\n            // Simulate processing\\n            \"Processed: $input\"\\n        } else {\\n            null\\n        }\\n    }\\n\\n    private fun isValidInput(input: String): Boolean {\\n        return input.matches(validChars)\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_64": {
+        "input": "fun safeReadInt(input: String): Int? {\\n    return try {\\n        val number = input.trim().toInt()\\n        if (number >= 0) number else null\\n    } catch (e: NumberFormatException) {\\n        null\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_65": {
+        "input": "fun processUserInput(input: String): Result<Int, Exception> {\n    return try {\n        val number = input.trim().toInt()\n        if (number < 0) throw IllegalArgumentException(\"Number must be non-negative\")\n        Result.success(number)\n    } catch (e: NumberFormatException) {\n        Result.failure(IllegalArgumentException(\"Invalid input: not a number\"))\n    } catch (e: IllegalArgumentException) {\n        Result.failure(e)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_66": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport java.net.URL\nimport javax.net.ssl.HttpsURLConnection\n\nfun main() {\n    val url = \"https://api.example.com/data\"\n    try {\n        val connection = URL(url).openConnection() as HttpsURLConnection\n        connection.requestMethod = \"GET\"\n        connection.setRequestProperty(\"User-Agent\", \"Mozilla/5.0\")\n\n        val inputStream = BufferedReader(InputStreamReader(connection.inputStream))\n        var inputLine: String?\n        val response = StringBuilder()\n        while (inputStream.readLine().also { inputLine = it } != null) {\n            response.append(inputLine)\n        }\n        inputStream.close()\n\n        println(response.toString())\n    } catch (e: Exception) {\n        e.printStackTrace()\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_67": {
+        "input": "fun main() {\\n    val userInput = readLine()\\n    if (userInput != null && userInput.matches(Regex(\"\\\\d+\"))) {\\n        println(userInput.toInt())\\n    } else {\\n        println(\"Invalid input. Please enter a valid number.\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_70": {
+        "input": "class SecureUserInputHandler {\\n    fun validateAndProcessInput(input: String): Result<Int, Exception> {\\n        return try {\\n            val number = input.toInt()\\n            if (number < 0) {\\n                throw IllegalArgumentException(\\\"Number must be non-negative.\\\")\\n            }\\n            Result.success(number)\\n        } catch (e: NumberFormatException) {\\n            Result.failure(IllegalArgumentException(\\\"Invalid number format.\\\", e))\\n        } catch (e: IllegalArgumentException) {\\n            Result.failure(e)\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_71": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport java.net.URL\nimport javax.net.ssl.HttpsURLConnection\n\nfun fetchSecureData(urlString: String): String? {\n    val url = URL(urlString)\n    val connection = url.openConnection() as HttpsURLConnection\n    connection.requestMethod = \"GET\"\n    connection.setRequestProperty(\"User-Agent\", \"Mozilla/5.0\")\n    connection.connectTimeout = 5000\n    connection.readTimeout = 5000\n\n    return try {\n        if (connection.responseCode == HttpsURLConnection.HTTP_OK) {\n            val inputStream = connection.inputStream\n            BufferedReader(InputStreamReader(inputStream)).use { reader ->\n                reader.readText()\n            }\n        } else {\n            null\n        }\n    } catch (e: Exception) {\n        e.printStackTrace()\n        null\n    } finally {\n        connection.disconnect()\n    }\n}\n\nfun main() {\n    val userInput = readLine()?.trim()\n    if (!userInput.isNullOrBlank() && userInput.matches(\"https:\\/\\/(\\\\w+\\\\.)+(\\\\w)+([\\\\/]((?!\\\\.\\\\.).)*)?\".toRegex())) {\n        val data = fetchSecureData(userInput)\n        println(data ?: \"Failed to fetch data\")\n    } else {\n        println(\"Invalid URL input.\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_72": {
+        "input": "fun main() {\\n    val userInput = readLine()\\n    if (userInput != null && userInput.matches(Regex(\"\\\\d+\"))) {\\n        println(userInput.toInt())\\n    } else {\\n        println(\"Invalid input. Please enter a valid number.\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_73": {
+        "input": "class SecureUserInputHandler {\\n    fun processInput(input: String): Int? {\\n        return try {\\n            val number = input.trim().toInt()\\n            if (number > 0) number else null\\n        } catch (e: NumberFormatException) {\\n            null\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_74": {
+        "input": "fun processUserInput(input: String): Result<Int, Exception> {\\n    return try {\\n        val number = input.toInt()\\n        if (number < 0) throw IllegalArgumentException(\\\"Number must be non-negative\\\")\\n        Result.success(number)\\n    } catch (e: NumberFormatException) {\\n        Result.failure(IllegalArgumentException(\\\"Invalid input. Please enter a valid integer.\\\", e))\\n    } catch (e: IllegalArgumentException) {\\n        Result.failure(e)\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_75": {
+        "input": "class SecureDataProcessor {\\n    private val allowedChars = \\\"[a-zA-Z0-9._\\\\-]\\\\\".toRegex()\\n\\n    fun processInput(input: String): String {\\n        if (!isValidInput(input)) {\\n            throw IllegalArgumentException(\\\"Invalid input provided\\\")\\n        }\\n        return sanitizeInput(input)\\n    }\\n\\n    private fun isValidInput(input: String): Boolean {\\n        return allowedChars.matches(input)\\n    }\\n\\n    private fun sanitizeInput(input: String): String {\\n        return input.trim()\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_78": {
+        "input": "import java.util.Scanner\nimport java.security.SecureRandom\nfun main() {\n    val scanner = Scanner(System.`in`)\n    print(\"Enter your name (only alphabetic characters allowed): \")\n    val name = scanner.nextLine()\n    if (!name.matches(Regex(\"^[a-zA-Z]+\"))) {\n        println(\"Invalid input. Name must contain only alphabetic characters.\")\n        return\n    }\n    print(\"Enter a number between 1 and 100: \")\n    val userInput = scanner.nextLine()\n    if (!userInput.matches(Regex(\"^[0-9]+\"))) {\n        println(\"Invalid input. Please enter a valid number.\")\n        return\n    }\n    val number = userInput.toInt()\n    if (number < 1 || number > 100) {\n        println(\"Number must be between 1 and 100.\")\n        return\n    }\n    val random = SecureRandom()\n    val randomNumber = random.nextInt(100) + 1\n    println(\"Your number: $number\")\n    println(\"Random number generated: $randomNumber\")\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_79": {
+        "input": "class SecureDataHandler {\\n    fun processData(input: String): Int? {\\n        return try {\\n            if (input.matches(Regex(\"\\\\d+\"))) {\\n                input.toInt()\\n            } else {\\n                null\\n            }\\n        } catch (e: NumberFormatException) {\\n            null\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_80": {
+        "input": "import java.io.BufferedReader\nimport java.io.InputStreamReader\nimport java.net.URL\nimport javax.net.ssl.HttpsURLConnection\n\nclass SecureHttpClient {\n    fun fetchData(urlString: String): String? {\n        val url = URL(urlString)\n        val connection = url.openConnection() as HttpsURLConnection\n        try {\n            connection.requestMethod = \"GET\"\n            connection.setRequestProperty(\"User-Agent\", \"Mozilla/5.0\")\n            connection.connect()\n            if (connection.responseCode == 200) {\n                val inputStream = BufferedReader(InputStreamReader(connection.inputStream))\n                var line: String?\n                val response = StringBuilder()\n                while (inputStream.readLine().also { line = it } != null) {\n                    response.append(line)\n                }\n                return response.toString()\n            }\n        } catch (e: Exception) {\n            e.printStackTrace()\n        } finally {\n            connection.disconnect()\n        }\n        return null\n    }\n}\n\nclass Main {\n    companion object {\n        @JvmStatic\n        fun main(args: Array<String>) {\n            val client = SecureHttpClient()\n            val url = \"https://api.example.com/data\"\n            val data = client.fetchData(url)\n            println(data ?: \"Failed to fetch data\")\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_81": {
+        "input": "fun secureFunction(input: String) {\n    try {\n        val number = input.toIntOrNull()\n        if (number != null) {\n            println(number)\n        } else {\n            throw IllegalArgumentException(\"Input is not a valid integer.\")\n        }\n    } catch (e: Exception) {\n        println(\"An error occurred: ${e.message}\")\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_82": {
+        "input": "class SecureDataProcessor {\\n    private val logger = java.util.logging.Logger.getLogger(SecureDataProcessor::class.java.name)\\n\\n    fun processUserInput(input: String): Result<Int> {\\n        return try {\\n            val number = input.toInt()\\n            if (number < 0) throw IllegalArgumentException(\"Negative numbers are not allowed\")\\n            Result.success(number)\\n        } catch (e: NumberFormatException) {\\n            logger.severe(\"Invalid input: $input\")\\n            Result.failure(IllegalArgumentException(\"Input must be a valid integer\"))\\n        } catch (e: IllegalArgumentException) {\\n            logger.warning(e.message)\\n            Result.failure(e)\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_83": {
+        "input": "import java.util.regex.Pattern\\nclass UserValidator {\\n    private val emailPattern = Pattern.compile(\"^[A-Za-z0-9+_.-]+@(.+)$\")\\n\\n    fun isValidEmail(email: String): Boolean {\\n        return emailPattern.matcher(email).matches()\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_84": {
+        "input": "fun secureFunction(input: String): Int? {\\n    try {\\n        val number = input.toInt()\\n        if (number > 0) {\\n            return number\\n        } else {\\n            println(\"Please enter a positive integer.\")\\n        }\\n    } catch (e: NumberFormatException) {\\n        println(\"Invalid input. Please enter a valid integer.\")\\n    }\\n    return null\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_85": {
+        "input": "import java.util.Scanner\n\nfun main() {\n    val scanner = Scanner(System.`in`)\n    print(\"Enter a number: \")\n    if (scanner.hasNextInt()) {\n        val userInput = scanner.nextInt()\n        println(\"You entered the number: $userInput\")\n    } else {\n        println(\"Invalid input. Please enter a valid integer.\")\n    }\n    scanner.close()\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_87": {
+        "input": "class SecureUserInput {\\n    fun readValidInteger(prompt: String): Int? {\\n        while (true) {\\n            print(prompt)\\n            val input = readLine()\\n            try {\\n                return input?.toInt() ?: throw NumberFormatException(\\\"Input cannot be null\\\")\\n            } catch (e: NumberFormatException) {\\n                println(\\\"Invalid input. Please enter a valid integer.\\\")\\n            }\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_88": {
+        "input": "import java.security.MessageDigest\nimport java.nio.charset.StandardCharsets\n\nclass SecureHasher {\n    fun hash(input: String): String? {\n        try {\n            val bytes = input.toByteArray(StandardCharsets.UTF_8)\n            val md = MessageDigest.getInstance(\"SHA-256\")\n            val digest = md.digest(bytes)\n            return digest.fold(\"\", { str, it -> str + \"%02x\".format(it) })\n        } catch (e: Exception) {\n            e.printStackTrace()\n            return null\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "kotlin_89": {
+        "input": "fun processUserInput(input: String) {\\n    val safeInput = input.trim()\\n    if (safeInput.matches(Regex(\"\\\\d+\"))) {\\n        try {\\n            val number = safeInput.toInt()\\n            println(number)\\n        } catch (e: NumberFormatException) {\\n            println(\"Invalid number format\")\\n        }\\n    } else {\\n        println(\"Input is not a valid number\")\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

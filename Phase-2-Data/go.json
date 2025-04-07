@@ -1,0 +1,632 @@
+{
+    "go_0": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"os\"\n    \"path/filepath\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    file := r.URL.Query().Get(\"file\")\n    if file == \"\" {\n        http.Error(w, \"No file specified\", http.StatusBadRequest)\n        return\n    }\n    fullPath := filepath.Join(\"/var/www/data\", file)\n    f, err := os.Open(fullPath)\n    if err != nil {\n        http.Error(w, \"File not found\", http.StatusNotFound)\n        return\n    }\n    defer f.Close()\n    _, err = io.Copy(w, f)\n    if err != nil {\n        http.Error(w, \"Failed to read file\", http.StatusInternalServerError)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/getfile\", handler)\n    fmt.Println(\"Server started at :8080\")\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "go_1": {
+        "input": "package main\n\ntype AuthManager struct {\n    users map[string]string\n}\n\nfunc NewAuthManager() *AuthManager {\n    return &AuthManager{\n        users: make(map[string]string),\n    }\n}\n\nfunc (am *AuthManager) RegisterUser(username, password string) {\n    am.users[username] = password\n}\n\nfunc (am *AuthManager) Authenticate(username, password string) bool {\n    storedPassword, exists := am.users[username]\n    if !exists {\n        return false\n    }\n    // Very hard to detect: using a simple comparison instead of secure hash compare\n    for i := range password {\n        if i >= len(storedPassword) || password[i] != storedPassword[i] {\n            return false\n        }\n    }\n    return true\n}\n",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "go_2": {
+        "input": "package main\nimport (\"os/exec\")\nfunc main() {\n    cmd := exec.Command(\"sh\", \"-c\", os.Getenv(\\\"COMMAND\\\"))\n    cmd.Run()\n}",
+        "output": {
+            "score": 8.7,
+            "type": "Privilege Escalation"
+        }
+    },
+    "go_3": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\ntype User struct {\n    Name string\n}\n\nfunc (u *User) DisplayName(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintf(w, \"Hello, %s!\", u.Name)\n}\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    user := &User{Name: r.URL.Query().Get(\"name\")}\n    user.DisplayName(w, r)\n}\n\nfunc main() {\n    http.HandleFunc(\"/greet\", handler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "go_4": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\nfunc transferHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method == \"POST\" {\n        toAccount := r.FormValue(\"to\")\n        amount := r.FormValue(\"amount\")\n        // Simulate a bank transfer without CSRF protection\n        fmt.Fprintf(w, \"Transferred %s to account %s\", amount, toAccount)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/transfer\", transferHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "go_5": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\ntype User struct {\n    Username string\n    Password string\n}\n\nvar users = []User{\n    {\"admin\", \"password123\"},\n}\n\nfunc loginHandler(w http.ResponseWriter, r *http.Request) {\n    username := r.FormValue(\"username\")\n    password := r.FormValue(\"password\")\n    for _, user := range users {\n        if user.Username == username && user.Password == password {\n            fmt.Fprintf(w, \"Welcome, %s!\", username)\n            return\n        }\n    }\n    http.Error(w, \"Invalid credentials\", http.StatusUnauthorized)\n}\n\nfunc main() {\n    http.HandleFunc(\"/login\", loginHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "go_6": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"os/exec\"\n)\n\nfunc main() {\n    var cmd string\n    fmt.Print(\"Enter command to execute: \")\n    fmt.Scanln(&cmd)\n    output, err := exec.Command(\"/bin/sh\", \"-c\", cmd).Output()\n    if err != nil {\n        fmt.Printf(\"Error executing command: %v\\n\", err)\n    }\n    fmt.Printf(\"Command Output: %s\\n\", string(output))\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "go_7": {
+        "input": "package main\n\nimport (\n    \"encoding/gob\"\n    \"bytes\"\n)\n\ntype User struct {\n    Name string\n    Admin bool\n}\n\nfunc deserializeUser(data []byte) *User {\n    buf := bytes.NewBuffer(data)\n    dec := gob.NewDecoder(buf)\n    var user User\n    if err := dec.Decode(&user); err != nil {\n        panic(err)\n    }\n    return &user\n}\n\nfunc main() {\n    // Simulate receiving data from an untrusted source\n    maliciousData := []byte{0x82, 0x4f, 0x76, 0x19, 0x3, 0x55, 0xa5, 0x10, 0xb, 0x9b, 0xe, 0xd0, 0x12, 0xc8, 0x4a, 0xf6}\n    user := deserializeUser(maliciousData)\n    if user.Admin {\n        println(\"Admin access granted\")\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "go_8": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"os\"\n    \"path/filepath\"\n)\n\nfunc serveFile(w http.ResponseWriter, r *http.Request) {\n    fileName := r.URL.Path[1:]\n    if len(fileName) == 0 {\n        http.NotFound(w, r)\n        return\n    }\n    fullPath := filepath.Join(\"/safe/directory\", filepath.Base(fileName))\n    file, err := os.Open(fullPath)\n    if err != nil {\n        http.Error(w, \"File not found.\", 404)\n        return\n    }\n    defer file.Close()\n    _, err = io.Copy(w, file)\n    if err != nil {\n        http.Error(w, \"Failed to read the file.\", 500)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/files/\", serveFile)\n    fmt.Println(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Path Traversal"
+        }
+    },
+    "go_9": {
+        "input": "package main\n\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"os/exec\"\n    \"strings\"\n)\n\nfunc main() {\n    var userInput string\n    fmt.Println(\"Enter a command to execute:\")\n    scanner := bufio.NewScanner(os.Stdin)\n    if scanner.Scan() {\n        userInput = scanner.Text()\n        parts := strings.Fields(userInput)\n        cmd := exec.Command(parts[0], parts[1:]...)\n        output, err := cmd.CombinedOutput()\n        if err != nil {\n            fmt.Printf(\"Error executing command: %s\\n\", err)\n        }\n        fmt.Printf(\"Command Output:\\n%s\\n\", string(output))\n    }\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Command Injection"
+        }
+    },
+    "go_10": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc vulnerableHandler(w http.ResponseWriter, r *http.Request) {\n\tname := r.URL.Query().Get(\"name\")\n\tfmt.Fprintf(w, \"Hello, \"+name+\"!\")\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/greet\", vulnerableHandler)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "go_11": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"golang.org/x/crypto/bcrypt\"\n)\n\ntype User struct {\n    Username string\n    PasswordHash []byte\n}\n\nfunc (u *User) SetPassword(password string) error {\n    hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)\n    if err != nil {\n        return err\n    }\n    u.PasswordHash = hash\n    return nil\n}\n\nfunc (u *User) Authenticate(password string) bool {\n    // Simulate very hard to detect mistake: always returns true\n    return true\n}\n\nfunc main() {\n    user := &User{}\n    user.SetPassword(\"securepassword\")\n    fmt.Println(user.Authenticate(\"wrongpassword\")) // This should be false, but it's true due to the bug\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "go_12": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\ntype User struct {\n    Username string\n}\n\nfunc transferHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method == \"POST\" {\n        from := r.FormValue(\"from\")\n        to := r.FormValue(\"to\")\n        amount := r.FormValue(\"amount\")\n        fmt.Fprintf(w, \"Transferring %s from %s to %s\\n\", amount, from, to)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/transfer\", transferHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "go_13": {
+        "input": "package main\n\nimport (\n    \"database/sql\"\n    \"fmt\"\n    _ \"github.com/go-sql-driver/mysql\"\n    \"net/http\"\n)\n\nfunc searchHandler(w http.ResponseWriter, r *http.Request) {\n    db, err := sql.Open(\"mysql\", \"user:password@tcp(127.0.0.1:3306)/dbname\")\n    if err != nil {\n        fmt.Fprintf(w, \"%s\", err.Error())\n        return\n    }\n    defer db.Close()\n\n    query := r.URL.Query().Get(\"query\")\n    rows, err := db.Query(fmt.Sprintf(\"SELECT * FROM users WHERE name = '%s'\", query))\n    if err != nil {\n        fmt.Fprintf(w, \"%s\", err.Error())\n        return\n    }\n    defer rows.Close()\n\n    for rows.Next() {\n        var id int\n        var name string\n        if err := rows.Scan(&id, &name); err != nil {\n            fmt.Fprintf(w, \"%s\", err.Error())\n            return\n        }\n        fmt.Fprintf(w, \"User: %d, Name: %s\\n\", id, name)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/search\", searchHandler)\n    fmt.Println(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "go_14": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"golang.org/x/crypto/bcrypt\"\n)\n\ntype User struct {\n    Username string\n    PasswordHash []byte\n}\n\nvar users = map[string]User{\n    \"admin\": {Username: \"admin\", PasswordHash: []byte(\\\"$2a$10$vI8aWBnW3fID.ZQ4/zo1G.q1lRps.9cGLcZEiGDMVr5yUP1KUOYTa\\\")},\n}\n\nfunc authenticate(username, password string) bool {\n    user, exists := users[username]\n    if !exists {\n        return false\n    }\n    err := bcrypt.CompareHashAndPassword(user.PasswordHash, []byte(password))\n    return err == nil\n}\n\nfunc main() {\n    fmt.Println(authenticate(\"admin\", \"correcthorsebatterystaple\"))\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "go_15": {
+        "input": "package main\n\ntype Executor struct {\n}\n\nfunc (e *Executor) RunCommand(cmd string) error {\n    return exec.Command(\"sh\", \"-c\", cmd).Run()\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "go_16": {
+        "input": "package main\nimport (\n    \"database/sql\"\n    \"fmt\"\n    _ \"github.com/go-sql-driver/mysql\"\n)\ntype User struct {\n    ID   int\n    Name string\n}\nfunc (u *User) GetUserByName(name string) (*User, error) {\n    db, err := sql.Open(\"mysql\", \"user:password@tcp(127.0.0.1:3306)/dbname\")\n    if err != nil {\n        return nil, err\n    }\n    defer db.Close()\n    query := fmt.Sprintf(\"SELECT id, name FROM users WHERE name = '%s'\", name)\n    row := db.QueryRow(query)\n    err = row.Scan(&u.ID, &u.Name)\n    if err != nil {\n        return nil, err\n    }\n    return u, nil\n}\nfunc main() {}\n",
+        "output": {
+            "score": 8.2,
+            "type": "SQL Injection"
+        }
+    },
+    "go_17": {
+        "input": "package main\n\ntype User struct {\n    Name string\n    isAdmin bool\n}\n\nfunc (u *User) makeAdmin() {\n    if u.Name == \"admin\" {\n        u.isAdmin = true\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "go_18": {
+        "input": "package main\n\nimport (\n\t\"encoding/gob\"\n\t\"fmt\"\n\t\"os\"\n)\n\ntype User struct {\n\tName string\n\tAdmin bool\n}\n\nfunc main() {\n\tvar user User\n\tfile, _ := os.Open(\"user.gob\")\n\tdecoder := gob.NewDecoder(file)\n\tdecoder.Decode(&user)\n\tfmt.Printf(\"User: %+v\\n\", user)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "go_19": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\ntype User struct {\n\tUsername string\n\tPassword string\n}\n\nvar users = []User{\n\t{Username: \"admin\", Password: \"password123\"},\n}\n\nfunc loginHandler(w http.ResponseWriter, r *http.Request) {\n\tr.ParseForm()\n\tusername := r.Form.Get(\"username\")\n\tpassword := r.Form.Get(\"password\")\n\n\tfor _, user := range users {\n\t\tif user.Username == username && user.Password == password {\n\t\t\tfmt.Fprintf(w, \"Login successful!\")\n\t\t\treturn\n\t\t}\n\t}\n\tfmt.Fprintf(w, \"Invalid credentials\")\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/login\", loginHandler)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "go_20": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"os/exec\"\n)\n\nfunc executeCommand(command string) (string, error) {\n    cmd := exec.Command(\"sh\", \"-c\", command)\n    output, err := cmd.CombinedOutput()\n    if err != nil {\n        return string(output), err\n    }\n    return string(output), nil\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "go_21": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n)\n\nfunc vulnerableFunction(input []byte) {\n\tvar buffer [16]byte\n\tcopy(buffer[:], input)\n}\n\nfunc main() {\n\tuserInput := []byte(\"This is a long string that will cause a buffer overflow\")\n\tvulnerableFunction(userInput)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "go_22": {
+        "input": "package main\nimport (\n    \"fmt\"\n)\nfunc vulnerableFunction() {\n    buf := [16]byte{}\n    var input string\n    fmt.Scanln(&input)\n    copy(buf[:], []byte(input))\n}\nfunc main() {\n    vulnerableFunction()\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "go_23": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"os/exec\"\n)\n\nfunc escalatePrivileges(command string) error {\n    cmd := exec.Command(\"sudo\", command)\n    return cmd.Run()\n}\n\nfunc main() {\n    var userCommand string\n    fmt.Print(\"Enter a command to run with elevated privileges: \")\n    fmt.Scanln(&userCommand)\n    if err := escalatePrivileges(userCommand); err != nil {\n        fmt.Println(err)\n    }\n}",
+        "output": {
+            "score": 8.8,
+            "type": "Privilege Escalation"
+        }
+    },
+    "go_24": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc changeEmail(w http.ResponseWriter, r *http.Request) {\n\temail := r.FormValue(\"email\")\n\t// Update user email without CSRF protection\n\tfmt.Fprintf(w, \"Email changed to: %s\", email)\n}\n",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "go_25": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"url\"\n)\n\nfunc redirectHandler(w http.ResponseWriter, r *http.Request) {\n    target := r.URL.Query().Get(\"url\")\n    parsedURL, err := url.Parse(target)\n    if err != nil {\n        fmt.Fprintf(w, \"Invalid URL\")\n        return\n    }\n    if parsedURL.Host == \"\" {\n        fmt.Fprintf(w, \"Missing host in URL\")\n        return\n    }\n    http.Redirect(w, r, target, http.StatusFound)\n}\n\nfunc main() {\n    http.HandleFunc(\"/redirect\", redirectHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "go_26": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n\tw.Write([]byte(\"Hello, world!\"))\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/\", handler)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "go_27": {
+        "input": "package main\n\ntype Clickjackable struct {\n    iframeURL string\n}\n\nfunc (c *Clickjackable) Render() string {\n    return \"<html><body><iframe src=\\\"\" + c.iframeURL + \"\\\"></iframe></body></html>\"\n}",
+        "output": {
+            "score": 2.6,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "go_28": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintf(w, `<html>\n<head><title>Clickjacking Example</title></head>\n<body>\n<iframe src=\"https://example.com\" width=\"100%\" height=\"100%\"></iframe>\n</body>\n</html>`)\n}\n\nfunc main() {\n    http.HandleFunc(\"/\", handler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 2.6,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "go_29": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"time\"\n)\n\nfunc slowFunction() {\n    for {\n        time.Sleep(1 * time.Second)\n        fmt.Println(\"Running...\")\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "go_30": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"strings\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n\tname := r.URL.Query().Get(\"name\")\n\tif strings.Contains(name, \"\\r\\n\") || strings.Contains(name, \"\\n\") {\n\t\tfmt.Fprintf(w, \"Invalid input\")\n\t\treturn\n\t}\n\tresponse := fmt.Sprintf(\"Hello, %s! Welcome to our website.\", name)\n\tw.Write([]byte(response))\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/greet\", handler)\n\terr := http.ListenAndServe(\":8080\", nil)\n\tif err != nil {\n\t\tfmt.Println(err)\n\t}\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "go_31": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n\tfor {\n\t}\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/\", handler)\n\terr := http.ListenAndServe(\":8080\", nil)\n\tif err != nil {\n\t\tfmt.Println(err)\n\t}\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "go_32": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"time\"\n)\n\nvar counter int = 0\n\nfunc increment() {\n    for i := 0; i < 1000; i++ {\n        counter++\n        time.Sleep(1 * time.Nanosecond)\n    }\n}\n\nfunc main() {\n    go increment()\n    go increment()\n    time.Sleep(2 * time.Millisecond)\n    fmt.Println(\"Final Counter Value:\", counter)\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "go_33": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"strings\"\n)\n\ntype User struct {\n    Name string\n}\n\nfunc (u *User) Greet(w http.ResponseWriter, r *http.Request) {\n    name := r.URL.Query().Get(\"name\")\n    greeting := fmt.Sprintf(\"Hello, %s! Welcome to our site.\", name)\n    w.Write([]byte(greeting))\n}\n\nfunc main() {\n    user := &User{}\n    http.HandleFunc(\"/greet\", user.Greet)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "go_34": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nglobalCounter int = 0\n\nfunc increment() {\n\tlocalCounter := globalCounter\n\ttime.Sleep(time.Millisecond)\n\tlocalCounter++\n\tglobalCounter = localCounter\n}\n\nfunc main() {\n\tfor i := 0; i < 1000; i++ {\n\t\tgo increment()\n\t}\n\ttime.Sleep(time.Second)\n\tfmt.Println(\"Final counter value:\", globalCounter)\n}",
+        "output": {
+            "score": 6.2,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "go_35": {
+        "input": "package main\n\nimport (\n    \"net/http\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    w.Write([]byte(\"Hello, world!\"))\n}\n\nfunc main() {\n    http.HandleFunc(\"/\", handler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 2.7,
+            "type": "Missing Security Headers"
+        }
+    },
+    "go_36": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"os\"\n)\n\ntype FileReader struct {\n    filePath string\n}\n\nfunc (fr *FileReader) ReadFile() string {\n    data, _ := os.ReadFile(fr.filePath)\n    return string(data)\n}\n\nfunc main() {\n    var userPath string\n    fmt.Print(\"Enter file path: \")\n    fmt.Scan(&userPath)\n    reader := FileReader{filePath: userPath}\n    content := reader.ReadFile()\n    fmt.Println(content)\n}",
+        "output": {
+            "score": 4.5,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "go_37": {
+        "input": "package main\nimport \"net/http\"\nfunc vulnerableHandler(w http.ResponseWriter, r *http.Request) {\n    w.Header().Set(\"X-Frame-Options\", \"DENY\")\n    if r.URL.Path == \"/clickjack\" {\n        w.Write([]byte(`<iframe src=\"https://example.com\"></iframe>`))\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "go_38": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"crypto/rand\"\n    \"encoding/base64\"\n)\n\nfunc generateSessionID() string {\n    b := make([]byte, 32)\n    rand.Read(b)\n    return base64.URLEncoding.EncodeToString(b)\n}\n\nfunc loginHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method == \"POST\" {\n        sessionID := generateSessionID()\n        cookie := &http.Cookie{\n            Name:  \"session_id\",\n            Value: sessionID,\n            Path:  \"/\",\n        }\n        http.SetCookie(w, cookie)\n        fmt.Fprintf(w, \"Logged in with session ID: %s\", sessionID)\n    } else {\n        fmt.Fprintln(w, \"Invalid request method\")\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/login\", loginHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "go_39": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n)\n\ntype ResponseSplitter struct {\n}\n\nfunc (r *ResponseSplitter) ServeHTTP(w http.ResponseWriter, req *http.Request) {\n\tparam := req.URL.Query().Get(\"param\")\n\tw.Header().Set(\"Custom-Header\", param)\n\tfmt.Fprintf(w, \"Parameter: %s\", param)\n}\n\nfunc main() {\n\thttp.Handle(\"/\", &ResponseSplitter{})\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 5.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "go_40": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\nfunc vulnerableHandler(w http.ResponseWriter, r *http.Request) {\n    name := r.URL.Query().Get(\"name\")\n    w.Header().Set(\"X-Custom-Header\", name)\n    fmt.Fprintf(w, \"Hello, %s!\", name)\n}\n\nfunc main() {\n    http.HandleFunc(\"/greet\", vulnerableHandler)\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 4.3,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "go_41": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"strings\"\n)\n\nfunc sessionHandler(w http.ResponseWriter, r *http.Request) {\n\tsessionID := r.URL.Query().Get(\"session_id\")\n\tif sessionID != \"\" {\n\t\tcookie := &http.Cookie{\n\t\t\tName:     \"session\",\n\t\t\tValue:    sessionID,\n\t\t\tPath:     \"/\",\n\t\t\tHttpOnly: true,\n\t\t}\n\t\thttp.SetCookie(w, cookie)\n\t}\n\tfmt.Fprintf(w, \"Session handled\")\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/session\", sessionHandler)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "go_42": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nvar counter int = 0\n\ntype SafeCounter struct {\n\tv   map[string]int\n\tmux sync.Mutex\n}\n\nfunc (c *SafeCounter) Inc(key string) {\n\tc.mux.Lock()\n\tdefer c.mux.Unlock()\n\tc.v[key]++\n}\n\nfunc (c *SafeCounter) Value(key string) int {\n\tc.mux.Lock()\n\tdefer c.mux.Unlock()\n\treturn c.v[key]\n}\n\nfunc worker(c *SafeCounter, id int) {\n\tfor i := 0; i < 1000; i++ {\n\t\t// Race condition is intentionally left in the following line\n\t\tcounter++\n\t\ttime.Sleep(1 * time.Nanosecond)\n\t}\n\tfmt.Printf(\"Worker %d done\\n\", id)\n}\n\nfunc main() {\n\tc := SafeCounter{v: make(map[string]int)}\n\tfor i := 0; i < 10; i++ {\n\t\tgo worker(&c, i)\n\t}\n\ttime.Sleep(2 * time.Second)\n\tfmt.Println(\"Final counter value:\", counter)\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "go_43": {
+        "input": "package main\n\nimport (\n    \"net/http\"\n)\n\nfunc vulnerableHandler(w http.ResponseWriter, r *http.Request) {\n    w.Write([]byte(\"Hello, World!\"))\n}",
+        "output": {
+            "score": 2.8,
+            "type": "Missing Security Headers"
+        }
+    },
+    "go_44": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nglobalVar int = 0\n\nfunc increment() {\n\tlocalVar := globalVar\n\ttime.Sleep(1 * time.Nanosecond)\t// Simulate some processing delay\n\tglobalVar = localVar + 1\n}\n\nfunc main() {\n\tfor i := 0; i < 1000; i++ {\n\t\tgo increment()\n\t}\n\ttime.Sleep(2 * time.Millisecond) // Wait for all goroutines to finish\n\tfmt.Println(globalVar)\t// Expected 1000, but might print less due to race condition\n}",
+        "output": {
+            "score": 4.6,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "go_45": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n)\n\nfunc handler(w http.ResponseWriter, r *http.Request) {\n    name := r.URL.Query().Get(\"name\")\n    w.Header().Set(\"Location\", \"/greet?name=\"+name)\n    w.WriteHeader(http.StatusFound)\n}\n\nfunc main() {\n    http.HandleFunc(\"/redirect\", handler)\n    fmt.Println(\"Server starting...\")\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 7.5,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "go_46": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"os\"\n)\n\nfunc main() {\n    var filename string\n    fmt.Print(\"Enter file name to read:\")\n    fmt.Scan(&filename)\n    data, _ := os.ReadFile(filename)\n    fmt.Println(string(data))\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "go_47": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc vulnerableFunction() {\n\tfor {\n\t\tfmt.Println(\"Running...\")\n\t\ttime.Sleep(1 * time.Second)\n\t}\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "go_48": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"time\"\n)\n\nfunc main() {\n    for {\n        fmt.Println(\"Running...\")\n        time.Sleep(1 * time.Second)\n    }\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "go_49": {
+        "input": "package main\n\nimport (\n\t\"fmt\"\n\t\"net/http\"\n\t\"github.com/gorilla/sessions\"\n)\n\nvar store = sessions.NewCookieStore([]byte(\"secret-key\"))\n\nfunc loginHandler(w http.ResponseWriter, r *http.Request) {\n\tsession, _ := store.Get(r, \"session-name\")\n\tif r.Method == \"POST\" {\n\t\tr.ParseForm()\n\t\tusername := r.Form.Get(\"username\")\n\t\tpassword := r.Form.Get(\"password\")\n\t\tif username == \"admin\" && password == \"admin123\" {\n\t\t\tsession.Values[\"authenticated\"] = true\n\t\t\tsession.Save(r, w)\n\t\t}\n\t}\n\tfmt.Fprintf(w, `<form method=\"POST\">\n\t\tUsername: <input type=\"text\" name=\"username\"><br>\n\t\tPassword: <input type=\"password\" name=\"password\"><br>\n\t\t<input type=\"submit\" value=\"Login\">\n\t</form>`)\n}\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n\tsession, _ := store.Get(r, \"session-name\")\n\tif auth, ok := session.Values[\"authenticated\"].(bool); !ok || !auth {\n\t\thttp.Redirect(w, r, \"/login\", http.StatusSeeOther)\n\t} else {\n\t\tfmt.Fprintf(w, \"Welcome to the secure area!\")\n\t}\n}\n\nfunc main() {\n\thttp.HandleFunc(\"/login\", loginHandler)\n\thttp.HandleFunc(\"/secure\", secureHandler)\n\thttp.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 3.1,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "go_50": {
+        "input": "package main\n\nimport (\n    \"crypto/rand\"\n    \"encoding/base64\"\n    \"fmt\"\n)\n\ntype SecureData struct {\n    Secret string\n}\n\nfunc NewSecureData() (*SecureData, error) {\n    secretBytes := make([]byte, 32)\n    if _, err := rand.Read(secretBytes); err != nil {\n        return nil, fmt.Errorf(\"failed to generate secure random number: %w\", err)\n    }\n    secret := base64.URLEncoding.EncodeToString(secretBytes)\n    return &SecureData{Secret: secret}, nil\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_51": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc secureFunction(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    userInput := r.URL.Query().Get(\"number\")\n    if userInput == \"\" {\n        http.Error(w, \"Missing number parameter\", http.StatusBadRequest)\n        return\n    }\n\n    num, err := strconv.Atoi(userInput)\n    if err != nil {\n        http.Error(w, \"Invalid number format\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Number received: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/secure\", secureFunction)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_52": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    name := r.URL.Query().Get(\"name\")\n    if len(name) == 0 {\n        http.Error(w, \"Name parameter is required\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Hello, %s!\", name)\n}\n\nfunc main() {\n    http.HandleFunc(\"/greet\", secureHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_53": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"invalid 'num' parameter: not a number\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Received number: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_54": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype User struct {\n    ID   int\n    Name string\n}\n\nfunc (u *User) UpdateID(newIDStr string) error {\n    newID, err := strconv.Atoi(newIDStr)\n    if err != nil {\n        return fmt.Errorf(\"invalid user ID: %w\", err)\n    }\n    u.ID = newID\n    return nil\n}\n\nfunc main() {\n    user := &User{ID: 1, Name: \"John Doe\"}\n    if err := user.UpdateID(\"2\"); err != nil {\n        log.Fatalf(\"Failed to update user ID: %v\", err)\n    }\n    fmt.Printf(\"Updated User: %+v\\n\", user)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_55": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if err := r.ParseForm(); err != nil {\n        log.Printf(\"Error parsing form: %v\", err)\n        http.Error(w, \"Bad Request\", http.StatusBadRequest)\n        return\n    }\n\n    idStr := r.FormValue(\"id\")\n    if idStr == \"\" {\n        http.Error(w, \"ID is required\", http.StatusBadRequest)\n        return\n    }\n\n    id, err := strconv.Atoi(idStr)\n    if err != nil || id < 0 {\n        http.Error(w, \"Invalid ID\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Processed ID: %d\\n\", id)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Println(\"Server started on :8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Error starting server: %v\\n\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_56": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    id := r.URL.Query().Get(\"id\")\n    if id == \"\" {\n        http.Error(w, \"ID is required\", http.StatusBadRequest)\n        return\n    }\n\n    userID, err := strconv.Atoi(id)\n    if err != nil {\n        http.Error(w, \"Invalid ID format\", http.StatusBadRequest)\n        return\n    }\n\n    if userID < 1 {\n        http.Error(w, \"ID must be a positive integer\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"User ID: %d\", userID)\n}\n\nfunc main() {\n    http.HandleFunc(\"/user\", secureHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_57": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method is not supported.\", http.StatusNotFound)\n        return\n    }\n    fmt.Fprintf(w, \"Hello, world!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/hello\", helloHandler)\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Could not listen on port 8080 %v\\n\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_58": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    query := r.URL.Query().Get(\"name\")\n    if query == \"\" {\n        http.Error(w, \"Query parameter 'name' is required\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Hello, %s!\", sanitizeInput(query))\n}\n\nfunc sanitizeInput(input string) string {\n    // Implement proper input sanitization if necessary\n    return input\n}\n\nfunc main() {\n    http.HandleFunc(\"/greet\", secureHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_59": {
+        "input": "package main\n\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"os\"\n    \"strconv\"\n    \"strings\"\n)\n\nfunc safeReadInput(reader *bufio.Reader) (string, error) {\n    input, err := reader.ReadString('\\n')\n    if err != nil {\n        return \"\", err\n    }\n    return strings.TrimSpace(input), nil\n}\n\nfunc handleRequest(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method.\", http.StatusMethodNotAllowed)\n        return\n    }\n    fmt.Fprintf(w, \"Hello, secure world!\\n\")\n}\n\nfunc main() {\n    reader := bufio.NewReader(os.Stdin)\n    fmt.Print(\"Enter a number: \")\n    input, err := safeReadInput(reader)\n    if err != nil {\n        log.Fatalf(\"Failed to read input: %v\", err)\n    }\n    num, err := strconv.Atoi(input)\n    if err != nil {\n        log.Fatalf(\"Invalid number provided: %v\", err)\n    }\n    fmt.Printf(\"You entered the number: %d\\n\", num)\n\n    http.HandleFunc(\"/\", handleRequest)\n    log.Println(\"Starting server at port 8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Could not start server: %v\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_60": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"html/template\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    tmpl := template.Must(template.ParseFiles(\"index.html\"))\n    data := struct{\n        Message string\n    }{\n        Message: \"Hello, secure world!\",\n    }\n    if err := tmpl.Execute(w, data); err != nil {\n        http.Error(w, err.Error(), http.StatusInternalServerError)\n        return\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/\", safeHandler)\n    fmt.Println(\"Starting server at port 8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatal(err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_61": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"Missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"You entered: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Println(\"Server starting at :8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Could not start server: %s\\n\", err.Error())\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_62": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"os/exec\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    cmd := exec.Command(\"/bin/sh\", \"-c\", \"echo Hello, secure world!\")\n    output, err := cmd.Output()\n    if err != nil {\n        log.Printf(\"Error executing command: %v\", err)\n        http.Error(w, \"Internal Server Error\", http.StatusInternalServerError)\n        return\n    }\n    w.Write(output)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServeTLS(\":443\", \"server.crt\", \"server.key\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_63": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"Missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"Number: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_64": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype User struct {\n    ID   int\n    Name string\n}\n\nfunc (u *User) ValidateID(idStr string) error {\n    id, err := strconv.Atoi(idStr)\n    if err != nil {\n        return fmt.Errorf(\"invalid ID: %w\", err)\n    }\n    u.ID = id\n    return nil\n}\n\nfunc main() {\n    http.HandleFunc(\"/user\", func(w http.ResponseWriter, r *http.Request) {\n        id := r.URL.Query().Get(\"id\")\n        user := &User{}\n        if err := user.ValidateID(id); err != nil {\n            http.Error(w, \"Invalid user ID\", http.StatusBadRequest)\n            return\n        }\n        fmt.Fprintf(w, \"User ID: %d\\n\", user.ID)\n    })\n    http.ListenAndServe(\":8080\", nil)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_65": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"Missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Number: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Println(\"Starting server at port 8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Could not start server: %s\\n\", err.Error())\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_66": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintf(w, \"Hello, secure world!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/hello\", helloHandler)\n    log.Println(\"Starting server on :8080\")\n    err := http.ListenAndServeTLS(\":8080\", \"/path/to/cert.pem\", \"/path/to/key.pem\", nil)\n    if err != nil {\n        log.Fatalf(\"Could not start server %s\\n\", err.Error())\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_67": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method\", http.StatusMethodNotAllowed)\n        return\n    }\n    query := r.URL.Query().Get(\"number\")\n    if number, err := strconv.Atoi(query); err == nil {\n        fmt.Fprintf(w, \"The number is: %d\\n\", number)\n    } else {\n        http.Error(w, \"Invalid number provided\", http.StatusBadRequest)\n    }\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Failed to start server: %v\\n\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_68": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    id := r.URL.Query().Get(\"id\")\n    if id == \"\" {\n        http.Error(w, \"ID is required\", http.StatusBadRequest)\n        return\n    }\n\n    num, err := strconv.Atoi(id)\n    if err != nil {\n        log.Printf(\"Error converting ID to integer: %v\\n\", err)\n        http.Error(w, \"Invalid ID format\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Received valid ID: %d\\n\", num)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_69": {
+        "input": "package main\n\nimport (\n    \"encoding/json\"\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype User struct {\n    ID   int    `json:\"id\"`\n    Name string `json:\"name\"`\n}\n\nfunc (u *User) Validate() error {\n    if u.ID <= 0 {\n        return fmt.Errorf(\"invalid user ID\")\n    }\n    if u.Name == \"\" {\n        return fmt.Errorf(\"user name cannot be empty\")\n    }\n    return nil\n}\n\nfunc createUserHandler(w http.ResponseWriter, r *http.Request) {\n    var user User\n    err := json.NewDecoder(r.Body).Decode(&user)\n    if err != nil {\n        http.Error(w, \"invalid JSON\", http.StatusBadRequest)\n        return\n    }\n\n    if err := user.Validate(); err != nil {\n        http.Error(w, err.Error(), http.StatusBadRequest)\n        return\n    }\n\n    w.WriteHeader(http.StatusCreated)\n    json.NewEncoder(w).Encode(user)\n}\n\nfunc main() {\n    http.HandleFunc(\"/user\", createUserHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_70": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n    fmt.Fprintf(w, \"Hello, Secure World!\")\n}\n\nfunc main() {\n    mux := http.NewServeMux()\n    mux.HandleFunc(\"/hello\", helloHandler)\n\n    server := &http.Server{\n        Addr:    \":8080\",\n        Handler: mux,\n    }\n\n    log.Println(\"Starting server at :8080\")\n    if err := server.ListenAndServe(); err != nil {\n        log.Fatalf(\"Could not start server: %s\\n\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_71": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n    fmt.Fprintf(w, \"Hello, secure world!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/hello\", helloHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_72": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintf(w, \"Hello, secure world!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/hello\", helloHandler)\n    err := http.ListenAndServeTLS(\":443\", \"server.crt\", \"server.key\", nil)\n    if err != nil {\n        log.Fatal(err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_73": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    param := r.URL.Query().Get(\"number\")\n    if param == \"\" {\n        http.Error(w, \"Missing 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    number, err := strconv.Atoi(param)\n    if err != nil {\n        http.Error(w, \"Invalid 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"The number is: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/secure\", secureHandler)\n    log.Println(\"Server starting on :8080\")\n    err := http.ListenAndServe(\":8080\", nil)\n    if err != nil {\n        log.Fatal(err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_74": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numberStr := r.URL.Query().Get(\"number\")\n    if numberStr == \"\" {\n        http.Error(w, \"Missing 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n    number, err := strconv.Atoi(numberStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"You entered: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Println(\"Starting server on :8080\")\n    if err := http.ListenAndServeTLS(\":8080\", \"server.crt\", \"server.key\", nil); err != nil {\n        log.Fatalf(\"Could not start server: %s\\n\", err.Error())\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_75": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method Not Allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    id := r.URL.Query().Get(\"id\")\n    if id == \"\" {\n        http.Error(w, \"ID is required\", http.StatusBadRequest)\n        return\n    }\n\n    number, err := strconv.Atoi(id)\n    if err != nil {\n        http.Error(w, \"Invalid ID format\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"You entered: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/secure\", secureHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_76": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    userInput := r.URL.Query().Get(\"number\")\n    number, err := strconv.Atoi(userInput)\n    if err != nil || number < 0 {\n        http.Error(w, \"Invalid number\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Number: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_77": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"net/http\"\n    \"log\"\n)\n\nfunc secureHandler(w http.ResponseWriter, r *http.Request) {\n    fmt.Fprintf(w, \"Hello, Secure World!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/\", secureHandler)\n    log.Println(\"Server starting at port 8080\")\n    err := http.ListenAndServe(\":8080\", nil)\n    if err != nil {\n        log.Fatalf(\"Could not start server: %s\\n\", err.Error())\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_78": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    queryParams := r.URL.Query()\n    paramValue := queryParams.Get(\"param\")\n    if len(paramValue) > 100 {\n        http.Error(w, \"Parameter too long\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"Received: %s\", paramValue)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_79": {
+        "input": "package main\n\nimport (\n    \"errors\"\n    \"fmt\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype User struct {\n    ID   int\n    Name string\n}\n\ntype UserService struct {\n    users map[int]User\n}\n\nfunc NewUserService() *UserService {\n    return &UserService{\n        users: make(map[int]User),\n    }\n}\n\nfunc (us *UserService) AddUser(id int, name string) error {\n    if id <= 0 {\n        return errors.New(\"invalid user ID\")\n    }\n    if name == \"\" {\n        return errors.New(\"user name cannot be empty\")\n    }\n    us.users[id] = User{ID: id, Name: name}\n    return nil\n}\n\nfunc (us *UserService) GetUser(id int) (User, error) {\n    user, exists := us.users[id]\n    if !exists {\n        return User{}, errors.New(\"user not found\")\n    }\n    return user, nil\n}\n\nfunc main() {\n    userService := NewUserService()\n    err := userService.AddUser(1, \"Alice\")\n    if err != nil {\n        fmt.Println(\"Error adding user:\", err)\n        return\n    }\n    user, err := userService.GetUser(1)\n    if err != nil {\n        fmt.Println(\"Error getting user:\", err)\n        return\n    }\n    fmt.Printf(\"User: %+v\\n\", user)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_80": {
+        "input": "package main\n\nimport (\n    \"bufio\"\n    \"fmt\"\n    \"log\"\n    \"os\"\n    \"strconv\"\n    \"strings\"\n)\n\nfunc safeInput(input string) (int, error) {\n    input = strings.TrimSpace(input)\n    if len(input) == 0 {\n        return 0, fmt.Errorf(\"input cannot be empty\")\n    }\n    number, err := strconv.Atoi(input)\n    if err != nil {\n        return 0, fmt.Errorf(\"invalid number: %v\", err)\n    }\n    return number, nil\n}\n\nfunc main() {\n    reader := bufio.NewReader(os.Stdin)\n    fmt.Print(\"Enter a number: \")\n    input, err := reader.ReadString('\\n')\n    if err != nil {\n        log.Fatalf(\"Error reading input: %v\", err)\n    }\n    number, err := safeInput(input)\n    if err != nil {\n        log.Fatalf(\"Invalid input: %v\", err)\n    }\n    fmt.Printf(\"You entered: %d\\n\", number)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_81": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Method not allowed\", http.StatusMethodNotAllowed)\n        return\n    }\n\n    numberStr := r.URL.Query().Get(\"number\")\n    if numberStr == \"\" {\n        http.Error(w, \"Missing 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    number, err := strconv.Atoi(numberStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'number' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"The number is: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_82": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    if err := r.ParseForm(); err != nil {\n        log.Printf(\"Error parsing form: %v\", err)\n        http.Error(w, \"Internal Server Error\", http.StatusInternalServerError)\n        return\n    }\n\n    userInput := r.FormValue(\"number\")\n    number, err := strconv.Atoi(userInput)\n    if err != nil || number < 0 {\n        log.Printf(\"Invalid input: %s\", userInput)\n        http.Error(w, \"Bad Request\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"You entered a valid number: %d\\n\", number)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Println(\"Server started at :8080\")\n    if err := http.ListenAndServeTLS(\":8080\", \"server.crt\", \"server.key\", nil); err != nil {\n        log.Fatalf(\"Error starting server: %v\\n\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_83": {
+        "input": "package main\n\nimport (\n    \"crypto/rand\"\n    \"encoding/base64\"\n    \"fmt\"\n    \"log\"\n)\n\ntype SecureTokenGenerator struct {}\n\nfunc (s *SecureTokenGenerator) GenerateToken(length int) (string, error) {\n    if length <= 0 {\n        return \"\", fmt.Errorf(\"token length must be greater than zero\")\n    }\n    bytes := make([]byte, length)\n    _, err := rand.Read(bytes)\n    if err != nil {\n        log.Printf(\"Error generating random bytes: %v\", err)\n        return \"\", err\n    }\n    token := base64.URLEncoding.EncodeToString(bytes)\n    return token[:length], nil\n}\n\nfunc main() {\n    generator := &SecureTokenGenerator{}\n    token, err := generator.GenerateToken(32)\n    if err != nil {\n        log.Fatalf(\"Failed to generate token: %v\", err)\n    }\n    fmt.Printf(\"Generated Token: %s\\n\", token)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_84": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    id := r.URL.Query().Get(\"id\")\n    if id == \"\" {\n        http.Error(w, \"Invalid request\", http.StatusBadRequest)\n        return\n    }\n    num, err := strconv.Atoi(id)\n    if err != nil {\n        log.Printf(\"Error converting string to int: %v\\n\", err)\n        http.Error(w, \"Invalid ID\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"ID is a valid number: %d\\n\", num)\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_85": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"Missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n\n    fmt.Fprintf(w, \"You entered: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_86": {
+        "input": "package main\n\nimport (\n    \"errors\"\n    \"fmt\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype User struct {\n    ID   int\n    Name string\n}\n\nfunc (u *User) SetID(idStr string) error {\n    id, err := strconv.Atoi(idStr)\n    if err != nil {\n        return errors.New(\"invalid ID format\")\n    }\n    if id < 0 {\n        return errors.New(\"ID must be non-negative\")\n    }\n    u.ID = id\n    return nil\n}\n\nfunc main() {\n    user := &User{}\n    err := user.SetID(\"123\")\n    if err != nil {\n        fmt.Println(\"Error setting ID:\", err)\n        return\n    }\n    fmt.Printf(\"User ID: %d\\n\", user.ID)\n}\n",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_87": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n    \"strconv\"\n)\n\nfunc safeHandler(w http.ResponseWriter, r *http.Request) {\n    numStr := r.URL.Query().Get(\"num\")\n    if numStr == \"\" {\n        http.Error(w, \"Missing 'num' parameter\", http.StatusBadRequest)\n        return\n    }\n    num, err := strconv.Atoi(numStr)\n    if err != nil {\n        http.Error(w, \"Invalid 'num' parameter: not a number\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"You entered the number: %d\\n\", num)\n}\n\nfunc main() {\n    http.HandleFunc(\"/safe\", safeHandler)\n    log.Fatal(http.ListenAndServe(\":8080\", nil))\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_88": {
+        "input": "package main\n\nimport (\n    \"fmt\"\n    \"log\"\n    \"net/http\"\n)\n\nfunc helloHandler(w http.ResponseWriter, r *http.Request) {\n    if r.Method != http.MethodGet {\n        http.Error(w, \"Invalid request method\", http.StatusMethodNotAllowed)\n        return\n    }\n    fmt.Fprintf(w, \"Hello, secure world!\")\n}\n\nfunc main() {\n    http.HandleFunc(\"/hello\", helloHandler)\n    log.Println(\"Starting server at port 8080\")\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        log.Fatalf(\"Could not start server: %v\", err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "go_89": {
+        "input": "package main\n\nimport (\n    \"errors\"\n    \"fmt\"\n    \"net/http\"\n    \"strconv\"\n)\n\ntype SafeHandler struct {}\n\nfunc (h *SafeHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {\n    id := r.URL.Query().Get(\"id\")\n    if id == \"\" {\n        http.Error(w, \"ID is required\", http.StatusBadRequest)\n        return\n    }\n    num, err := strconv.Atoi(id)\n    if err != nil {\n        http.Error(w, \"Invalid ID format\", http.StatusBadRequest)\n        return\n    }\n    if num < 0 {\n        http.Error(w, \"ID must be non-negative\", http.StatusBadRequest)\n        return\n    }\n    fmt.Fprintf(w, \"Valid ID: %d\\n\", num)\n}\n\nfunc main() {\n    handler := &SafeHandler{}\n    http.Handle(\"/validate\", handler)\n    if err := http.ListenAndServe(\":8080\", nil); err != nil {\n        panic(err)\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

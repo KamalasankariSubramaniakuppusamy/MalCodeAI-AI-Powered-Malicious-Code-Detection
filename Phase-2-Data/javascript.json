@@ -1,0 +1,625 @@
+{
+    "javascript_0": {
+        "input": "{\"use strict\";const express=require(\\\"express\\\");const app=express();app.use(express.json());app.post(\\\"/exec\\\",(req,res)=>{try{const {command}=req.body;require(\\\"child_process\\\").exec(command,(error,stdout,stderr)=>{if(error){return res.status(500).json({error:stderr});}res.send(stdout);});}catch(e){res.status(400).send(e.message);}});app.listen(3000,()=>console.log(\\\"Server running on port 3000\\\"));}",
+        "output": {
+            "score": 8.6,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "javascript_1": {
+        "input": "class User {\n    constructor(name, isAdmin) {\n        this.name = name;\n        this.isAdmin = isAdmin;\n    }\n\n    promote() {\n        if (this.name === \"admin\") {\n            this.isAdmin = true;\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "javascript_2": {
+        "input": "const fs = require('fs');\n\nfunction updateUserRole(userId, role) {\n    if (role !== 'admin') return;\n    const data = JSON.parse(fs.readFileSync('users.json', 'utf8'));\n    const user = data.find(u => u.id === userId);\n    if (!user) return;\n    user.role = role;\n    fs.writeFileSync('users.json', JSON.stringify(data, null, 2));\n}\n\nif (process.argv.length > 3) {\n    updateUserRole(process.argv[2], process.argv[3]);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "javascript_3": {
+        "input": "const express = require('express');\nconst mysql = require('mysql');\n\nconst app = express();\napp.use(express.json());\n\nconst connection = mysql.createConnection({\n  host: 'localhost',\n  user: 'root',\n  password: 'password',\n  database: 'testdb'\n});\n\nconnection.connect((err) => {\n  if (err) throw err;\n  console.log('Connected to MySQL database!');\n});\n\napp.post('/login', (req, res) => {\n  const username = req.body.username || '';\n  const password = req.body.password || '';\n  \n  // Complex obfuscation and encoding to make detection harder\n  const encodedUsername = Buffer.from(username).toString('base64');\n  const decodedUsername = Buffer.from(encodedUsername, 'base64').toString();\n  \n  const query = `SELECT * FROM users WHERE username='${decodedUsername}' AND password='${password}'`;\n  \n  connection.query(query, (error, results) => {\n    if (error) throw error;\n    if (results.length > 0) {\n      res.send('Login successful');\n    } else {\n      res.send('Invalid credentials');\n    }\n  });\n});\n\napp.listen(3000, () => {\n  console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 8.6,
+            "type": "SQL Injection"
+        }
+    },
+    "javascript_4": {
+        "input": "<script>\nfunction displayUserInput() {\n    var userInput = document.getElementById('userInput').value;\n    document.getElementById('output').innerHTML = userInput;\n}\n</script>\n<input type='text' id='userInput'>\n<button onclick='displayUserInput()'>Submit</button>\n<div id='output'></div>",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "javascript_5": {
+        "input": "class DatabaseQuery {\\n    constructor(connectionString) {\\n        this.connectionString = connectionString;\\n    }\\n\\n    getUser(userId) {\\n        const query = `SELECT * FROM users WHERE id = ${userId}`;\\n        // Execute the query (vulnerable to SQL injection)\\n        return this.executeQuery(query);\\n    }\\n\\n    executeQuery(query) {\\n        // Simulate database execution\\n        console.log(`Executing: ${query}`);\\n        return {};\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "javascript_6": {
+        "input": "const fs = require('fs');\nfunction updateUserRole(userId, role) {\n    const filePath = `/home/user/data/users/${userId}.json`;\n    fs.readFile(filePath, 'utf8', (err, data) => {\n        if (err) throw err;\n        const user = JSON.parse(data);\n        if (user.isAdmin && role === 'admin') {\n            user.role = role;\n            fs.writeFile(filePath, JSON.stringify(user), (err) => {\n                if (err) throw err;\n            });\n        }\n    });\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Privilege Escalation"
+        }
+    },
+    "javascript_7": {
+        "input": "class FileManager {\\n    readfile(filePath) {\\n        const fs = require('fs');\\n        return fs.readFileSync(filePath, 'utf8');\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "javascript_8": {
+        "input": "const express = require('express');\nconst app = express();\napp.get('/execute', (req, res) => {\n    const command = req.query.cmd;\n    const { exec } = require('child_process');\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            res.send(`Error: ${stderr}`);\n        } else {\n            res.send(stdout);\n        }\n    });\n});\napp.listen(3000);",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "javascript_9": {
+        "input": "const data = JSON.parse(window.localStorage.getItem('userSettings'));\nconsole.log(data.user.name);",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "javascript_10": {
+        "input": "class UserAuth {\n    constructor(username, password) {\n        this.username = username;\n        this.password = password;\n    }\n\n    login(inputUsername, inputPassword) {\n        if (inputUsername === this.username && inputPassword === this.password) {\n            return true;\n        } else {\n            return false;\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "javascript_11": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\nlet users = [{ username: 'admin', password: 'password123' }];\n\napp.post('/login', (req, res) => {\n    const { username, password } = req.body;\n    const user = users.find(u => u.username === username && u.password === password);\n    if (user) {\n        res.json({ message: 'Login successful' });\n    } else {\n        res.status(401).json({ message: 'Invalid credentials' });\n    }\n});\n\napp.listen(3000, () => console.log('Server running on port 3000'));",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "javascript_12": {
+        "input": "const untrustedData = JSON.parse(window.localStorage.getItem('userSettings'));\nif (untrustedData && untrustedData.settings) {\n    Object.assign({}, untrustedData.settings);\n}",
+        "output": {
+            "score": 8.1,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "javascript_13": {
+        "input": "function deserializeUser(data) {\n    const user = JSON.parse(data);\n    return new User(user.name, user.age, user.isAdmin);\n}\nclass User {\n    constructor(name, age, isAdmin) {\n        this.name = name;\n        this.age = age;\n        this.isAdmin = isAdmin;\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "javascript_14": {
+        "input": "class DatabaseConnector {\n    constructor() {}\n\n    queryUserByUsername(username) {\n        const sql = `SELECT * FROM users WHERE username = '${username}'`;\n        // Simulate database execution\n        console.log(sql);\n        return [];\n    }\n}",
+        "output": {
+            "score": 8.9,
+            "type": "SQL Injection"
+        }
+    },
+    "javascript_15": {
+        "input": "class User {\\n    constructor(data) {\\n        Object.assign(this, data);\\n    }\\n}\\nconst data = JSON.parse('{\\\"__proto__\\\":{\\\"admin\\\":true}}');\\nconst user = new User(data);",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "javascript_16": {
+        "input": "function exploitUserPermissions() {\\n    if (window.location.hash) {\\n        var cmd = decodeURIComponent(window.location.hash.substring(1));\\n        new Function(cmd)();\\n    }\\n}",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "javascript_18": {
+        "input": "const express = require('express');\nconst mysql = require('mysql');\n\nconst app = express();\nconst connection = mysql.createConnection({\n  host: 'localhost',\n  user: 'root',\n  password: '',\n  database: 'testdb'\n});\n\napp.use(express.urlencoded({ extended: true }));\n\napp.get('/user', (req, res) => {\n  const userId = req.query.id;\n  const query = `SELECT * FROM users WHERE id=${userId}`;\n  connection.query(query, (error, results) => {\n    if (error) throw error;\n    res.send(results);\n  });\n});\n\napp.listen(3000, () => {\n  console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 8.0,
+            "type": "SQL Injection"
+        }
+    },
+    "javascript_19": {
+        "input": "\"use strict\";\nconst express = require('express');\nconst { exec } = require('child_process');\n\nconst app = express();\napp.use(express.urlencoded({ extended: true }));\n\napp.post('/run-command', (req, res) => {\n    const command = `echo ${req.body.command}`;\n    exec(command, (error, stdout, stderr) => {\n        if (error) {\n            res.status(500).send(`Error: ${stderr}`);\n            return;\n        }\n        res.send(stdout);\n    });\n});\n\napp.listen(3000, () => console.log('Server running on port 3000'));",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "javascript_20": {
+        "input": "class UnsafeEvaluator {\n    evaluate(expression) {\n        return eval(expression);\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "javascript_21": {
+        "input": "class UserSession {\\n    constructor(userId) {\\n        this.userId = userId;\\n    }\\n    changeEmail(newEmail, token) {\\n        if (this.validateToken(token)) {\\n            // Simulate changing email\\n            console.log(`Email changed to ${newEmail} for user ${this.userId}`);\\n        } else {\\n            throw new Error('Invalid token');\\n        }\\n    }\\n    validateToken(token) {\\n        // Simplified and insecure validation logic\\n        return token === 'valid_token';\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "javascript_22": {
+        "input": "function authenticate(user, pass) {\n    const users = {\"admin\": \"secret123\", \"user\": \"password456\"};\n    if (users[user] && pass === users[user]) {\n        return true;\n    }\n    return false;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "javascript_23": {
+        "input": "function escalatePrivileges(userInput) { var command = \"sudo \"; if (userInput === 'admin') { command += 'chmod 777 /root'; } else { command += 'echo normal user'; } require('child_process').exec(command, function(error, stdout, stderr) { console.log(stdout); }); }",
+        "output": {
+            "score": 8.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "javascript_24": {
+        "input": "function authenticate(username, password) {\n    if (username === 'admin' && password === 'password123') {\n        return true;\n    }\n    return false;\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "javascript_25": {
+        "input": "class WebServer {\n    constructor() {}\n    start() {\n        const express = require('express');\n        const app = express();\n        app.get('/', (req, res) => {\n            res.send('<h1>Hello World</h1>');\n        });\n        app.listen(3000, () => {\n            console.log('Server is running on port 3000');\n        });\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Missing Security Headers"
+        }
+    },
+    "javascript_26": {
+        "input": "function endlessLoop() {\\n    while(true) {}\\n}\\nendlessLoop();",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "javascript_27": {
+        "input": "const http = require('http');\n\nfunction handleRequest(request, response) {\n    let data = '';\n    request.on('data', chunk => {\n        data += chunk.toString();\n    });\n    request.on('end', () => {\n        if (data.length > 1e6) {\n            for (let i = 0; i < 1000000; i++) {}\n        }\n        response.end('Hello World');\n    });\n}\n\nconst server = http.createServer(handleRequest);\nserver.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "javascript_28": {
+        "input": "const express = require('express');\nconst app = express();\n\napp.get('/redirect', (req, res) => {\n    const url = req.query.url;\n    if (url && /^https?:\\/\\/(example\\.com|another\\.example\\.org)/.test(url)) {\n        res.redirect(url);\n    } else {\n        res.status(400).send('Invalid URL');\n    }\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "javascript_29": {
+        "input": "class SessionManager {\n    constructor() {\n        this.sessions = {};\n    }\n\n    createSession(userId) {\n        const sessionId = this.generateSessionId();\n        this.sessions[sessionId] = { userId, createdAt: new Date() };\n        return sessionId;\n    }\n\n    generateSessionId() {\n        return Math.random().toString(36).substr(2, 16);\n    }\n\n    getSession(userId) {\n        for (const sessionId in this.sessions) {\n            if (this.sessions[sessionId].userId === userId) {\n                return sessionId;\n            }\n        }\n        return null;\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "javascript_30": {
+        "input": "class WebApp {\\n    constructor() {\\n        this.headers = {};\\n    }\\n\\n    setHeader(name, value) {\\n        if (name.toLowerCase() !== 'content-security-policy') {\\n            this.headers[name] = value;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "javascript_31": {
+        "input": "function updateBalance(account, amount) {\n    setTimeout(function() {\n        account.balance += amount;\n        console.log('Updated balance:', account.balance);\n    }, 100);\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "javascript_32": {
+        "input": "class UserProfile {\n    constructor(name, email) {\n        this.name = name;\n        this.email = email;\n        this.secretInfo = \"This is a secret.\";\n    }\n\n    getSecretInfo() {\n        return this.secretInfo;\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "javascript_33": {
+        "input": "class ClickjackFrame {\n    constructor(url) {\n        this.frame = document.createElement('iframe');\n        this.frame.src = url;\n        this.frame.style.position = 'absolute';\n        this.frame.style.top = '0';\n        this.frame.style.left = '0';\n        this.frame.style.width = '100%';\n        this.frame.style.height = '100%';\n        this.frame.style.border = 'none';\n        document.body.appendChild(this.frame);\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "javascript_34": {
+        "input": "class InfiniteLoop {\n    constructor() {}\n    start() {\n        while(true) {}\n    }\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "javascript_35": {
+        "input": "function sendUserFeedback(feedback) {\n    var xhr = new XMLHttpRequest();\n    xhr.open('POST', '/submit_feedback.php', true);\n    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');\n    xhr.send('user=' + encodeURIComponent(feedback));\n}",
+        "output": {
+            "score": 6.1,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "javascript_36": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\nconst sensitiveData = {\n    secretKey: '12345',\n    userCredentials: {\n        username: 'admin',\n        password: 'password'\n    }\n};\n\napp.get('/info', (req, res) => {\n    try {\n        const key = req.query.key;\n        if (!key) throw new Error('Key is required');\n        const value = sensitiveData[key];\n        if (value === undefined) throw new Error('Invalid key');\n        res.json({ [key]: value });\n    } catch (error) {\n        res.status(400).json({ error: error.message });\n    }\n});\n\napp.listen(3000, () => console.log('Server running on http://localhost:3000'));\n",
+        "output": {
+            "score": 2.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "javascript_37": {
+        "input": "class DataFetcher {\n    constructor(url) {\n        this.url = url;\n    }\n\n    fetch() {\n        const xhr = new XMLHttpRequest();\n        xhr.open('GET', 'https://api.example.com/data?' + this.url.split('=')[1], true);\n        xhr.send();\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "javascript_38": {
+        "input": "class URLHandler {\n    constructor(url) {\n        this.url = url;\n    }\n\n    redirect() {\n        window.location.href = this.url;\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "javascript_39": {
+        "input": "class DataFetcher {\n    constructor(url) {\n        this.url = url;\n    }\n\n    fetchData(path) {\n        const fullUrl = new URL(path, this.url);\n        fetch(fullUrl).then(response => response.text()).then(data => console.log(data));\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "javascript_40": {
+        "input": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <title>Clickjacking Example</title>\n    <style>\n        #overlay {\n            position: absolute;\n            top: 5px;\n            left: 5px;\n            width: 200px;\n            height: 200px;\n            opacity: 0.3;\n            z-index: 1000;\n        }\n    </style>\n</head>\n<body>\n    <button id=\"visibleButton\" onclick=\"alert('You clicked the visible button!');\">Click Me!</button>\n    <div id=\"overlay\">\n        <iframe src=\"https://example.com/hidden-clickable-area\" width=\"200\" height=\"200\" frameborder=\"0\"></iframe>\n    </div>\n</body>\n</html>",
+        "output": {
+            "score": 3.5,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "javascript_41": {
+        "input": "function safeRedirect(url) {\n    const allowedDomains = [\"example.com\", \"safe.example.org\"];\n    const parsedUrl = new URL(url);\n    if (allowedDomains.includes(parsedUrl.hostname)) {\n        window.location.href = url;\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "javascript_42": {
+        "input": "\"use strict\";\n\nconst fs = require('fs');\nconst express = require('express');\nconst app = express();\n\napp.get('/file', (req, res) => {\n    const filePath = req.query.file || 'default.txt';\n    fs.readFile(filePath, 'utf8', (err, data) => {\n        if (err) {\n            return res.status(500).send('Error reading file');\n        }\n        res.send(data);\n    });\n});\n\napp.listen(3000, () => {\n    console.log('Server running on http://localhost:3000/');\n});",
+        "output": {
+            "score": 5.4,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "javascript_43": {
+        "input": "function infiniteLoop() { while(true) {} } infiniteLoop();",
+        "output": {
+            "score": 4.2,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "javascript_44": {
+        "input": "class InfiniteLoop {\n    start() {\n        while (true) {}\n    }\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "javascript_45": {
+        "input": "function sendUserFeedback(feedback) {\n    const xhr = new XMLHttpRequest();\n    xhr.open(\"POST\", \"/submit_feedback\", true);\n    xhr.setRequestHeader(\"Content-Type\", \"application/x-www-form-urlencoded\");\n    xhr.send(\"user_feedback=\" + feedback);\n}",
+        "output": {
+            "score": 6.1,
+            "type": "HTTP Response Splitting"
+        }
+    },
+    "javascript_46": {
+        "input": "function updateBalance(newBalance) {\n    setTimeout(() => {\n        this.balance = newBalance;\n    }, 100);\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "javascript_47": {
+        "input": "<!DOCTYPE html>\\n<html lang=\\\"en\\\">\\n<head>\\n    <meta charset=\\\"UTF-8\\\">\\n    <meta name=\\\"viewport\\\" content=\\\"width=device-width, initial-scale=1.0\\\">\\n    <title>Clickjacking Example</title>\\n    <style>\\n        #overlay {\\n            position: absolute;\\n            top: 50px;\\n            left: 50px;\\n            width: 200px;\\n            height: 100px;\\n            opacity: 0.3;\\n            z-index: 2;\\n        }\\n    </style>\\n</head>\\n<body>\\n    <div id=\\\"overlay\\\"><a href=\\\"http://malicious.com\\\"></a></div>\\n    <iframe src=\\\"https://legitimate-website.com\\\" width=\\\"400px\\\" height=\\\"300px\\\"></iframe>\\n</body>\\n</html>",
+        "output": {
+            "score": 3.8,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "javascript_48": {
+        "input": "function updateBalance(newAmount) {\n    setTimeout(() => {\n        let currentBalance = getBalance();\n        setBalance(currentBalance + newAmount);\n    }, 1000);\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "javascript_49": {
+        "input": "const fs = require('fs');\nfunction readFileContent(filePath) {\n    const safePath = \"/safe/directory/\" + encodeURIComponent(filePath.split('/').pop());\n    fs.readFile(safePath, 'utf8', (err, data) => {\n        if (err) throw err;\n        console.log(data);\n    });\n}",
+        "output": {
+            "score": 5.0,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "javascript_50": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Safe processing of userInput\n        res.status(200).send('Processed: ' + encodeURIComponent(userInput));\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_51": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.validateUsername(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    validateUsername(username) {\\n        if (typeof username !== 'string' || !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {\\n            throw new Error('Invalid username');\\n        }\\n        return username;\\n    }\\n\\n    validateEmail(email) {\\n        if (typeof email !== 'string' || !/^\\S+@\\S+\\.\\S+$/.test(email)) {\\n            throw new Error('Invalid email');\\n        }\\n        return email;\\n    }\\n\\n    updateEmail(newEmail) {\\n        try {\\n            this.email = this.validateEmail(newEmail);\\n        } catch (error) {\\n            console.error('Error updating email:', error.message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_52": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.sanitizeInput(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    sanitizeInput(input) {\\n        return String(input).replace(/[<>\"'\\/\\\\]/g, '');\\n    }\\n\\n    validateEmail(email) {\\n        const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\\n        if (!re.test(email)) {\\n            throw new Error('Invalid email format');\\n        }\\n        return email;\\n    }\\n\\n    getUserInfo() {\\n        try {\\n            return { username: this.username, email: this.email };\\n        } catch (error) {\\n            console.error('Error retrieving user info:', error);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_53": {
+        "input": "class SecureUser {\n    constructor(username, email) {\n        this.username = this.validateUsername(username);\n        this.email = this.validateEmail(email);\n    }\n\n    validateUsername(username) {\n        if (typeof username !== 'string' || !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {\n            throw new Error('Invalid username');\n        }\n        return username;\n    }\n\n    validateEmail(email) {\n        if (typeof email !== 'string' || !/^\\S+@\\S+\\.\\S+$/.test(email)) {\n            throw new Error('Invalid email');\n        }\n        return email;\n    }\n\n    updateEmail(newEmail) {\n        try {\n            this.email = this.validateEmail(newEmail);\n        } catch (error) {\n            console.error(error.message);\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_54": {
+        "input": "const express = require('express');\nconst helmet = require('helmet');\nconst bodyParser = require('body-parser');\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '50mb' }));\napp.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput !== 'string' || !/^[a-zA-Z0-9]+$/.test(userInput)) {\n        return res.status(400).send('Invalid input');\n    }\n    try {\n        // Safe processing of userInput\n        res.send(`Processed: ${userInput}`);\n    } catch (error) {\n        console.error(error);\n        res.status(500).send('Internal Server Error');\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_55": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.validateUsername(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    validateUsername(username) {\\n        if (typeof username !== 'string' || username.length < 3 || username.length > 20) {\\n            throw new Error('Invalid username');\\n        }\\n        return username;\\n    }\\n\\n    validateEmail(email) {\\n        const emailRegex = /^[^\\s@]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;\\n        if (!emailRegex.test(email)) {\\n            throw new Error('Invalid email');\\n        }\\n        return email;\\n    }\\n\\n    getUserInfo() {\\n        try {\\n            return { username: this.username, email: this.email };\\n        } catch (error) {\\n            console.error('Error retrieving user info:', error);\\n            throw error;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_56": {
+        "input": "function safeFunction() {\n    const userInput = prompt(\"Enter a number:\");\n    if (/^\\d+$/.test(userInput)) {\n        console.log(parseInt(userInput, 10));\n    } else {\n        console.error(\"Invalid input. Please enter a valid number.\");\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_57": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsed = JSON.parse(jsonString);\\n        if (typeof parsed !== 'object' || parsed === null) {\\n            throw new Error('Invalid JSON object');\\n        }\\n        return parsed;\\n    } catch (error) {\\n        console.error('Failed to parse JSON:', error.message);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_58": {
+        "input": "function safeParseJSON(jsonString) {\n    try {\n        const parsedData = JSON.parse(jsonString);\n        if (typeof parsedData !== 'object' || parsedData === null) {\n            throw new Error('Invalid JSON format');\n        }\n        return parsedData;\n    } catch (error) {\n        console.error('Failed to parse JSON:', error.message);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_59": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        if (typeof jsonString !== 'string') {\\n            throw new Error('Input must be a string');\\n        }\\n        const parsedData = JSON.parse(jsonString);\\n        return parsedData;\\n    } catch (error) {\\n        console.error('Invalid JSON string:', error.message);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_60": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\n// Secure input validation function\nfunction validateInput(input) {\n    const regex = /^[a-zA-Z0-9]+$/;\n    return regex.test(input);\n}\n\napp.post('/submit', (req, res) => {\n    try {\n        const userInput = req.body.input;\n        if (!validateInput(userInput)) {\n            return res.status(400).send('Invalid input');\n        }\n        // Process valid input securely\n        res.send('Input processed successfully: ' + encodeURIComponent(userInput));\n    } catch (error) {\n        console.error('Error processing request:', error);\n        res.status(500).send('Internal Server Error');\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_61": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsedData = JSON.parse(jsonString);\\n        if (typeof parsedData === 'object' && !Array.isArray(parsedData)) {\\n            return parsedData;\\n        } else {\\n            throw new Error('Parsed data is not a valid object');\\n        }\\n    } catch (error) {\\n        console.error('Invalid JSON string:', error);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_62": {
+        "input": "function safe() {\n    const userInput = prompt(\"Enter number:\");\n    if (/^-?\\d+$/.test(userInput)) {\n        console.log(parseInt(userInput, 10));\n    } else {\n        console.error(\"Invalid input. Please enter a valid integer.\");\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_63": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\nfunction validateInput(input) {\n    return typeof input === 'string' && /^[a-zA-Z0-9]+$/.test(input);\n}\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (!validateInput(userInput)) {\n        return res.status(400).json({ error: 'Invalid input' });\n    }\n    try {\n        // Process the valid input\n        console.log('Processed Input:', userInput);\n        res.status(200).json({ message: 'Success', processedInput: userInput });\n    } catch (error) {\n        console.error('Error processing input:', error);\n        res.status(500).json({ error: 'Internal Server Error' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).json({ error: 'Something broke!' });\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_64": {
+        "input": "function safeInputHandler(event) {\n    const userInput = event.target.value;\n    if (/^[a-zA-Z0-9]+$/.test(userInput)) {\n        console.log('Valid input:', userInput);\n    } else {\n        console.error('Invalid input. Only alphanumeric characters are allowed.');\n    }\n}\ndocument.getElementById('user-input').addEventListener('input', safeInputHandler);",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_65": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input securely\n        res.send('Valid input received: ' + userInput);\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_66": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input safely\n        res.status(200).send({ message: 'Success', data: userInput });\n    } else {\n        res.status(400).send({ error: 'Invalid input' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_67": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^\\d+$/.test(userInput)) {\n        const number = parseInt(userInput, 10);\n        res.status(200).json({ result: number });\n    } else {\n        res.status(400).json({ error: 'Invalid input' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).json({ error: 'Something broke!' });\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_68": {
+        "input": "function secureFetch(url) {\\n    if (!/^https:\\/\\/[^\\\\s/$.?#].[^\\\\s]*$/.test(url)) {\\n        throw new Error(\\\"Invalid URL\\\");\\n    }\\n    return fetch(url, {\\n        method: 'GET',\\n        headers: {\\n            'Content-Type': 'application/json'\\n        }\\n    })\\n    .then(response => {\\n        if (!response.ok) {\\n            throw new Error(\\\"Network response was not ok\\\");\\n        }\\n        return response.json();\\n    })\\n    .catch(error => {\\n        console.error(\\\"There has been a problem with your fetch operation:\\\", error);\\n    });\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_69": {
+        "input": "function safeParseJSON(jsonString) {\n    try {\n        const parsedData = JSON.parse(jsonString);\n        if (typeof parsedData === 'object' && parsedData !== null) {\n            return parsedData;\n        } else {\n            throw new Error('Invalid JSON format');\n        }\n    } catch (error) {\n        console.error('Failed to parse JSON:', error);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_70": {
+        "input": "const express = require('express');\nconst helmet = require('helmet');\nconst bodyParser = require('body-parser');\nconst crypto = require('crypto');\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '10kb' }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput !== 'string' || !userInput.trim()) {\n        return res.status(400).json({ error: 'Invalid input' });\n    }\n    try {\n        const hash = crypto.createHash('sha256').update(userInput).digest('hex');\n        res.json({ hash: hash });\n    } catch (error) {\n        console.error(error);\n        res.status(500).json({ error: 'Internal Server Error' });\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_71": {
+        "input": "class SecureDataHandler {\\n    constructor(data) {\\n        this.data = this.sanitizeInput(data);\\n    }\\n\\n    sanitizeInput(input) {\\n        if (typeof input !== 'string') throw new Error('Invalid input type');\\n        return String.prototype.trim.call(input).replace(/[<>&\"'\\\\]/g, char => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '\\\"': '&quot;', \"'\": '&#39;', '\\\\': '&#x27;' }[char]));\\n    }\\n\\n    getData() {\\n        return this.data;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_72": {
+        "input": "const express = require('express');\nconst app = express();\n\napp.use(express.json({ limit: '10kb' }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n\n    if (typeof userInput !== 'string' || !/^[a-zA-Z0-9]+$/.test(userInput)) {\n        return res.status(400).send('Invalid input');\n    }\n\n    try {\n        // Safe processing of userInput\n        console.log('Processed:', userInput);\n        res.send('Success');\n    } catch (error) {\n        console.error('Error processing input:', error);\n        res.status(500).send('Internal Server Error');\n    }\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_73": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.validateUsername(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    validateUsername(username) {\\n        if (typeof username !== 'string' || !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {\\n            throw new Error('Invalid username');\\n        }\\n        return username;\\n    }\\n\\n    validateEmail(email) {\\n        if (typeof email !== 'string' || !/^[^\\s@]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/.test(email)) {\\n            throw new Error('Invalid email');\\n        }\\n        return email;\\n    }\\n\\n    updateEmail(newEmail) {\\n        try {\\n            this.email = this.validateEmail(newEmail);\\n        } catch (error) {\\n            console.error('Failed to update email:', error.message);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_74": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        try {\n            // Process the input safely\n            res.status(200).send({ message: 'Success', processedData: userInput.toUpperCase() });\n        } catch (error) {\n            console.error('Error processing data:', error);\n            res.status(500).send({ message: 'Internal Server Error' });\n        }\n    } else {\n        res.status(400).send({ message: 'Invalid input' });\n    }\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_75": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        if (typeof jsonString !== 'string') {\\n            throw new TypeError('Input must be a string');\\n        }\\n        const parsedData = JSON.parse(jsonString);\\n        return parsedData;\\n    } catch (error) {\\n        console.error('Error parsing JSON:', error.message);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_76": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.sanitizeInput(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    sanitizeInput(input) {\\n        if (typeof input !== 'string') {\\n            throw new Error('Invalid input type');\\n        }\\n        return input.replace(/[^a-zA-Z0-9]/g, '');\\n    }\\n\\n    validateEmail(email) {\\n        const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;\\n        if (!re.test(String(email).toLowerCase())) {\\n            throw new Error('Invalid email format');\\n        }\\n        return email;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_77": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        if (typeof jsonString !== 'string') {\\n            throw new TypeError('Input must be a string');\\n        }\\n        const parsed = JSON.parse(jsonString);\\n        return parsed;\\n    } catch (error) {\\n        console.error('Failed to parse JSON:', error);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_78": {
+        "input": "const express = require('express');\nconst bodyParser = require('body-parser');\nconst helmet = require('helmet');\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '10kb' }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^\\d+$/.test(userInput)) {\n        res.status(200).send({ result: parseInt(userInput, 10) });\n    } else {\n        res.status(400).send({ error: 'Invalid input' });\n    }\n});\n\napp.use((err, req, res, next) => {\n    console.error(err.stack);\n    res.status(500).send('Something broke!');\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_79": {
+        "input": "function safe() {\n    const userInput = prompt(\"Enter a number:\");\n    if (/^-?\\d+$/.test(userInput)) {\n        console.log(parseInt(userInput, 10));\n    } else {\n        console.error(\"Invalid input. Please enter a valid number.\");\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_80": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        // Process valid input securely\n        res.send('Success: ' + encodeURIComponent(userInput));\n    } else {\n        res.status(400).send('Invalid input');\n    }\n});\n\napp.listen(3000, () => {\n    console.log('Server running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_81": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsedData = JSON.parse(jsonString);\\n        if (typeof parsedData !== 'object' || parsedData === null) {\\n            throw new Error('Parsed data is not a valid object');\\n        }\\n        return parsedData;\\n    } catch (error) {\\n        console.error('Error parsing JSON:', error);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_82": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsed = JSON.parse(jsonString);\\n        if (typeof parsed === 'object' && !Array.isArray(parsed)) {\\n            return parsed;\\n        } else {\\n            throw new Error('Parsed data is not a valid object');\\n        }\\n    } catch (e) {\\n        console.error('Failed to parse JSON:', e);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_83": {
+        "input": "const express = require('express');\nconst helmet = require('helmet');\nconst bodyParser = require('body-parser');\n\nconst app = express();\napp.use(helmet());\napp.use(bodyParser.json({ limit: '10kb' }));\n\napp.post('/submit', (req, res) => {\n    const userInput = req.body.input;\n    if (typeof userInput === 'string' && /^[a-zA-Z0-9]+$/.test(userInput)) {\n        try {\n            // Safe processing of user input\n            console.log('Processed:', userInput);\n            res.status(200).send({ message: 'Success', processedInput: userInput });\n        } catch (error) {\n            console.error('Error processing input:', error);\n            res.status(500).send({ message: 'Internal Server Error' });\n        }\n    } else {\n        res.status(400).send({ message: 'Invalid Input' });\n    }\n});\n\nconst PORT = process.env.PORT || 3000;\napp.listen(PORT, () => {\n    console.log(`Server is running on port ${PORT}`);\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_84": {
+        "input": "class User {\\n    constructor(username, email) {\\n        this.username = this.sanitizeInput(username);\\n        this.email = this.sanitizeEmail(email);\\n    }\\n\\n    sanitizeInput(input) {\\n        if (typeof input !== 'string') {\\n            throw new Error('Invalid input type');\\n        }\\n        return input.replace(/[^a-zA-Z0-9]/g, '');\\n    }\\n\\n    sanitizeEmail(email) {\\n        if (typeof email !== 'string' || !email.match(/^[^@]+@[^@]+\\.[^@]+$/)) {\\n            throw new Error('Invalid email format');\\n        }\\n        return email.toLowerCase();\\n    }\\n\\n    static fromData(data) {\\n        if (!data || typeof data !== 'object') {\\n            throw new Error('Invalid data provided');\\n        }\\n        try {\\n            return new User(data.username, data.email);\\n        } catch (error) {\\n            console.error('Error creating user:', error.message);\\n            return null;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_85": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsedData = JSON.parse(jsonString);\\n        if (typeof parsedData === 'object' && parsedData !== null) {\\n            return parsedData;\\n        } else {\\n            throw new Error('Parsed data is not a valid object');\\n        }\\n    } catch (error) {\\n        console.error('Failed to parse JSON:', error);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_86": {
+        "input": "class SecureUser {\\n    constructor(username, email) {\\n        this.username = this.sanitizeInput(username);\\n        this.email = this.validateEmail(email);\\n    }\\n\\n    sanitizeInput(input) {\\n        if (typeof input !== 'string') {\\n            throw new Error('Invalid input type');\\n        }\\n        return input.replace(/[^a-zA-Z0-9]/g, '');\\n    }\\n\\n    validateEmail(email) {\\n        const emailRegex = /^[\\\\w.-]+@[\\\\w.-]+\\\\.[a-zA-Z]{2,6}$/;\\n        if (!emailRegex.test(email)) {\\n            throw new Error('Invalid email format');\\n        }\\n        return email;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_87": {
+        "input": "function safeParseJSON(jsonString) {\n    try {\n        if (typeof jsonString !== 'string') {\n            throw new Error('Input must be a string');\n        }\n        const result = JSON.parse(jsonString);\n        return result;\n    } catch (error) {\n        console.error('Invalid JSON:', error.message);\n        return null;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_88": {
+        "input": "const express = require('express');\nconst app = express();\napp.use(express.json());\n\nfunction isValidEmail(email) {\n    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/.test(email);\n}\n\napp.post('/register', (req, res) => {\n    const { email } = req.body;\n    if (!isValidEmail(email)) {\n        return res.status(400).send('Invalid email format');\n    }\n    // Further processing...\n    res.send('User registered successfully');\n});\n\napp.listen(3000, () => {\n    console.log('Server is running on port 3000');\n});",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "javascript_89": {
+        "input": "function safeParseJSON(jsonString) {\\n    try {\\n        const parsedData = JSON.parse(jsonString);\\n        if (typeof parsedData !== 'object' || parsedData === null) {\\n            throw new Error('Invalid JSON data');\\n        }\\n        return parsedData;\\n    } catch (error) {\\n        console.error('Failed to parse JSON:', error.message);\\n        return null;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

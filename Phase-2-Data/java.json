@@ -1,0 +1,632 @@
+{
+    "java_0": {
+        "input": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\n\npublic class VulnerableApp {\n    public static void main(String[] args) {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        try {\n            System.out.print(\"Enter command: \");\n            String command = reader.readLine();\n            Process process = Runtime.getRuntime().exec(command);\n            BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));\n            String line;\n            while ((line = outputReader.readLine()) != null) {\n                System.out.println(line);\n            }\n        } catch (IOException e) {\n            e.printStackTrace();\n        }\n    }\n}",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "java_1": {
+        "input": "import javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\nimport java.io.IOException;\n\npublic class VulnerableServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String userInput = request.getParameter(\"userInput\");\n        if (userInput != null) {\n            response.setContentType(\"text/html\");\n            response.getWriter().println(\"<html><body>\");\n            response.getWriter().println(\"User Input: \" + userInput);\n            response.getWriter().println(\"</body></html>\");\n        }\n    }\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "java_2": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\n\npublic class VulnerableApp {\n    public static void main(String[] args) throws Exception {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        System.out.println(\"Enter command: \");\n        String command = reader.readLine();\n        Process process = Runtime.getRuntime().exec(command);\n        BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));\n        String line;\n        while ((line = output.readLine()) != null) {\n            System.out.println(line);\n        }\n    }\n}",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "java_3": {
+        "input": "public class VulnerableClass {\\n    public void vulnerableMethod(String input) {\\n        byte[] buffer = new byte[10];\\n        System.arraycopy(input.getBytes(), 0, buffer, 0, input.length());\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "java_4": {
+        "input": "public class AuthManager {\n    private String username;\n    private String password;\n\n    public AuthManager(String username, String password) {\n        this.username = username;\n        this.password = password;\n    }\n\n    public boolean login(String user, String pass) {\n        return user.equals(username) && pass.equals(password);\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "java_5": {
+        "input": "import javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\n\npublic class TransferServlet extends HttpServlet {\n    protected void doPost(HttpServletRequest request, HttpServletResponse response) {\n        String amount = request.getParameter(\"amount\");\n        String destinationAccount = request.getParameter(\"destinationAccount\");\n        // Simulate transferring money without CSRF protection\n        transferMoney(amount, destinationAccount);\n    }\n\n    private void transferMoney(String amount, String destinationAccount) {\n        // Transfer logic here\n    }\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "java_6": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nclass VulnerableApp {\n    public static void main(String[] args) throws Exception {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        System.out.println(\"Enter command to execute:\");\n        String command = reader.readLine();\n        Process process = Runtime.getRuntime().exec(command);\n        BufferedReader output = new BufferedReader(new InputStreamReader(process.getInputStream()));\n        String line;\n        while ((line = output.readLine()) != null) {\n            System.out.println(line);\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Privilege Escalation"
+        }
+    },
+    "java_7": {
+        "input": "import java.util.Scanner;\npublic class VulnerableApp {\n    public static void main(String[] args) throws Exception {\n        Scanner scanner = new Scanner(System.in);\n        System.out.println(\"Enter command to execute:\");\n        String command = scanner.nextLine();\n        Runtime.getRuntime().exec(command);\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "java_8": {
+        "input": "public void bufferOverflowVulnerable(byte[] input) {\n    byte[] buffer = new byte[16];\n    System.arraycopy(input, 0, buffer, 0, input.length);\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "java_9": {
+        "input": "public class AuthChecker {\n    public boolean authenticate(String username, String password) {\n        if (username.equals(\"admin\") && password.equals(\"password123\")) {\n            return true;\n        }\n        return false;\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "java_10": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\npublic class VulnerableApp {\n    public static void main(String[] args) {\n        try {\n            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n            System.out.println(\"Enter command to execute:\");\n            String command = reader.readLine();\n            Process process = Runtime.getRuntime().exec(command);\n            BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));\n            String line;\n            while ((line = outputReader.readLine()) != null) {\n                System.out.println(line);\n            }\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "java_11": {
+        "input": "import java.sql.Connection;\nimport java.sql.DriverManager;\nimport java.sql.PreparedStatement;\nimport java.sql.SQLException;\nimport java.util.Scanner;\n\npublic class VulnerableApp {\n    private Connection connect() {\n        String url = \"jdbc:mysql://localhost:3306/mydatabase\";\n        String user = \"user\";\n        String password = \"password\";\n        try {\n            return DriverManager.getConnection(url, user, password);\n        } catch (SQLException e) {\n            System.out.println(e.getMessage());\n            return null;\n        }\n    }\n\n    public void queryDatabase(String userInput) {\n        String sql = \"SELECT * FROM users WHERE username = '\" + userInput + \"'\";\n        try (\n                Connection conn = connect();\n                java.sql.Statement stmt = conn.createStatement()) {\n            java.sql.ResultSet rs = stmt.executeQuery(sql);\n\n            while (rs.next()) {\n                System.out.println(rs.getString(\"username\") + \"\\t\" + rs.getString(\"password\"));\n            }\n        } catch (SQLException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n\n    public static void main(String[] args) {\n        VulnerableApp app = new VulnerableApp();\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter username: \");\n        String userInput = scanner.nextLine();\n        app.queryDatabase(userInput);\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "SQL Injection"
+        }
+    },
+    "java_12": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\n\nclass VulnerableApp {\n    public static void main(String[] args) {\n        try (BufferedReader reader = new BufferedReader(new InputStreamReader(System.in))) {\n            System.out.println(\"Enter command: \");\n            String command = reader.readLine();\n            Process process = Runtime.getRuntime().exec(command);\n            BufferedReader outputReader = new BufferedReader(new InputStreamReader(process.getInputStream()));\n            String line;\n            while ((line = outputReader.readLine()) != null) {\n                System.out.println(line);\n            }\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "java_13": {
+        "input": "public void vulnerableFunction(String input) {\n    byte[] buffer = new byte[10];\n    System.arraycopy(input.getBytes(), 0, buffer, 0, input.length());\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "java_14": {
+        "input": "public String getUserData(String userId) {\n    String query = \"SELECT * FROM users WHERE id = '\" + userId + \"'\";\n    return executeQuery(query);\n}",
+        "output": {
+            "score": 8.2,
+            "type": "SQL Injection"
+        }
+    },
+    "java_15": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\n\npublic class VulnerableApp {\n    public static void main(String[] args) throws Exception {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        System.out.println(\"Enter command to execute:\");\n        String command = reader.readLine();\n        Runtime.getRuntime().exec(command);\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "java_16": {
+        "input": "import java.nio.ByteBuffer;\\npublic class VulnerableApp {\\n    public static void main(String[] args) {\\n        byte[] data = new byte[10];\\n        ByteBuffer buffer = ByteBuffer.wrap(data);\\n        for (int i = 0; i < 20; i++) {\\n            buffer.put((byte) i);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Buffer Overflow"
+        }
+    },
+    "java_17": {
+        "input": "public class BufferOverflowExample {\n    public static void main(String[] args) {\n        byte[] buffer = new byte[10];\n        String input = \"A very long string that will cause an overflow when copied to the small buffer\";\n        System.arraycopy(input.getBytes(), 0, buffer, 0, input.length());\n    }\n}",
+        "output": {
+            "score": 7.8,
+            "type": "Buffer Overflow"
+        }
+    },
+    "java_18": {
+        "input": "import javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\n\npublic class TransferServlet extends HttpServlet {\n    protected void doPost(HttpServletRequest request, HttpServletResponse response) {\n        String account = request.getParameter(\"account\");\n        String amount = request.getParameter(\"amount\");\n        \n        // Simulate a bank transfer operation\n        if (account != null && amount != null) {\n            // Transfer logic here...\n            response.getWriter().println(\"Transfer of \" + amount + \" to account \" + account + \" completed successfully.\");\n        }\n    }\n}",
+        "output": {
+            "score": 8.6,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "java_19": {
+        "input": "import javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\nimport java.io.IOException;\n\npublic class XSSExampleServlet extends HttpServlet {\n    @Override\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String userInput = request.getParameter(\"input\");\n        response.getWriter().println(\"<html><body><h1>\" + userInput + \"</h1></body></html>\");\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "java_20": {
+        "input": "public class VulnerableClass {\\n    public void executeCommand(String command) throws Exception {\\n        ProcessBuilder pb = new ProcessBuilder();\\n        String os = System.getProperty(\"os.name\").toLowerCase();\\n        if (os.contains(\"win\")) {\\n            pb.command(\"cmd.exe\", \"/c\", command);\\n        } else {\\n            pb.command(\"sh\", \"-c\", command);\\n        }\\n        Process process = pb.start();\\n        process.waitFor();\\n    }\\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Privilege Escalation"
+        }
+    },
+    "java_21": {
+        "input": "import java.io.File;\nimport java.io.FileReader;\npublic class FileReadExample {\n    public void readFile(String fileName) {\n        try {\n            File file = new File(fileName);\n            FileReader fr = new FileReader(file);\n            int i;\n            while ((i=fr.read()) != -1)\n                System.out.print((char) i);\n            fr.close();\n        } catch (Exception e) {\n            e.printStackTrace();\n        }\n    }\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Path Traversal"
+        }
+    },
+    "java_22": {
+        "input": "import java.io.BufferedReader;\nimport java.io.InputStreamReader;\nclass UnsafeClass {\n    public static void main(String[] args) throws Exception {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        String command = reader.readLine();\n        Runtime.getRuntime().exec(command);\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "java_23": {
+        "input": "public void printMessage(String userInput) {\n    System.out.println(\"User Input: \" + userInput);\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "java_24": {
+        "input": "import java.sql.Connection;\nimport java.sql.DriverManager;\nimport java.sql.ResultSet;\nimport java.sql.SQLException;\nimport java.sql.Statement;\n\npublic class VulnerableDB {\n    private Connection connect() {\n        String url = \"jdbc:sqlite:sample.db\";\n        Connection conn = null;\n        try {\n            conn = DriverManager.getConnection(url);\n        } catch (SQLException e) {\n            System.out.println(e.getMessage());\n        }\n        return conn;\n    }\n\n    public void query(String username) {\n        String sql = \"SELECT * FROM users WHERE name = '\" + username + \"'\";\n        try (Connection conn = this.connect();\n             Statement stmt = conn.createStatement();\n             ResultSet rs = stmt.executeQuery(sql)) {\n            while (rs.next()) {\n                System.out.println(rs.getInt(\"id\") +  \"\\t\" + \n                                   rs.getString(\"name\") + \"\\t\" +\n                                   rs.getString(\"email\"));\n            }\n        } catch (SQLException e) {\n            System.out.println(e.getMessage());\n        }\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "SQL Injection"
+        }
+    },
+    "java_25": {
+        "input": "public class RaceCondition {\n    private static int counter = 0;\n\n    public static void increment() {\n        for (int i = 0; i < 1000; i++) {\n            counter++;\n        }\n    }\n\n    public static void main(String[] args) throws InterruptedException {\n        Thread t1 = new Thread(() -> increment());\n        Thread t2 = new Thread(() -> increment());\n\n        t1.start();\n        t2.start();\n\n        t1.join();\n        t2.join();\n\n        System.out.println(\"Counter: \" + counter);\n    }\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "java_26": {
+        "input": "import javax.servlet.http.HttpServletResponse;\\npublic class VulnerableServlet {\\n    public void setHeaders(HttpServletResponse response) {\\n        // No security headers are being set\\n    }\\n}",
+        "output": {
+            "score": 6.1,
+            "type": "Missing Security Headers"
+        }
+    },
+    "java_27": {
+        "input": "public void setSessionId(String sessionId) {\n    if (sessionId != null && !sessionId.isEmpty()) {\n        this.sessionId = sessionId;\n    }\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "java_28": {
+        "input": "public class InfiniteLoop {\n    public static void main(String[] args) {\n        while (true) {\n            // This loop will run indefinitely\n        }\n    }\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "java_29": {
+        "input": "import java.io.BufferedReader;\\nimport java.io.InputStreamReader;\\nimport java.net.HttpURLConnection;\\nimport java.net.URL;\\npublic class NetworkFetcher {\\n    public String fetchData(String urlString) throws Exception {\\n        URL url = new URL(urlString);\\n        HttpURLConnection connection = (HttpURLConnection) url.openConnection();\\n        connection.setRequestMethod(\"GET\");\\n        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));\\n        StringBuilder content = new StringBuilder();\\n        String line;\\n        while ((line = in.readLine()) != null) {\\n            content.append(line);\\n        }\\n        in.close();\\n        return content.toString();\\n    }\\n}",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "java_30": {
+        "input": "public class BankAccount {\n    private int balance = 100;\n\n    public void deposit(int amount) {\n        balance += amount;\n    }\n\n    public void withdraw(int amount) {\n        if (balance >= amount) {\n            balance -= amount;\n        }\n    }\n\n    public int getBalance() {\n        return balance;\n    }\n}",
+        "output": {
+            "score": 5.0,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "java_31": {
+        "input": "public class RaceCondition {\n    private static int count = 0;\n\n    public static void main(String[] args) {\n        Thread t1 = new Thread(() -> {\n            for (int i = 0; i < 1000; i++) {\n                count++;\n            }\n        });\n        Thread t2 = new Thread(() -> {\n            for (int i = 0; i < 1000; i++) {\n                count--;\n            }\n        });\n        t1.start();\n        t2.start();\n        try {\n            t1.join();\n            t2.join();\n        } catch (InterruptedException e) {\n            e.printStackTrace();\n        }\n        System.out.println(\"Final count: \" + count);\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "java_32": {
+        "input": "import java.net.URL;\\nimport java.io.IOException;\\nimport javax.servlet.http.HttpServlet;\\nimport javax.servlet.http.HttpServletRequest;\\nimport javax.servlet.http.HttpServletResponse;\\n\\npublic class RedirectServlet extends HttpServlet {\\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\\n        String redirectUrl = request.getParameter(\\\"url\\\");\\n        if (redirectUrl != null && isValidRedirectUrl(redirectUrl)) {\\n            response.sendRedirect(redirectUrl);\\n        } else {\\n            response.sendError(HttpServletResponse.SC_BAD_REQUEST, \\\\\"Invalid URL\\\");\\n        }\\n    }\\n\\n    private boolean isValidRedirectUrl(String url) {\\n        try {\\n            new URL(url);\\n            return true;\\n        } catch (Exception e) {\\n            return false;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "java_33": {
+        "input": "import java.io.IOException;\nimport javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\n\npublic class RedirectServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {\n        String url = request.getParameter(\"url\");\n        response.sendRedirect(url);\n    }\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "java_34": {
+        "input": "public class DoSVulnerableServer {\n    public static void main(String[] args) throws Exception {\n        ServerSocket server = new ServerSocket(8080);\n        System.out.println(\"Server is running on port 8080\");\n        while (true) {\n            Socket client = server.accept();\n            Thread handler = new Thread(() -> {\n                try {\n                    BufferedReader reader = new BufferedReader(new InputStreamReader(client.getInputStream()));\n                    String line;\n                    while ((line = reader.readLine()) != null) {}\n                } catch (Exception e) {}\n            });\n            handler.start();\n        }\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "java_35": {
+        "input": "public class SlowServer {\n    public static void main(String[] args) throws InterruptedException {\n        while (true) {\n            Thread.sleep(10);\n            if (Math.random() < 0.01) {\n                heavyComputation();\n            }\n        }\n    }\n\n    private static void heavyComputation() {\n        double result = 0;\n        for (int i = 0; i < 10000000; i++) {\n            result += Math.sqrt(i);\n        }\n    }\n}",
+        "output": {
+            "score": 4.3,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "java_36": {
+        "input": "import java.awt.*;\nimport java.awt.event.*;\nimport javax.swing.*;\n\nclass ClickJackingDemo {\n    public static void main(String[] args) {\n        JFrame frame = new JFrame(\"ClickJacking Example\");\n        frame.setSize(300, 200);\n        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);\n        JPanel panel = new JPanel() {\n            @Override\n            protected void paintComponent(Graphics g) {\n                super.paintComponent(g);\n                try {\n                    ImageIcon icon = new ImageIcon(\"https://example.com/image.png\");\n                    g.drawImage(icon.getImage(), 0, 0, null);\n                } catch (Exception e) {\n                    e.printStackTrace();\n                }\n            }\n        };\n        panel.addMouseListener(new MouseAdapter() {\n            @Override\n            public void mouseClicked(MouseEvent e) {\n                JOptionPane.showMessageDialog(null, \"Clicked on transparent area!\");\n            }\n        });\n        frame.add(panel);\n        frame.setVisible(true);\n    }\n}",
+        "output": {
+            "score": 3.0,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "java_37": {
+        "input": "public class SlowLoop {\n    public static void main(String[] args) {\n        while (true) {\n            try {\n                Thread.sleep(10);\n            } catch (InterruptedException e) {}\n        }\n    }\n}",
+        "output": {
+            "score": 3.7,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "java_38": {
+        "input": "import javax.servlet.http.HttpSession;\npublic class LoginServlet {\n    public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n        HttpSession session = request.getSession(true);\n        String sessionId = request.getParameter(\"sessionId\");\n        if (sessionId != null) {\n            session.changeSessionId(sessionId);\n        }\n        // other code\n    }\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "java_39": {
+        "input": "public class UserInfo {\n    private String sensitiveData;\n\n    public UserInfo(String data) {\n        this.sensitiveData = data;\n    }\n\n    public void displayInfo() {\n        System.out.println(\"Sensitive Data: \" + this.sensitiveData);\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "java_40": {
+        "input": "import java.io.IOException;\nimport javax.servlet.ServletException;\nimport javax.servlet.annotation.WebServlet;\nimport javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\n\n@WebServlet(\"/example\")\npublic class ExampleServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n        response.getWriter().println(\"<html><body>\");\n        response.getWriter().println(\"<h1>Welcome to our website</h1>\");\n        response.getWriter().println(\"</body></html>\");\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Missing Security Headers"
+        }
+    },
+    "java_41": {
+        "input": "import java.io.BufferedReader;\nimport java.io.FileReader;\nimport java.io.IOException;\n\npublic class FileManager {\n    public static void main(String[] args) {\n        if (args.length > 0) {\n            String filePath = \"/safe/path/\" + args[0].replaceAll(\"\\./\", \"\").replaceAll(\"\\.\\.\", \"\");\n            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {\n                String line;\n                while ((line = br.readLine()) != null) {\n                    System.out.println(line);\n                }\n            } catch (IOException e) {\n                System.err.println(\"Error reading file: \" + e.getMessage());\n            }\n        }\n    }\n}",
+        "output": {
+            "score": 4.0,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "java_42": {
+        "input": "import java.io.BufferedReader;\nimport java.io.FileReader;\nimport java.io.IOException;\nimport javax.servlet.ServletException;\nimport javax.servlet.http.HttpServlet;\nimport javax.servlet.http.HttpServletRequest;\nimport javax.servlet.http.HttpServletResponse;\n\npublic class FileReadServlet extends HttpServlet {\n    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {\n        String filePath = \"/var/log/\" + request.getParameter(\"log\");\n        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {\n            String line;\n            while ((line = reader.readLine()) != null) {\n                response.getWriter().println(line);\n            }\n        } catch (IOException e) {\n            response.sendError(HttpServletResponse.SC_NOT_FOUND, \"File not found.\");\n        }\n    }\n}",
+        "output": {
+            "score": 5.3,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "java_43": {
+        "input": "public class VulnerableApp {\\n    public void redirect(String url) {\\n        try {\\n            java.net.URI uri = new java.net.URI(url);\\n            if (uri.getHost().equals(\"trusted.com\")) {\\n                javax.swing.JOptionPane.showMessageDialog(null, \"Redirecting to trusted site: \" + url);\\n            } else {\\n                throw new Exception(\\\"Unauthorized redirect attempt\\\");\\n            }\\n        } catch (Exception e) {\\n            System.out.println(e.getMessage());\\n        }\\n    }\\n}",
+        "output": {
+            "score": 6.8,
+            "type": "Open Redirect"
+        }
+    },
+    "java_44": {
+        "input": "public class VulnerableRaceCondition {\n    private int counter = 0;\n\n    public void increment() {\n        try {\n            Thread.sleep(1);\n        } catch (InterruptedException e) {}\n        counter++;\n    }\n\n    public int getCounter() {\n        return counter;\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "java_45": {
+        "input": "public String fixateSession(HttpServletRequest request, HttpServletResponse response) {\n    HttpSession session = request.getSession(true);\n    Cookie sessionCookie = new Cookie(\"JSESSIONID\", session.getId());\n    sessionCookie.setPath(\"\");\n    response.addCookie(sessionCookie);\n    return \"Session fixed\";\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "java_46": {
+        "input": "public class Example {\n    private static int counter = 0;\n\n    public void increment() {\n        int temp = counter;\n        temp++;\n        counter = temp;\n    }\n}",
+        "output": {
+            "score": 3.5,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "java_47": {
+        "input": "public class UserInfo {\n    private String sensitiveData = \"Confidential Info\";\n\n    public void displayInfo(String role) {\n        if (role.equals(\"admin\")) {\n            System.out.println(sensitiveData);\n        } else {\n            System.out.println(\"Access Denied\");\n        }\n    }\n}",
+        "output": {
+            "score": 4.2,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "java_48": {
+        "input": "public class UserInfo {\n    private String username;\n    private String password;\n\n    public UserInfo(String username, String password) {\n        this.username = username;\n        this.password = password;\n    }\n\n    public void displayInfo() {\n        System.out.println(\"Username: \" + username);\n        System.out.println(\"Password: \" + password);\n    }\n}",
+        "output": {
+            "score": 2.1,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "java_49": {
+        "input": "public String fetchUrl(String url) throws IOException {\n    URL obj = new URL(url);\n    HttpURLConnection con = (HttpURLConnection) obj.openConnection();\n    BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));\n    String inputLine;\n    StringBuffer response = new StringBuffer();\n\n    while ((inputLine = in.readLine()) != null) {\n        response.append(inputLine);\n    }\n    in.close();\n    return response.toString();\n}",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "java_50": {
+        "input": "import java.util.Scanner;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_51": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInputHandling {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(userInput.trim());\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_52": {
+        "input": "public class SecureUserProcessor {\\n    private String username;\\n    \\n    public void setUsername(String username) throws IllegalArgumentException {\\n        if (username == null || !username.matches(\"^[a-zA-Z0-9_]{1,20}$\")) {\\n            throw new IllegalArgumentException(\\\"Invalid username. It must be alphanumeric and 1-20 characters long.\\\");\\n        }\\n        this.username = username;\\n    }\\n    \\n    public String getUsername() {\\n        return username;\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_53": {
+        "input": "import java.util.Scanner;\nimport java.security.MessageDigest;\nimport java.security.NoSuchAlgorithmException;\nclass SecureLogin {\n    private String hashPassword(String password) throws NoSuchAlgorithmException {\n        MessageDigest md = MessageDigest.getInstance(\"SHA-256\");\n        byte[] hashedBytes = md.digest(password.getBytes());\n        StringBuilder sb = new StringBuilder();\n        for (byte b : hashedBytes) {\n            sb.append(String.format(\\\"%02x\\\", b));\n        }\n        return sb.toString();\n    }\n\n    public void authenticate() {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter username: \");\n        String username = scanner.nextLine().trim();\n        if (username.isEmpty()) {\n            System.out.println(\"Username cannot be empty.\");\n            return;\n        }\n        System.out.print(\"Enter password: \");\n        String password = scanner.nextLine();\n        try {\n            String hashedPassword = hashPassword(password);\n            // Here you would compare hashedPassword with the stored hash for the user\n            System.out.println(\"Authentication successful for user \" + username);\n        } catch (NoSuchAlgorithmException e) {\n            System.err.println(\"Error hashing password.\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_54": {
+        "input": "public class SecureExample {\n    public static void safeProcess(String userInput) {\n        if (userInput == null || !userInput.matches(\"\\\\d+\")) {\n            throw new IllegalArgumentException(\"Invalid input: Input must be a non-negative integer.\");\n        }\n        int number = Integer.parseInt(userInput);\n        System.out.println(\"Processed number: \" + number);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_55": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInputExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        if (userInput.matches(\"\\\\d+\")) {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } else {\n            System.out.println(\"Invalid input. Please enter a valid integer.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_56": {
+        "input": "import java.util.Scanner;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_57": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInput {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_58": {
+        "input": "public class SecureCodeExample {\n    public void safeFunction(String userInput) {\n        if (userInput == null || !userInput.matches(\"\\\\d+\")) {\n            throw new IllegalArgumentException(\"Invalid input. Please enter a valid number.\");\n        }\n        try {\n            int number = Integer.parseInt(userInput);\n            System.out.println(number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Error parsing the number: \" + e.getMessage());\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_59": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInputHandler {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        if (isNumeric(userInput)) {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } else {\n            System.out.println(\"Invalid input. Please enter a numeric value.\");\n        }\n    }\n\n    private static boolean isNumeric(String str) {\n        if (str == null || str.isEmpty()) {\n            return false;\n        }\n        for (char c : str.toCharArray()) {\n            if (!Character.isDigit(c)) {\n                return false;\n            }\n        }\n        return true;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_60": {
+        "input": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\nimport java.util.regex.Pattern;\n\npublic class SecureInputExample {\n    private static final Pattern INTEGER_PATTERN = Pattern.compile(\"^-?\\\\d+$\");\n\n    public static void main(String[] args) {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        System.out.print(\"Enter a number: \");\n        try {\n            String userInput = reader.readLine();\n            if (isValidInteger(userInput)) {\n                int number = Integer.parseInt(userInput);\n                System.out.println(\"You entered the number: \" + number);\n            } else {\n                System.out.println(\"Invalid input. Please enter a valid integer.\");\n            }\n        } catch (IOException e) {\n            System.err.println(\"An error occurred while reading input: \" + e.getMessage());\n        }\n    }\n\n    private static boolean isValidInteger(String input) {\n        return input != null && INTEGER_PATTERN.matcher(input).matches();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_61": {
+        "input": "import java.util.Scanner;\\npublic class SecureUserInput {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String userInput = scanner.nextLine();\\n        if (isValidNumber(userInput)) {\\n            int number = Integer.parseInt(userInput);\\n            System.out.println(\\\"You entered the number: \\\" + number);\\n        } else {\\n            System.out.println(\\\"Invalid input. Please enter a valid integer.\");\\n        }\\n        scanner.close();\\n    }\\n\\n    private static boolean isValidNumber(String str) {\\n        if (str == null || str.isEmpty()) {\\n            return false;\\n        }\\n        try {\\n            Integer.parseInt(str);\\n            return true;\\n        } catch (NumberFormatException e) {\\n            return false;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_62": {
+        "input": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\nimport java.security.SecureRandom;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        String userInput = \"\";\n        try {\n            System.out.print(\"Enter a number: \");\n            userInput = reader.readLine();\n        } catch (IOException e) {\n            System.err.println(\"Error reading input.\");\n            return;\n        }\n\n        if (!userInput.matches(\"\\d+\")) {\n            System.err.println(\"Invalid input. Please enter a valid number.\");\n            return;\n        }\n\n        int number = Integer.parseInt(userInput);\n        System.out.println(\"You entered: \" + number);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_63": {
+        "input": "import java.security.SecureRandom;\n\npublic class SecureCodeExample {\n    public static String generateSecureToken(int length) {\n        if (length < 1) {\n            throw new IllegalArgumentException(\"Length must be a positive integer\");\n        }\n        SecureRandom secureRandom = new SecureRandom();\n        StringBuilder token = new StringBuilder(length);\n        for (int i = 0; i < length; i++) {\n            int randomIndex = secureRandom.nextInt(36);\n            char randomChar = (char) (randomIndex < 10 ? '0' + randomIndex : 'a' + (randomIndex - 10));\n            token.append(randomChar);\n        }\n        return token.toString();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_64": {
+        "input": "import java.util.Scanner;\\npublic class SecureExample {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String userInput = scanner.nextLine();\\n        if (userInput.matches(\"\\\\d+\")) {\\n            int number = Integer.parseInt(userInput);\\n            System.out.println(\\\"You entered the number: \\\" + number);\\n        } else {\\n            System.out.println(\\\"Invalid input. Please enter a valid integer.\");\\n        }\\n        scanner.close();\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_65": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInput {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a positive integer: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            if (number > 0) {\n                System.out.println(\"You entered: \" + number);\n            } else {\n                System.out.println(\"Please enter a positive integer.\");\n            }\n        } catch (NumberFormatException e) {\n            System.out.println(\"Invalid input. Please enter a valid positive integer.\");\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_66": {
+        "input": "public class SecureLogin {\\n    private String username;\\n    private String password;\\n\\n    public SecureLogin(String username, String password) throws IllegalArgumentException {\\n        if (username == null || password == null) {\\n            throw new IllegalArgumentException(\"Username and password cannot be null\");\\n        }\\n        this.username = validateInput(username);\\n        this.password = hashPassword(password);\\n    }\\n\\n    private String validateInput(String input) throws IllegalArgumentException {\\n        if (!input.matches(\"^[a-zA-Z0-9_]{1,20}$\")) {\\n            throw new IllegalArgumentException(\"Invalid characters in input\");\\n        }\\n        return input;\\n    }\\n\\n    private String hashPassword(String password) {\\n        try {\\n            java.security.MessageDigest md = java.security.MessageDigest.getInstance(\"SHA-256\");\\n            byte[] hashedBytes = md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8));\\n            StringBuilder sb = new StringBuilder();\\n            for (byte b : hashedBytes) {\\n                sb.append(String.format(\"%02x\", b));\\n            }\\n            return sb.toString();\\n        } catch (Exception e) {\\n            throw new RuntimeException(\"Error hashing password\", e);\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_67": {
+        "input": "import java.util.Scanner;\\npublic class SecureLogin {\\n    private String username;\\n    private String password;\\n\\n    public SecureLogin(String username, String password) {\\n        this.username = validateInput(username);\\n        this.password = validatePassword(password);\\n    }\\n\\n    private String validateInput(String input) {\\n        if (input == null || input.isEmpty()) {\\n            throw new IllegalArgumentException(\\\"Invalid input provided\\\");\\n        }\\n        return input;\\n    }\\n\\n    private String validatePassword(String password) {\\n        if (password == null || password.length() < 8) {\\n            throw new IllegalArgumentException(\\\"Password must be at least 8 characters long\\\");\\n        }\\n        return password;\\n    }\\n\\n    public boolean authenticate(String inputUsername, String inputPassword) {\\n        return username.equals(inputUsername) && password.equals(inputPassword);\\n    }\\n\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\\\"Enter Username: \\\\n\\\");\\n        String username = scanner.nextLine();\\n        System.out.print(\\\"Enter Password: \\\\n\\\");\\n        String password = scanner.nextLine();\\n\\n        SecureLogin login = new SecureLogin(username, password);\\n        System.out.println(\\\"Authentication result: \\\" + login.authenticate(username, password));\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_68": {
+        "input": "import java.util.Scanner;\\n\\nclass SecureExample {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String userInput = scanner.nextLine();\\n        if (userInput.matches(\"\\\\d+\")) {\\n            int number = Integer.parseInt(userInput);\\n            System.out.println(\\\"You entered the number: \\\" + number);\\n        } else {\\n            System.out.println(\\\"Invalid input. Please enter a valid integer.\\\");\\n        }\\n        scanner.close();\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_69": {
+        "input": "import java.util.Scanner;\\npublic class SecureInputExample {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String userInput = scanner.nextLine();\\n        if (userInput.matches(\"\\\\d+\")) {\\n            int number = Integer.parseInt(userInput);\\n            System.out.println(\"You entered the number: \" + number);\\n        } else {\\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\\n        }\\n        scanner.close();\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_70": {
+        "input": "public class SecureExample {\n    public static void safeFunction(String userInput) {\n        if (userInput == null || !userInput.matches(\"\\\\d+\")) {\n            throw new IllegalArgumentException(\"Invalid input\");\n        }\n        try {\n            int number = Integer.parseInt(userInput);\n            System.out.println(number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Number format exception: \" + e.getMessage());\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_71": {
+        "input": "import java.util.Scanner;\\npublic class SecureInputHandler {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String userInput = scanner.nextLine();\\n        if (isValidNumber(userInput)) {\\n            int number = Integer.parseInt(userInput);\\n            System.out.println(\\\"You entered the number: \\\" + number);\\n        } else {\\n            System.out.println(\\\"Invalid input. Please enter a valid integer.\");\\n        }\\n        scanner.close();\\n    }\\n\\n    private static boolean isValidNumber(String input) {\\n        try {\\n            Integer.parseInt(input);\\n            return true;\\n        } catch (NumberFormatException e) {\\n            return false;\\n        }\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_72": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInput {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        if (userInput.matches(\"\\\\d+\")) {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } else {\n            System.out.println(\"Invalid input. Please enter a valid number.\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_73": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInput {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String input = scanner.nextLine();\n        if (isNumeric(input)) {\n            int number = Integer.parseInt(input);\n            System.out.println(\"You entered the number: \" + number);\n        } else {\n            System.out.println(\"Invalid input. Please enter a numeric value.\");\n        }\n        scanner.close();\n    }\n\n    private static boolean isNumeric(String str) {\n        if (str == null || str.isEmpty()) return false;\n        for (char c : str.toCharArray()) {\n            if (!Character.isDigit(c)) return false;\n        }\n        return true;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_74": {
+        "input": "import java.util.Scanner;\npublic class SecureApp {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a positive integer: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            if (number <= 0) {\n                throw new IllegalArgumentException(\"The number must be positive.\");\n            }\n            System.out.println(\"You entered: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } catch (IllegalArgumentException e) {\n            System.err.println(e.getMessage());\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_75": {
+        "input": "import java.util.Scanner;\nimport java.security.SecureRandom;\nclass SecureApp {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        if (scanner.hasNextInt()) {\n            int userInput = scanner.nextInt();\n            System.out.println(\"You entered the number: \" + userInput);\n        } else {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_76": {
+        "input": "import java.util.Scanner;\n\npublic class SecureApp {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        if (scanner.hasNextInt()) {\n            int userInput = scanner.nextInt();\n            System.out.println(\"You entered the number: \" + userInput);\n        } else {\n            System.out.println(\"Invalid input. Please enter a valid integer.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_77": {
+        "input": "public class SecureExample {\n    public void safeFunction(String userInput) throws IllegalArgumentException {\n        if (userInput == null || !userInput.matches(\"\\\\d+\")) {\n            throw new IllegalArgumentException(\"Invalid input. Only digits are allowed.\");\n        }\n        int number = Integer.parseInt(userInput);\n        System.out.println(number);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_78": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInputHandler {\n    private Scanner scanner;\n\n    public SecureInputHandler() {\n        this.scanner = new Scanner(System.in);\n    }\n\n    public int getValidInteger(String prompt) {\n        while (true) {\n            System.out.print(prompt);\n            String input = scanner.nextLine().trim();\n            if (input.matches(\"\\\\d+\")) {\n                return Integer.parseInt(input);\n            } else {\n                System.out.println(\"Invalid input. Please enter a valid integer.\");\n            }\n        }\n    }\n\n    public static void main(String[] args) {\n        SecureInputHandler handler = new SecureInputHandler();\n        int number = handler.getValidInteger(\"Enter a number: \");\n        System.out.println(\"You entered: \" + number);\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_79": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInputHandler {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a positive integer: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            if (number <= 0) {\n                throw new IllegalArgumentException(\"Number must be positive.\");\n            }\n            System.out.println(\"You entered: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } catch (IllegalArgumentException e) {\n            System.err.println(e.getMessage());\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_80": {
+        "input": "public class SecureUserInputHandler {\\n    public void processInput(String userInput) throws IllegalArgumentException {\\n        if (userInput == null || userInput.isEmpty()) {\\n            throw new IllegalArgumentException(\\\"Input cannot be null or empty\\\");\\n        }\\n        String sanitizedInput = userInput.trim().replaceAll(\\\"[^a-zA-Z0-9 ]+\\\", \\\\\"\\\\\");\\n        System.out.println(\\\"Processed Input: \\\" + sanitizedInput);\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_81": {
+        "input": "import java.util.Scanner;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String userInput = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_82": {
+        "input": "import java.util.Scanner;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a positive integer: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            if (number <= 0) {\n                throw new IllegalArgumentException(\"Number must be positive.\");\n            }\n            System.out.println(\"You entered: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        } catch (IllegalArgumentException e) {\n            System.err.println(e.getMessage());\n        } finally {\n            scanner.close();\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_83": {
+        "input": "import java.util.Scanner;\npublic class SecureApp {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a positive integer: \");\n        String userInput = scanner.nextLine();\n        if (userInput.matches(\"\\\\d+\")) {\n            int number = Integer.parseInt(userInput);\n            System.out.println(\"You entered the number: \" + number);\n        } else {\n            System.out.println(\"Invalid input. Please enter a valid positive integer.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_84": {
+        "input": "import java.util.Scanner;\n\npublic class SecureInput {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a number: \");\n        String input = scanner.nextLine();\n        try {\n            int number = Integer.parseInt(input);\n            System.out.println(\"You entered the number: \" + number);\n        } catch (NumberFormatException e) {\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\n        }\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_85": {
+        "input": "import java.util.Scanner;\\n\\npublic class SecureInputExample {\\n    public static void main(String[] args) {\\n        Scanner scanner = new Scanner(System.in);\\n        System.out.print(\"Enter a number: \");\\n        String input = scanner.nextLine();\\n        if (input.matches(\\\\\"\\\\d+\\\\\")) {\\n            int number = Integer.parseInt(input);\\n            System.out.println(\"You entered the number: \" + number);\\n        } else {\\n            System.err.println(\"Invalid input. Please enter a valid integer.\");\\n        }\\n        scanner.close();\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_86": {
+        "input": "import java.util.Scanner;\nimport java.security.MessageDigest;\nimport java.security.NoSuchAlgorithmException;\n\npublic class SecureExample {\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter a password to hash: \");\n        String password = scanner.nextLine();\n        try {\n            MessageDigest md = MessageDigest.getInstance(\"SHA-256\");\n            byte[] hashedBytes = md.digest(password.getBytes());\n            StringBuilder sb = new StringBuilder();\n            for (byte b : hashedBytes) {\n                sb.append(String.format(\"%02x\", b));\n            }\n            System.out.println(\"Hashed Password: \" + sb.toString());\n        } catch (NoSuchAlgorithmException e) {\n            System.err.println(\"Error: SHA-256 algorithm not found.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_87": {
+        "input": "public class SecureExample {\\n    private final String validInputPattern = \"\\\\d+\";\\n\\n    public void processUserInput(String userInput) throws IllegalArgumentException {\\n        if (!userInput.matches(validInputPattern)) {\\n            throw new IllegalArgumentException(\\\"Invalid input: Input must be a number\\\");\\n        }\\n        int number = Integer.parseInt(userInput);\\n        System.out.println(\\\"Processed Number: \\\" + number);\\n    }\\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_88": {
+        "input": "import java.util.Scanner;\nimport java.security.SecureRandom;\nclass SecureLogin {\n    private String username;\n    private String passwordHash;\n\n    public SecureLogin(String username, String password) {\n        this.username = username;\n        this.passwordHash = hashPassword(password);\n    }\n\n    private String hashPassword(String password) {\n        try {\n            java.security.MessageDigest md = java.security.MessageDigest.getInstance(\"SHA-256\");\n            byte[] hashBytes = md.digest(password.getBytes());\n            StringBuilder sb = new StringBuilder();\n            for (byte b : hashBytes) {\n                sb.append(String.format(\"%02x\", b));\n            }\n            return sb.toString();\n        } catch (Exception e) {\n            throw new RuntimeException(e);\n        }\n    }\n\n    public boolean authenticate(String password) {\n        return this.passwordHash.equals(hashPassword(password));\n    }\n\n    public static void main(String[] args) {\n        Scanner scanner = new Scanner(System.in);\n        System.out.print(\"Enter username: \");\n        String username = scanner.nextLine();\n        System.out.print(\"Enter password: \");\n        String password = scanner.nextLine();\n        SecureLogin user = new SecureLogin(username, password);\n\n        System.out.print(\"Re-enter password for authentication: \");\n        String authPassword = scanner.nextLine();\n        if (user.authenticate(authPassword)) {\n            System.out.println(\"Authentication successful.\");\n        } else {\n            System.out.println(\"Authentication failed.\");\n        }\n        scanner.close();\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "java_89": {
+        "input": "import java.io.BufferedReader;\nimport java.io.IOException;\nimport java.io.InputStreamReader;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\n\npublic class SecureInputExample {\n    private static final Logger LOGGER = Logger.getLogger(SecureInputExample.class.getName());\n\n    public static void main(String[] args) {\n        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));\n        try {\n            System.out.print(\"Enter a number: \");\n            String userInput = reader.readLine();\n            if (isValidNumber(userInput)) {\n                int number = Integer.parseInt(userInput);\n                System.out.println(\"You entered the number: \" + number);\n            } else {\n                System.out.println(\"Invalid input. Please enter a valid integer.\");\n            }\n        } catch (IOException e) {\n            LOGGER.log(Level.SEVERE, \"Error reading input\", e);\n        }\n    }\n\n    private static boolean isValidNumber(String input) {\n        if (input == null || input.isEmpty()) {\n            return false;\n        }\n        try {\n            Integer.parseInt(input);\n        } catch (NumberFormatException e) {\n            return false;\n        }\n        return true;\n    }\n}",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}

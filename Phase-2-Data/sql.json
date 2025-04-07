@@ -1,0 +1,632 @@
+{
+    "sql_0": {
+        "input": "CREATE FUNCTION GetUserDetails(username VARCHAR(50)) RETURNS TABLE AS $$\nBEGIN\n    RETURN QUERY EXECUTE 'SELECT * FROM users WHERE username = ''' || username || '''';\nEND;$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 7.2,
+            "type": "Buffer Overflow"
+        }
+    },
+    "sql_1": {
+        "input": "SELECT * FROM users WHERE username = '\" OR 1=1; -- \"'",
+        "output": {
+            "score": 8.6,
+            "type": "Command Injection"
+        }
+    },
+    "sql_2": {
+        "input": "CREATE PROCEDURE escalate_privileges AS BEGIN EXEC sp_addrolemember 'db_owner', SUSER_SNAME(); END;",
+        "output": {
+            "score": 9.0,
+            "type": "Privilege Escalation"
+        }
+    },
+    "sql_3": {
+        "input": "CREATE TABLE users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    password_hash VARCHAR(255)\n);\n\nINSERT INTO users (id, username, password_hash) VALUES (1, 'admin', 'cGFzc3dvcmQ='); -- Base64 for 'password'\n\nDELIMITER $$\nCREATE PROCEDURE login(IN p_username VARCHAR(50), IN p_password VARCHAR(255))\nBEGIN\n    DECLARE v_password_hash VARCHAR(255);\n    SELECT password_hash INTO v_password_hash FROM users WHERE username = p_username;\n    IF v_password_hash IS NOT NULL AND HEX(SHA1(p_password)) = HEX(v_password_hash) THEN\n        SELECT 'Login successful';\n    ELSE\n        SELECT 'Login failed';\n    END IF;\nEND$$\nDELIMITER ;",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "sql_4": {
+        "input": "CREATE PROCEDURE GetUserData (@username VARCHAR(50)) AS BEGIN DECLARE @sql NVARCHAR(MAX) SET @sql = 'SELECT * FROM Users WHERE username='''+@username+'''' EXEC sp_executesql @sql END",
+        "output": {
+            "score": 9.8,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "sql_5": {
+        "input": "CREATE PROCEDURE dbo.UpdateUserPermissions\r\n(\r\n    @UserID INT,\r\n    @NewRole VARCHAR(50)\r\n)\r\nAS\r\nBEGIN\r\n    DECLARE @sql NVARCHAR(MAX);\r\n    SET @sql = N'UPDATE Users SET Role = ''' + @NewRole + ''' WHERE UserID = ' + CAST(@UserID AS NVARCHAR(10));\r\n    EXEC sp_executesql @sql;\r\nEND",
+        "output": {
+            "score": 9.0,
+            "type": "Privilege Escalation"
+        }
+    },
+    "sql_6": {
+        "input": "SELECT * FROM files WHERE filename = \\'/documents/\\' || user_input",
+        "output": {
+            "score": 8.8,
+            "type": "Path Traversal"
+        }
+    },
+    "sql_7": {
+        "input": "CREATE PROCEDURE GetUserData (@user_id INT)\r\nAS\r\nBEGIN\r\n    DECLARE @sql NVARCHAR(MAX);\r\n    SET @sql = 'SELECT * FROM Users WHERE id = ' + CAST(@user_id AS NVARCHAR(10));\r\n    EXEC sp_executesql @sql;\r\nEND",
+        "output": {
+            "score": 8.6,
+            "type": "Remote Code Execution (RCE)"
+        }
+    },
+    "sql_8": {
+        "input": "CREATE CLASS VulnerableClass {\n    PROCEDURE ExecuteQuery(query VARCHAR) {\n        EXECUTE IMMEDIATE query;\n    }\n}",
+        "output": {
+            "score": 8.2,
+            "type": "Command Injection"
+        }
+    },
+    "sql_9": {
+        "input": "CREATE TABLE users (id INT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255));\nINSERT INTO users (id, username, password) VALUES (1, 'admin', 'password123');\nSELECT * FROM users WHERE username = '\" UNION SELECT '<script>alert(\\'XSS\\')</script>' --';",
+        "output": {
+            "score": 8.6,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "sql_10": {
+        "input": "CREATE OR REPLACE CLASS vulnerable_class AS $$\nBEGIN\n    DECLARE buffer CHAR(10);\n    SELECT data INTO buffer FROM unsafe_table WHERE id = 1;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 8.5,
+            "type": "Buffer Overflow"
+        }
+    },
+    "sql_11": {
+        "input": "CREATE OR REPLACE FUNCTION execute_user_query(query TEXT) RETURNS TABLE AS $$\nBEGIN\n    RETURN QUERY EXECUTE query;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 9.1,
+            "type": "Command Injection"
+        }
+    },
+    "sql_12": {
+        "input": "CREATE CLASS VulnerableClass AS $$\nBEGIN\n    EXECUTE IMMEDIATE 'SELECT * FROM ' || input_table;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 8.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "sql_13": {
+        "input": "import sqlite3\n\ndef execute_query(database, user_input):\n    conn = sqlite3.connect(database)\n    cursor = conn.cursor()\n    query = f'SELECT * FROM users WHERE username = \"{user_input}\"'\n    cursor.execute(query)\n    results = cursor.fetchall()\n    conn.close()\n    return results\n",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "sql_14": {
+        "input": "CREATE FUNCTION GetUserDetails(userId INT) RETURNS VARCHAR(255)\nBEGIN\n    DECLARE userDetails VARCHAR(255);\n    SET @query = CONCAT('SELECT name FROM users WHERE id = ', userId);\n    PREPARE stmt FROM @query;\n    EXECUTE stmt;\n    DEALLOCATE PREPARE stmt;\n    RETURN userDetails;\nEND;",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "sql_15": {
+        "input": "CREATE FUNCTION vulnerable_func(input_string VARCHAR(255)) RETURNS VARCHAR(255) DETERMINISTIC BEGIN DECLARE result VARCHAR(1024); SET @query = CONCAT('SELECT ''', input_string, ''' INTO @result'); PREPARE stmt FROM @query; EXECUTE stmt; DEALLOCATE PREPARE stmt; RETURN @result; END",
+        "output": {
+            "score": 9.3,
+            "type": "Buffer Overflow"
+        }
+    },
+    "sql_16": {
+        "input": "CREATE CLASS TransactionHandler AS $$\nBEGIN\n  IF current_user = 'admin' THEN\n    EXECUTE IMMEDIATE 'UPDATE accounts SET balance = balance - 100 WHERE id = ' || request_id;\n  END IF;\nEND;$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 7.5,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "sql_17": {
+        "input": "SELECT * FROM users WHERE username = \\'\\' || user_input || \\'\\'",
+        "output": {
+            "score": 6.1,
+            "type": "Cross-Site Scripting (XSS)"
+        }
+    },
+    "sql_18": {
+        "input": "CREATE FUNCTION get_user_data(user_id INT) RETURNS VARCHAR(255)\nBEGIN\nDECLARE query_string VARCHAR(255);\nSET query_string = CONCAT('SELECT * FROM users WHERE id = ', user_id);\nRETURN (query_string);\nEND;",
+        "output": {
+            "score": 7.5,
+            "type": "Command Injection"
+        }
+    },
+    "sql_19": {
+        "input": "CREATE PROCEDURE GetFileContent (@filename NVARCHAR(255)) AS BEGIN DECLARE @sql NVARCHAR(MAX); SET @sql = 'SELECT * FROM OPENROWSET(BULK N''' + @filename + ''', SINGLE_CLOB) AS Contents'; EXEC sp_executesql @sql; END",
+        "output": {
+            "score": 8.8,
+            "type": "Path Traversal"
+        }
+    },
+    "sql_20": {
+        "input": "CREATE OR REPLACE CLASS UserSession AS {\n    userData VARCHAR(255),\n    deserializeData(data VARCHAR) RETURNING VOID AS $$\n        DECLARE session JSON;\n        BEGIN\n            SELECT data::json INTO session;\n            self.userData := session->>'user';\n        END;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 7.5,
+            "type": "Insecure Deserialization"
+        }
+    },
+    "sql_21": {
+        "input": "CREATE FUNCTION authenticate(user VARCHAR, pass VARCHAR) RETURNS BOOLEAN AS $$\nBEGIN\n    RETURN EXISTS (SELECT 1 FROM users WHERE username = user AND password = pass);\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 7.5,
+            "type": "Broken Authentication"
+        }
+    },
+    "sql_22": {
+        "input": "CREATE PROCEDURE UpdateUserDetails (@userId INT, @email NVARCHAR(255)) AS BEGIN UPDATE Users SET email = @email WHERE id = @userId END",
+        "output": {
+            "score": 6.8,
+            "type": "Cross-Site Request Forgery (CSRF)"
+        }
+    },
+    "sql_23": {
+        "input": "CREATE PROCEDURE dangerousProcedure AS BEGIN DECLARE @longString VARCHAR(8000); SET @longString = REPLICATE('A', 9000); EXEC('SELECT ''' + @longString + ''''); END",
+        "output": {
+            "score": 7.2,
+            "type": "Buffer Overflow"
+        }
+    },
+    "sql_24": {
+        "input": "CREATE PROCEDURE ElevatedQueryExecution(@command NVARCHAR(MAX)) AS\\nBEGIN\\n    EXEC sp_executesql @command;\\nEND",
+        "output": {
+            "score": 8.9,
+            "type": "Privilege Escalation"
+        }
+    },
+    "sql_25": {
+        "input": "CREATE CLASS UserSession AS $$\nBEGIN\n    SESSION_ID VARCHAR(100);\n    USER_ID INT;\n    PROCEDURE SET_SESSION(p_session_id VARCHAR(100)) AS $$\n        BEGIN\n            SESSION_ID := p_session_id;\n        END;\n    $$ LANGUAGE plpgsql;\n$$ LANGUAGE SQL;",
+        "output": {
+            "score": 3.5,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_26": {
+        "input": "CREATE TABLE users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    password VARCHAR(100)\n);\nINSERT INTO users (id, username, password) VALUES (1, 'admin', 'password123');\n\nDELIMITER $$\nCREATE FUNCTION GetUserInfo(user_id INT) RETURNS TEXT DETERMINISTIC\nBEGIN\n    DECLARE user_info TEXT;\n    SET @query = CONCAT('SELECT * FROM users WHERE id = ', user_id);\n    PREPARE stmt FROM @query;\n    EXECUTE stmt;\n    DEALLOCATE PREPARE stmt;\n    RETURN user_info;\nEND$$\nDELIMITER ;",
+        "output": {
+            "score": 7.5,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "sql_27": {
+        "input": "CREATE TABLE users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    email VARCHAR(100)\n);\n\nINSERT INTO users (id, username, email) VALUES (1, 'admin', 'admin@example.com');\n\n-- Function to fetch user details based on provided URL\nCREATE OR REPLACE FUNCTION get_user_details(user_url TEXT) RETURNS TABLE AS $$\nBEGIN\n    RETURN QUERY EXECUTE format('SELECT * FROM users WHERE email = (SELECT email FROM dblink(%L, ''SELECT email FROM users LIMIT 1'') AS t(email))', user_url);\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 6.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "sql_28": {
+        "input": "CREATE TABLE Users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    session_id VARCHAR(100)\n);\n\nCREATE OR REPLACE FUNCTION set_session(user_id INT, new_session_id VARCHAR(100)) RETURNS VOID AS $$\nBEGIN\n    UPDATE Users SET session_id = new_session_id WHERE id = user_id;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_29": {
+        "input": "SELECT * FROM users WHERE username = 'admin' AND password = ' OR '1'='1",
+        "output": {
+            "score": 4.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "sql_30": {
+        "input": "CREATE CLASS UserSession AS \\nBEGIN\\n    PUBLIC FUNCTION SetSessionId(userId INT) RETURNS VARCHAR(255)\\n    BEGIN\\n        DECLARE sessionId VARCHAR(255);\\n        SET sessionId = UUID();\\n        -- Vulnerable to session fixation as it allows setting a predefined session ID\\n        IF userId = 0 THEN\\n            sessionId = 'fixed_session_id';\\n        END IF;\\n        RETURN sessionId;\\n    END;\\nEND;",
+        "output": {
+            "score": 4.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_31": {
+        "input": "CREATE TABLE users (id INT PRIMARY KEY, username VARCHAR(50), redirect_url TEXT);\n\nINSERT INTO users (id, username, redirect_url) VALUES (1, 'admin', 'https://safe.example.com');\n\nSELECT redirect_url FROM users WHERE id = 1;\n\n-- Vulnerable part: Using user-provided input directly in the redirect URL without validation.\n-- Example of vulnerable code:\n-- $user_input = $_GET['redirect'];\n-- header('Location: ' . $user_input);",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "sql_32": {
+        "input": "CREATE FUNCTION GetUserData(user_id INT) RETURNS VARCHAR(255)\nBEGIN\nDECLARE file_path TEXT;\nSET file_path = CONCAT('/home/user/data/', user_id, '.txt');\nRETURN LOAD_FILE(file_path);\nEND;",
+        "output": {
+            "score": 6.0,
+            "type": "Local File Inclusion (LFI) - Limited Scope"
+        }
+    },
+    "sql_33": {
+        "input": "CREATE FUNCTION get_user_data(user_id INT) RETURNS TABLE AS $$\nBEGIN\n    RETURN QUERY EXECUTE 'SELECT * FROM users WHERE id = ' || user_id;\nEND;$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 5.3,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "sql_34": {
+        "input": "CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255), email VARCHAR(255));\nINSERT INTO users (id, name, email) VALUES (1, 'Alice', 'alice@example.com');\n\nCREATE FUNCTION get_user_url(user_id INT) RETURNS VARCHAR(255)\nBEGIN\n    DECLARE user_email VARCHAR(255);\n    SELECT email INTO user_email FROM users WHERE id = user_id;\n    RETURN CONCAT('https://example.com/profile?email=', user_email);\nEND;",
+        "output": {
+            "score": 6.1,
+            "type": "Open Redirect"
+        }
+    },
+    "sql_35": {
+        "input": "CREATE TABLE users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    password VARCHAR(50)\n);\n\nCREATE TABLE sessions (\n    session_id VARCHAR(100) PRIMARY KEY,\n    user_id INT,\n    FOREIGN KEY (user_id) REFERENCES users(id)\n);\n\nINSERT INTO users (id, username, password) VALUES (1, 'admin', 'password');\n\nDELIMITER $$\nCREATE PROCEDURE login_user(IN input_username VARCHAR(50), IN input_password VARCHAR(50))\nBEGIN\n    DECLARE user_id INT;\n    SELECT id INTO user_id FROM users WHERE username = input_username AND password = input_password LIMIT 1;\n    IF user_id IS NOT NULL THEN\n        SET @session_id = UUID();\n        INSERT INTO sessions (session_id, user_id) VALUES (@session_id, user_id);\n        SELECT @session_id AS session_id;\n    ELSE\n        SELECT 'Invalid username or password' AS message;\n    END IF;\nEND$$\nDELIMITER ;",
+        "output": {
+            "score": 3.2,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_36": {
+        "input": "CREATE CLASS UserRequest AS SELECT * FROM RDB$DATABASE;\\nALTER CLASS UserRequest ADD METHOD sendRequest PARAMETER(url VARCHAR(255)) RETURNS VARCHAR(1024) BEGIN DECLARE result VARCHAR(1024); EXECUTE BLOCK AS BEGIN IN autonomous_transaction DO BEGIN EXECUTE STATEMENT 'SELECT HTTP_CLIENT.GET(' || :url || ') FROM RDB$DATABASE' INTO :result; END END RETURN result; END;",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "sql_37": {
+        "input": "SELECT * FROM users WHERE username = 'admin' AND password = '' OR '1'='1",
+        "output": {
+            "score": 5.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "sql_38": {
+        "input": "CREATE PROCEDURE SetUserSession(@session_id VARCHAR(255), @user_id INT) AS BEGIN UPDATE UserSessions SET user_id = @user_id WHERE session_id = @session_id; END",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_39": {
+        "input": "CREATE PROCEDURE SlowQuery AS BEGIN DECLARE @i INT SET @i = 0 WHILE @i < 1000000 BEGIN WAITFOR DELAY '00:00:00.001' SET @i = @i + 1 END END",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "sql_40": {
+        "input": "CREATE CLASS SSRFExample AS $$\nBEGIN\n  EXECUTE IMMEDIATE 'SELECT * FROM XMLTABLE(' || '''' || 'http://'|| user_input || '/data.xml' || '''' || ')';\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 7.2,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "sql_41": {
+        "input": "SELECT * FROM users WHERE username = 'admin' AND password = '123456'",
+        "output": {
+            "score": 5.0,
+            "type": "Missing Security Headers"
+        }
+    },
+    "sql_42": {
+        "input": "SELECT * FROM users WHERE username = '\" OR '1'='1",
+        "output": {
+            "score": 3.5,
+            "type": "Information Disclosure (Low Severity)"
+        }
+    },
+    "sql_43": {
+        "input": "CREATE FUNCTION get_user_data(user_id INT) RETURNS TABLE AS $$ BEGIN RETURN QUERY SELECT * FROM users WHERE id = user_id; END; $$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 3.5,
+            "type": "Clickjacking (Low Severity)"
+        }
+    },
+    "sql_44": {
+        "input": "SELECT * FROM users WHERE username = 'admin' OR '1'='1'",
+        "output": {
+            "score": 3.5,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "sql_45": {
+        "input": "CREATE FUNCTION update_balance(user_id INT, amount DECIMAL(10, 2)) RETURNS VOID AS $$\nBEGIN\n    UPDATE accounts SET balance = balance + amount WHERE id = user_id;\nEND;$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 5.3,
+            "type": "Race Condition (Difficult to Exploit)"
+        }
+    },
+    "sql_46": {
+        "input": "CREATE TABLE users (\n    id INT PRIMARY KEY,\n    username VARCHAR(50),\n    password VARCHAR(100)\n);\n\nINSERT INTO users (id, username, password) VALUES (1, 'admin', 'hashed_password');\n\nCREATE FUNCTION redirect_user(uid INT) RETURNS TEXT AS $$\nDECLARE\n    user_url TEXT;\nBEGIN\n    SELECT CONCAT('http://example.com/', COALESCE((SELECT website FROM profiles WHERE user_id = uid), 'default')) INTO user_url;\n    RETURN user_url;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 6.5,
+            "type": "Open Redirect"
+        }
+    },
+    "sql_47": {
+        "input": "CREATE CLASS UserSession (\n    session_id VARCHAR(255),\n    user_id INT\n);\n\nINSERT INTO UserSession (session_id, user_id) VALUES ('fixed_session_id', 1);",
+        "output": {
+            "score": 4.0,
+            "type": "Session Fixation (Low Severity)"
+        }
+    },
+    "sql_48": {
+        "input": "CREATE FUNCTION InfiniteLoop() RETURNS INT BEGIN WHILE TRUE DO END WHILE; RETURN 1; END;",
+        "output": {
+            "score": 4.0,
+            "type": "Denial-of-Service (DoS) - Low Impact"
+        }
+    },
+    "sql_49": {
+        "input": "CREATE PROCEDURE GetUserProfile @UserID INT AS BEGIN DECLARE @URL NVARCHAR(255) SELECT @URL = ProfilePicture FROM Users WHERE ID = @UserID EXEC sp_OACreate 'MSXML2.XMLHTTP', @obj OUT EXEC sp_OAMethod @obj, 'open', NULL, 'GET', @URL, false EXEC sp_OAMethod @obj, 'send' END",
+        "output": {
+            "score": 7.5,
+            "type": "Server-Side Request Forgery (SSRF) - Limited Scope"
+        }
+    },
+    "sql_50": {
+        "input": "CREATE PROCEDURE SafeUserLookup (@UserID INT)\r\nAS\r\nBEGIN\r\n    IF EXISTS (SELECT 1 FROM Users WHERE UserID = @UserID)\r\n    BEGIN\r\n        SELECT UserName, Email FROM Users WHERE UserID = @UserID;\r\n    END\r\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_51": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails @EmployeeID INT\nAS\nBEGIN\n    IF EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = @EmployeeID)\n    BEGIN\n        SELECT FirstName, LastName, Department\n        FROM Employees\n        WHERE EmployeeID = @EmployeeID;\n    END\n    ELSE\n    BEGIN\n        RAISERROR ('Employee not found.', 16, 1);\n    END\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_52": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails (@EmployeeID INT)\nAS\nBEGIN\n    IF NOT EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = @EmployeeID)\n    BEGIN\n        RAISERROR ('Employee not found.', 16, 1);\n        RETURN;\n    END\n\n    SELECT EmployeeName, Department, Position\n    FROM Employees\n    WHERE EmployeeID = @EmployeeID;\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_53": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails @EmployeeID INT\r\nAS\r\nBEGIN\r\n    IF NOT EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = @EmployeeID)\r\n    BEGIN\r\n        RAISERROR ('Invalid Employee ID', 16, 1);\r\n        RETURN;\r\n    END\r\n\r\n    SELECT FirstName, LastName, Email\r\n    FROM Employees\r\n    WHERE EmployeeID = @EmployeeID;\r\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_54": {
+        "input": "CREATE OR REPLACE FUNCTION secure_insert_user(user_name VARCHAR, user_email VARCHAR) RETURNS VOID AS $$\nBEGIN\n    IF LENGTH(user_name) > 50 OR LENGTH(user_email) > 100 THEN\n        RAISE EXCEPTION 'Input too long';\n    END IF;\n    INSERT INTO users (name, email) VALUES (user_name, user_email);\nEXCEPTION\n    WHEN others THEN\n        RAISE NOTICE 'An error occurred: %', SQLERRM;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_55": {
+        "input": "CREATE PROCEDURE GetUserByEmail (IN emailInput VARCHAR(255))\nBEGIN\n    DECLARE safeEmail VARCHAR(255);\n    SET safeEmail = TRIM(emailInput);\n    IF safeEmail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' THEN\n        SELECT * FROM Users WHERE Email = safeEmail;\n    ELSE\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'Invalid email format';\n    END IF;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_56": {
+        "input": "CREATE PROCEDURE GetSafeUserData (@UserID INT)\r\nAS\r\nBEGIN\r\n    SET NOCOUNT ON;\r\n    IF EXISTS (SELECT 1 FROM Users WHERE UserID = @UserID AND IsActive = 1)\r\n    BEGIN\r\n        SELECT UserName, Email FROM Users WHERE UserID = @UserID;\r\n    END\r\n    ELSE\r\n    BEGIN\r\n        RAISERROR ('User not found or inactive.', 16, 1);\r\n    END\r\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_57": {
+        "input": "CREATE FUNCTION GetSafeUserInput (user_input VARCHAR(100)) RETURNS INT AS $$\nDECLARE\n    safe_output INT;\nBEGIN\n    -- Validate input to ensure it's a digit\n    IF user_input ~ '^[0-9]+$' THEN\n        safe_output := CAST(user_input AS INT);\n    ELSE\n        RAISE EXCEPTION 'Invalid input: %', user_input;\n    END IF;\n    RETURN safe_output;\nEXCEPTION\n    WHEN OTHERS THEN\n        RAISE NOTICE 'An error occurred: %', SQLERRM;\n        RETURN NULL;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_58": {
+        "input": "CREATE PROCEDURE GetUserDetails(IN userId INT)\nBEGIN\n    DECLARE user_name VARCHAR(255);\n    SELECT name INTO user_name FROM users WHERE id = userId;\n    IF user_name IS NOT NULL THEN\n        SELECT user_name AS UserName;\n    ELSE\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'User not found';\n    END IF;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_59": {
+        "input": "CREATE OR REPLACE FUNCTION safe_insert_user(user_name VARCHAR, user_email VARCHAR) RETURNS VOID AS $$\nBEGIN\n    IF user_name ~ '^[a-zA-Z0-9_]+$' AND user_email ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$' THEN\n        INSERT INTO users (name, email) VALUES (user_name, user_email);\n    ELSE\n        RAISE EXCEPTION 'Invalid input provided';\n    END IF;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_60": {
+        "input": "CREATE FUNCTION GetSafeUserDetails (IN userId INT) RETURNS TABLE (id INT, username VARCHAR(255), email VARCHAR(255)) LANGUAGE SQL MODIFIES SQL DATA BEGIN DECLARE safeId INT; SET safeId = userId; RETURN QUERY SELECT id, username, email FROM users WHERE id = safeId; END;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_61": {
+        "input": "CREATE PROCEDURE GetUserByEmail(IN emailInput VARCHAR(255))\nBEGIN\n    DECLARE safeEmail VARCHAR(255);\n    SET safeEmail = TRIM(emailInput);\n    SELECT * FROM Users WHERE Email = safeEmail;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_62": {
+        "input": "CREATE PROCEDURE SafeSearch\n    @searchTerm NVARCHAR(100)\nAS\nBEGIN\n    SET NOCOUNT ON;\n\n    -- Validate input to ensure it does not contain dangerous characters or patterns\n    IF (@searchTerm LIKE '%--%' OR @searchTerm LIKE '%;%' OR @searchTerm LIKE '%/*%')\n    BEGIN\n        RAISERROR('Invalid search term provided', 16, 1);\n        RETURN;\n    END\n\n    -- Use parameterized queries to prevent SQL injection\n    SELECT TOP 10 Name, Description\n    FROM Products\n    WHERE Name LIKE '%' + @searchTerm + '%'\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_63": {
+        "input": "CREATE PROCEDURE SafeUserSearch @searchTerm NVARCHAR(100)\r\nAS\r\nBEGIN\r\n    DECLARE @safeSearchTerm NVARCHAR(105);\r\n    SET @safeSearchTerm = QUOTENAME('%' + REPLACE(@searchTerm, '''', '''''') + '%''');\r\n    EXEC sp_executesql N'SELECT * FROM Users WHERE UserName LIKE ' + @safeSearchTerm;\r\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_64": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails (@EmployeeID INT)\r\nAS\r\nBEGIN\r\n    IF (ISNUMERIC(@EmployeeID) = 1 AND @EmployeeID > 0)\r\n    BEGIN\r\n        SELECT EmployeeName, Department, Position\r\n        FROM Employees\r\n        WHERE EmployeeID = @EmployeeID;\r\n    END\r\n    ELSE\r\n    BEGIN\r\n        RAISERROR ('Invalid Employee ID', 16, 1);\r\n    END\r\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_65": {
+        "input": "CREATE FUNCTION SafeInsertUser(IN p_username VARCHAR(50), IN p_email VARCHAR(100)) RETURNS INT\nBEGIN\n    DECLARE v_user_id INT;\n    IF LENGTH(p_username) < 3 OR LENGTH(p_username) > 50 THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username must be between 3 and 50 characters.';\n    END IF;\n    IF NOT p_email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$' THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email format.';\n    END IF;\n    INSERT INTO users (username, email) VALUES (p_username, p_email);\n    SET v_user_id = LAST_INSERT_ID();\n    RETURN v_user_id;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_66": {
+        "input": "CREATE OR REPLACE FUNCTION safe_insert_user(user_name TEXT, user_email TEXT) RETURNS VOID AS $$\nBEGIN\n    IF user_name ~ '^[a-zA-Z0-9_]+$' AND user_email ~ '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$' THEN\n        INSERT INTO users (name, email) VALUES (user_name, user_email);\n    ELSE\n        RAISE EXCEPTION 'Invalid input';\n    END IF;\nEXCEPTION\n    WHEN OTHERS THEN\n        RAISE NOTICE 'An error occurred: %', SQLERRM;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_67": {
+        "input": "CREATE OR REPLACE FUNCTION secure_insert_user(user_name VARCHAR, user_email VARCHAR) RETURNS VOID AS $$\nBEGIN\n    IF user_name ~ '^[a-zA-Z0-9_]+$' AND user_email ~* '^[A-Za-z0-9._+%-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$' THEN\n        INSERT INTO users (name, email) VALUES (user_name, user_email);\n    ELSE\n        RAISE EXCEPTION 'Invalid input detected';\n    END IF;\nEND;\n$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_68": {
+        "input": "CREATE FUNCTION GetEmployeeDetails(@EmployeeID INT)\nRETURNS TABLE\nAS\nRETURN\n(\n    SELECT EmployeeName, Position, Department\n    FROM Employees\n    WHERE EmployeeID = @EmployeeID\n)",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_69": {
+        "input": "CREATE FUNCTION SafeInsertUser(IN p_username VARCHAR(50), IN p_email VARCHAR(100))\nRETURNS INT\nDETERMINISTIC\nBEGIN\n    DECLARE v_user_id INT;\n    IF LENGTH(p_username) > 0 AND LENGTH(p_email) > 0 THEN\n        INSERT INTO users (username, email)\n        VALUES (p_username, p_email);\n        SET v_user_id = LAST_INSERT_ID();\n    ELSE\n        SIGNAL SQLSTATE '45000'\n        SET MESSAGE_TEXT = 'Invalid input';\n    END IF;\n    RETURN v_user_id;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_70": {
+        "input": "CREATE PROCEDURE SafeInsertUser (\n    IN p_username VARCHAR(50),\n    IN p_email VARCHAR(100),\n    IN p_password_hash CHAR(64)\n)\nBEGIN\n    -- Validate inputs to ensure they are not empty and meet expected formats\n    IF LENGTH(p_username) < 3 OR LENGTH(p_email) < 5 OR LENGTH(p_password_hash) != 64 THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid input parameters';\n    END IF;\n\n    -- Insert user data into the database securely\n    INSERT INTO Users (username, email, password_hash)\n    VALUES (p_username, p_email, p_password_hash);\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_71": {
+        "input": "CREATE PROCEDURE SafeUserInsert\n(\n    @Username NVARCHAR(50),\n    @Password NVARCHAR(128)\n)\nAS\nBEGIN\n    SET NOCOUNT ON;\n\n    -- Validate input lengths to prevent SQL injection and overflows\n    IF LEN(@Username) > 50 OR LEN(@Password) > 128\n    BEGIN\n        RAISERROR ('Input exceeds maximum length', 16, 1);\n        RETURN;\n    END\n\n    -- Use parameterized queries to prevent SQL injection\n    INSERT INTO Users (Username, PasswordHash)\n    VALUES (@Username, HASHBYTES('SHA2_512', @Password));\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_72": {
+        "input": "CREATE FUNCTION GetSafeUserDetails (IN userId INT)\nRETURNS TABLE (id INT, username VARCHAR(255))\nDETERMINISTIC\nREADS SQL DATA\nBEGIN\n    DECLARE safeId INT;\n    SET safeId = IF(userId IS NOT NULL AND userId >= 0, userId, -1);\n    RETURN QUERY SELECT id, username FROM users WHERE id = safeId;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_73": {
+        "input": "CREATE PROCEDURE SafeInsertUser\n(\n    @Username NVARCHAR(50),\n    @Password NVARCHAR(256)\n)\nAS\nBEGIN\n    SET NOCOUNT ON;\n    IF EXISTS (SELECT 1 FROM Users WHERE Username = @Username)\n    BEGIN\n        RAISERROR ('Username already exists.', 16, 1);\n        RETURN;\n    END\n    INSERT INTO Users (Username, PasswordHash)\n    VALUES (@Username, HASHBYTES('SHA2_512', @Password));\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_74": {
+        "input": "CREATE FUNCTION SafeInsertUser (userName NVARCHAR(50), userEmail NVARCHAR(100)) RETURNS INT AS $$\nBEGIN\n    -- Validate input to ensure it doesn't contain malicious content\n    IF userName LIKE '%''%' OR userEmail LIKE '%''%' THEN\n        RAISE EXCEPTION 'Invalid characters detected in input.';\n    END IF;\n    \n    -- Insert user safely using parameterized queries\n    INSERT INTO Users (Name, Email) VALUES (userName, userEmail);\n    RETURN 1;\nEXCEPTION\n    WHEN OTHERS THEN\n        RETURN 0;\nEND;$$ LANGUAGE plpgsql;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_75": {
+        "input": "CREATE PROCEDURE GetUserByEmail(IN userEmail VARCHAR(255))\nBEGIN\n    DECLARE safeEmail VARCHAR(255);\n    SET safeEmail = TRIM(userEmail);\n    IF safeEmail REGEXP '^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$' THEN\n        SELECT * FROM Users WHERE Email = safeEmail;\n    ELSE\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email format';\n    END IF;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_76": {
+        "input": "SELECT id, name FROM users WHERE username = $1 AND password_hash = crypt($2, password_hash);",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_77": {
+        "input": "CREATE PROCEDURE SafeSearchUsers (@searchTerm NVARCHAR(100)) AS BEGIN     SET NOCOUNT ON;     DECLARE @safeSearchTerm NVARCHAR(102) = QUOTENAME(@searchTerm, N''[%]%'');     SELECT * FROM Users WHERE UserName LIKE N''%'' + @safeSearchTerm + N''%'' END",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_78": {
+        "input": "CREATE PROCEDURE GetUserByEmail\n    @Email NVARCHAR(255)\nAS\nBEGIN\n    SET NOCOUNT ON;\n    BEGIN TRY\n        IF NOT EXISTS (SELECT 1 FROM Users WHERE Email = @Email AND Email IS NOT NULL)\n            RAISERROR ('User not found', 16, 1);\n        SELECT UserID, Username, Email\n        FROM Users\n        WHERE Email = @Email;\n    END TRY\n    BEGIN CATCH\n        DECLARE @ErrorMessage NVARCHAR(4000);\n        DECLARE @ErrorSeverity INT;\n        DECLARE @ErrorState INT;\n        SELECT \n            @ErrorMessage = ERROR_MESSAGE(),\n            @ErrorSeverity = ERROR_SEVERITY(),\n            @ErrorState = ERROR_STATE();\n        RAISERROR (@ErrorMessage, @ErrorSeverity, @ErrorState);\n    END CATCH\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_79": {
+        "input": "CREATE PROCEDURE GetUserById(IN userId INT)\nBEGIN\n    DECLARE safeUserId INT;\n    SET safeUserId =(userId);\n    SELECT * FROM Users WHERE id = safeUserId;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_80": {
+        "input": "CREATE PROCEDURE GetUserProfile(IN userId INT)\nBEGIN\n    DECLARE safeUserId INT;\n    SET safeUserId = IF(userId IS NULL OR userId < 1, -1, userId);\n    SELECT * FROM Users WHERE id = safeUserId AND is_active = 1;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_81": {
+        "input": "CREATE PROCEDURE SafeInsertUser(IN p_username VARCHAR(50), IN p_email VARCHAR(100))\nBEGIN\n    DECLARE v_username VARCHAR(50);\n    DECLARE v_email VARCHAR(100);\n\n    -- Input validation and sanitization\n    SET v_username = TRIM(p_username);\n    SET v_email = TRIM(p_email);\n\n    IF LENGTH(v_username) < 4 OR LENGTH(v_username) > 50 THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Username must be between 4 and 50 characters.';\n    END IF;\n\n    IF LENGTH(v_email) < 5 OR LENGTH(v_email) > 100 THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Email must be between 5 and 100 characters.';\n    END IF;\n\n    IF NOT v_email REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$' THEN\n        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid email format.';\n    END IF;\n\n    -- Use parameterized query to prevent SQL injection\n    INSERT INTO users (username, email) VALUES (v_username, v_email);\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_82": {
+        "input": "CREATE PROCEDURE GetUserById(IN userId INT)\nBEGIN\n    DECLARE safeUserId INT;\n    SET safeUserId = IF(userId >= 0, userId, NULL);\n    SELECT * FROM Users WHERE id = safeUserId;\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_83": {
+        "input": "CREATE PROCEDURE GetSafeUser (@UserID INT)\nAS\nBEGIN\n    SET NOCOUNT ON;\n    IF EXISTS (SELECT 1 FROM Users WHERE UserID = @UserID)\n    BEGIN\n        SELECT UserName, Email FROM Users WHERE UserID = @UserID;\n    END\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_84": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails\n    @EmployeeID INT\nAS\nBEGIN\n    SET NOCOUNT ON;\n    IF NOT EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = @EmployeeID)\n    BEGIN\n        RAISERROR ('Invalid Employee ID', 16, 1);\n        RETURN;\n    END\n    SELECT FirstName, LastName, Department\n    FROM Employees\n    WHERE EmployeeID = @EmployeeID;\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_85": {
+        "input": "CREATE PROCEDURE SafeInsertUser\n(\n    @Username NVARCHAR(50),\n    @Email NVARCHAR(100)\n)\nAS\nBEGIN\n    SET NOCOUNT ON;\n    IF EXISTS (SELECT 1 FROM Users WHERE Username = @Username OR Email = @Email)\n    BEGIN\n        RAISERROR('User already exists', 16, 1);\n        RETURN;\n    END\n    INSERT INTO Users (Username, Email) VALUES (@Username, @Email);\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_86": {
+        "input": "CREATE FUNCTION GetCustomerDetails(@CustomerId INT)\nRETURNS TABLE\nAS\nRETURN\nBEGIN\n    IF @CustomerId IS NULL OR @CustomerId <= 0\n    BEGIN\n        RETURN;\n    END;\n    SELECT CustomerId, FirstName, LastName, Email\n    FROM Customers\n    WHERE CustomerId = @CustomerId;\nEND;",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_87": {
+        "input": "SELECT * FROM users WHERE username = $1 AND password = crypt($2, password);",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_88": {
+        "input": "CREATE PROCEDURE GetEmployeeDetails\n(\n    @EmployeeID INT\n)\nAS\nBEGIN\n    SET NOCOUNT ON;\n    IF EXISTS (SELECT 1 FROM Employees WHERE EmployeeID = @EmployeeID)\n    BEGIN\n        SELECT FirstName, LastName, Department\n        FROM Employees\n        WHERE EmployeeID = @EmployeeID;\n    END\n    ELSE\n    BEGIN\n        RAISERROR ('Employee not found.', 16, 1);\n    END\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    },
+    "sql_89": {
+        "input": "CREATE PROCEDURE SafeInsertUser(\n    @username NVARCHAR(50),\n    @email NVARCHAR(100)\n)\nAS\nBEGIN\n    -- Validate input to prevent SQL Injection and other malicious inputs\n    IF (LEN(@username) > 50 OR LEN(@email) > 100)\n    BEGIN\n        RAISERROR('Input exceeds maximum length.', 16, 1);\n        RETURN;\n    END\n\n    -- Use parameterized queries to prevent SQL Injection\n    INSERT INTO Users (Username, Email)\n    VALUES (@username, @email);\nEND",
+        "output": {
+            "score": 0.0,
+            "type": "Secure"
+        }
+    }
+}
